@@ -25,8 +25,8 @@ public:
 private:
 
 	GLint m_program;
-	const GLint m_in_attrib_position = 0; //defined in shader
-	const GLint m_in_attrib_velocity = 1; //defined in shader
+	static const GLint m_in_attrib_position = 0; //defined in shader
+	static const GLint m_in_attrib_velocity = 1; //defined in shader
 
 	GLuint m_buffer_velocity; // owner
 

@@ -103,10 +103,13 @@ int main(void)
 	glBindVertexArray(VertexArrayID);
 
 
+	glfwSetCursorPos(window, 1024/2, 768/2);
+
 	//////////////////////////////////////////////////////////////
 	particle_system particle_system_inst;
 	particle_system_inst.initialize();
 	//////////////////////////////////////////////////////////////
+	bool isFirstTime = true;
 
 	double lastTime = glfwGetTime();
 	do
@@ -116,8 +119,9 @@ int main(void)
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-
-		computeMatricesFromInputs();
+		if( !isFirstTime )
+			computeMatricesFromInputs();
+		isFirstTime = false;
 
 		//////////////////////////////////////////////////////////////
 		particle_system_inst.tick();

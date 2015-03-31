@@ -101,15 +101,29 @@ void transform_feedback::SetSourceDataAndGenerateSwapBuffer(GLint source)
 	auto nr_of_particles = m_buffer_size / sizeof(glm::vec4);
 
 	std::default_random_engine generator;
-	std::normal_distribution<float> distribution(5.0, 2.0);
+	std::normal_distribution<float> distribution(0, 0.1f); // between zero and 10
 
 	auto* data_random_vel = new vec4[nr_of_particles];
 	for (unsigned int i = 0; i < nr_of_particles; ++i){
-		data_random_vel[i].x = distribution(generator);
-		data_random_vel[i].y = distribution(generator);
-		data_random_vel[i].z = distribution(generator);
-		data_random_vel[i].a = 0; // padding
+		vec4 tmp;
+		tmp.x = distribution(generator);
+		tmp.y = distribution(generator);
+		tmp.z = distribution(generator);
+		tmp.a = 0; // padding
+		data_random_vel[i] = tmp;
 	}
+
+	vec4 tmp;
+	tmp.x = 0.02f;
+	tmp.y = 0.0f;
+	tmp.z = 0.0f;
+	tmp.a = 0; // padding
+	data_random_vel[0] = tmp;
+
+	//1.000000 1.414214 1.732051 2.000000 2.236068
+	//for (unsigned int i = 0; i < nr_of_particles; ++i){
+	//	std::cout << "x: " << data_random_vel[i].x << "\n";
+	//}
 
 	glGenBuffers(1, &m_buffer_velocity);
 	glBindBuffer(GL_ARRAY_BUFFER, m_buffer_velocity);
@@ -165,14 +179,15 @@ GLint transform_feedback::DoTheCalculation()
 
 	glEnableVertexAttribArray(m_in_attrib_position);
 	glBindBuffer(GL_ARRAY_BUFFER, m_buffer_input);
-	glVertexAttribPointer(m_in_attrib_position, 4, GL_FLOAT, GL_FALSE, 0, 0);
+	glVertexAttribPointer(m_in_attrib_position, 4, GL_FLOAT, GL_FALSE, 0, nullptr);
 
 	glEnableVertexAttribArray(m_in_attrib_velocity);
 	glBindBuffer(GL_ARRAY_BUFFER, m_buffer_velocity);
-	glVertexAttribPointer(m_in_attrib_velocity, 4, GL_FLOAT, GL_FALSE, 0, 0);
+	glVertexAttribPointer(m_in_attrib_velocity, 4, GL_FLOAT, GL_FALSE, 0, nullptr);
 
-	// glVertexAttribDivisor(0, 1);
-	// glVertexAttribDivisor(1, 1);
+	//glVertexAttribDivisor(0, 1);
+	//glVertexAttribDivisor(1, 1);
+	//glVertexAttribDivisor(2, 1);
 
 	// GL_POINTS — GL_POINTS
 	// GL_LINES — GL_LINES, GL_LINE_LOOP, GL_LINE_STRIP, GL_LINES_ADJACENCY, GL_LINE_STRIP_ADJACENCY
@@ -181,6 +196,17 @@ GLint transform_feedback::DoTheCalculation()
 	glDrawArrays(GL_POINTS, 0, m_buffer_size);
 	glEndTransformFeedback();
 
+
+	printOpenGLError();
+	// get the data back to CPU
+	auto nr_catch_particles = 1;
+	vec4* feedback = new vec4[nr_catch_particles];
+	glGetBufferSubData(GL_TRANSFORM_FEEDBACK_BUFFER, 0, nr_catch_particles *4*  sizeof(GLfloat), feedback);
+	printf("feedback: %f %f %f %f\n", feedback[0].x, feedback[0].y, feedback[0].z, feedback[0].a);
+	printOpenGLError();
+
+	glDisableVertexAttribArray(m_in_attrib_position);
+	glDisableVertexAttribArray(m_in_attrib_velocity);
 
 	glFlush();
 

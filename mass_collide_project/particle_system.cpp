@@ -41,7 +41,6 @@ void particle_system::initialize()
 	// fragment shader
 	m_uniform_TextureSampler = glGetUniformLocation(m_shader_program, "TextureSampler");
 
-	// m_compute_program = LoadComputeShader("Particle.computeshader"); // TODO 
 	printOpenGLError();
 
 	m_texture = loadDDS("particle.DDS");
@@ -56,9 +55,9 @@ void particle_system::initialize()
 	auto* data_random_col = new GLubyte[PARTICLES_COUNT * 4];
 
 	for (unsigned int i = 0; i < PARTICLES_COUNT; ++i){
-		data_random_pos[i].x = (float)(rand() % 100) / 10.0f;
-		data_random_pos[i].y = (float)(rand() % 100) / 10.0f;
-		data_random_pos[i].z = (float)(rand() % 100) / 10.0f;
+		data_random_pos[i].x = (float)(rand() % 100) / 10.0f - 5.0f;
+		data_random_pos[i].y = (float)(rand() % 100) / 10.0f - 5.0f;
+		data_random_pos[i].z = (float)(rand() % 100) / 10.0f - 5.0f;
 		data_random_pos[i].a = 0.02f; // size
 
 		data_random_col[i + 0] = rand() % 128;
@@ -153,10 +152,10 @@ void particle_system::tick()
 	glEnable(GL_DEPTH_TEST);
 
 	// 1rst attribute buffer : vertices
-	glEnableVertexAttribArray(0);
+	glEnableVertexAttribArray(m_in_attrib_square);
 	glBindBuffer(GL_ARRAY_BUFFER, m_buffer_billboard_vertex);
 	glVertexAttribPointer(
-		0,                  // attribute. Must match the layout in the shader.
+		m_in_attrib_square,                  // attribute. Must match the layout in the shader.
 		3,                  // size
 		GL_FLOAT,           // type
 		GL_FALSE,           // normalized?
@@ -166,10 +165,10 @@ void particle_system::tick()
 
 	printOpenGLError(); // !
 	// 2nd attribute buffer : positions of particles' centers
-	glEnableVertexAttribArray(1);
+	glEnableVertexAttribArray(m_in_attrib_position);
 	glBindBuffer(GL_ARRAY_BUFFER, m_buffer_position);
 	glVertexAttribPointer(
-		1,                  // attribute. Must match the layout in the shader.
+		m_in_attrib_position,                  // attribute. Must match the layout in the shader.
 		4,                  // size : x + y + z + size => 4
 		GL_FLOAT,           // type
 		GL_FALSE,           // normalized?
@@ -178,10 +177,10 @@ void particle_system::tick()
 		);
 
 	// 3rd attribute buffer : particles' colors
-	glEnableVertexAttribArray(2);
+	glEnableVertexAttribArray(m_in_attrib_color);
 	glBindBuffer(GL_ARRAY_BUFFER, m_buffer_color);
 	glVertexAttribPointer(
-		2,                   // attribute. Must match the layout in the shader.
+		m_in_attrib_color,                   // attribute. Must match the layout in the shader.
 		4,                   // size : r + g + b + a => 4
 		GL_UNSIGNED_BYTE,    // type
 		GL_TRUE,             // normalized?    *** YES, this means that the unsigned char[4] will be accessible with a vec4 (floats) in the shader ***
@@ -193,9 +192,9 @@ void particle_system::tick()
 	// The first parameter is the attribute buffer we're talking about.
 	// The second parameter is the "rate at which generic vertex attributes advance when rendering multiple instances"
 	// http://www.opengl.org/sdk/docs/man/xhtml/glVertexAttribDivisor.xml
-	glVertexAttribDivisor(0, 0); // particles vertices : always reuse the same 4 vertices -> 0
-	glVertexAttribDivisor(1, 1); // positions : one per quad (its center)                 -> 1
-	glVertexAttribDivisor(2, 1); // color : one per quad                                  -> 1
+	glVertexAttribDivisor(m_in_attrib_square  , 0); // particles vertices : always reuse the same 4 vertices -> 0
+	glVertexAttribDivisor(m_in_attrib_position, 1); // positions : one per quad (its center)                 -> 1
+	glVertexAttribDivisor(m_in_attrib_color   , 1); // color : one per quad                                  -> 1
 
 	printOpenGLError(); // !
 
@@ -207,9 +206,9 @@ void particle_system::tick()
 	//for (unsigned int i = 0; i < PARTICLES_COUNT; ++i) { glDrawArrays(GL_TRIANGLE_STRIP, 0, 4); }
 	glDrawArraysInstanced(GL_TRIANGLE_STRIP, 0, 4, PARTICLES_COUNT);
 
-	glDisableVertexAttribArray(0);
-	glDisableVertexAttribArray(1);
-	glDisableVertexAttribArray(2);
+	glDisableVertexAttribArray(m_in_attrib_square);
+	glDisableVertexAttribArray(m_in_attrib_position);
+	glDisableVertexAttribArray(m_in_attrib_color);
 
 	printOpenGLError(); // !
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
