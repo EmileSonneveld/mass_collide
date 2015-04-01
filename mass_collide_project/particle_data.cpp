@@ -17,9 +17,9 @@ using namespace glm;
 #include "globals.h"
 #include "particle_data.h"
 
+
 void initialize_buffers(particle_data& particle_data_ref)
 {
-
 	// single serving data to init GPU stuff //
 	///////////////////////////////////////////
 
@@ -44,12 +44,11 @@ void initialize_buffers(particle_data& particle_data_ref)
 		data_random_pos[i].z = (i / 100 / 100 % 100) * size;
 	}
 
-
 	printOpenGLError();
-	// Create and initialize the Buffer Objects on the GPU //
-	//////////////////////////////////////////////////
 
-	//glGenBuffers(1, &particle_data_ref.m_buffer_position);
+	// Create and initialize the Buffer Objects on the GPU //
+	/////////////////////////////////////////////////////////
+
 	glBindBuffer(GL_ARRAY_BUFFER, particle_data_ref.m_buffer_position);
 	glBufferData(
 		GL_ARRAY_BUFFER,
@@ -61,10 +60,9 @@ void initialize_buffers(particle_data& particle_data_ref)
 	glBindBuffer(GL_ARRAY_BUFFER, particle_data_ref.m_buffer_position_swap);
 	glBufferData(
 		GL_ARRAY_BUFFER,
-		particle_data::COUNT * sizeof(vec4), data_random_pos, GL_DYNAMIC_DRAW);
+		particle_data::COUNT * sizeof(vec4), data_random_pos, GL_DYNAMIC_DRAW
+		);
 
-
-	//glGenBuffers(1, &particle_data_ref.m_buffer_color);
 	glBindBuffer(GL_ARRAY_BUFFER, particle_data_ref.m_buffer_color);
 	glBufferData(
 		GL_ARRAY_BUFFER,
@@ -73,10 +71,8 @@ void initialize_buffers(particle_data& particle_data_ref)
 		GL_DYNAMIC_DRAW
 		);
 
-
 	delete data_random_pos;
 	delete data_random_col;
-
 }
 
 void initialize_velocity(particle_data& particle_data_ref)
@@ -90,23 +86,10 @@ void initialize_velocity(particle_data& particle_data_ref)
 		tmp.x = distribution(generator);
 		tmp.y = distribution(generator);
 		tmp.z = distribution(generator);
-		tmp.a = 20; // padding
+		tmp.a = 108; // padding
 		data_random_vel[i] = tmp;
 	}
 
-	vec4 tmp;
-	tmp.x = 0.02f;
-	tmp.y = 0.0f;
-	tmp.z = 0.0f;
-	tmp.a = 0; // padding
-	data_random_vel[0] = tmp;
-
-	//1.000000 1.414214 1.732051 2.000000 2.236068
-	//for (unsigned int i = 0; i < nr_of_particles; ++i){
-	//	std::cout << "x: " << data_random_vel[i].x << "\n";
-	//}
-
-	//glGenBuffers(1, &m_buffer_velocity);
 	glBindBuffer(GL_ARRAY_BUFFER, particle_data_ref.m_buffer_velocity);
 	glBufferData(
 		GL_ARRAY_BUFFER,

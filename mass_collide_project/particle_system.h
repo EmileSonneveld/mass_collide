@@ -35,8 +35,6 @@ private:
 	GLuint m_uniform_ViewProjMatrix;
 	GLuint m_uniform_TextureSampler;
 
-
 	GLuint m_texture;
-
 };
 

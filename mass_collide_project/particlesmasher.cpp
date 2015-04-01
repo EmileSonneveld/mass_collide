@@ -21,35 +21,11 @@ using namespace glm;
 #include <common/texture.hpp>
 #include <common/controls.hpp>
 
-
 #include "globals.h"
-
-
-
 #include "particle_data.h"
 #include "particle_system.h"
 #include "transform_feedback.h"
 
-
-/*
-#define printOpenGLError() printOglError(__FILE__, __LINE__)
-int printOglError(char *file, int line)
-{
-
-	GLenum glErr;
-	int    retCode = 0;
-
-	glErr = glGetError();
-	if (glErr != GL_NO_ERROR)
-	{
-		OutputDebugStringA("glError\n");
-		printf("glError in file %s @ line %d: %s\n",
-			file, line, gluErrorString(glErr));
-		retCode = 1;
-	}
-	return retCode;
-}
-*/
 
 int main(void)
 {
@@ -104,7 +80,7 @@ int main(void)
 	glBindVertexArray(VertexArrayID);
 
 
-	glfwSetCursorPos(window, 1024/2, 768/2);
+	glfwSetCursorPos(window, 1024 / 2, 768 / 2);
 
 	//////////////////////////////////////////////////////////////
 	particle_system particle_system_inst;
@@ -127,7 +103,7 @@ int main(void)
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-		if( !isFirstTime )
+		if (!isFirstTime)
 			computeMatricesFromInputs();
 		isFirstTime = false;
 
@@ -145,7 +121,6 @@ int main(void)
 		//////////////////////////////////////////////////////////////
 
 
-		// Swap buffers
 		glfwSwapBuffers(window);
 		glfwPollEvents();
 
