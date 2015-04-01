@@ -24,7 +24,7 @@ using namespace glm;
 
 
 #include "globals.h"
-#include "transform_feedback.h"
+#include "particle_data.h"
 
 
 void particle_system::initialize()
@@ -44,49 +44,6 @@ void particle_system::initialize()
 	printOpenGLError();
 
 	m_texture = loadDDS("particle.DDS");
-
-
-
-	printOpenGLError();
-	// single serving data to init GPU stuff //
-	///////////////////////////////////////////
-
-	auto* data_random_pos = new vec4[PARTICLES_COUNT];
-	auto* data_random_col = new GLubyte[PARTICLES_COUNT * 4];
-
-	for (unsigned int i = 0; i < PARTICLES_COUNT; ++i){
-		data_random_pos[i].x = (float)(rand() % 100) / 10.0f - 5.0f;
-		data_random_pos[i].y = (float)(rand() % 100) / 10.0f - 5.0f;
-		data_random_pos[i].z = (float)(rand() % 100) / 10.0f - 5.0f;
-		data_random_pos[i].a = 0.02f; // size
-
-		data_random_col[i + 0] = rand() % 128;
-		data_random_col[i + 1] = rand() % 128;
-		data_random_col[i + 2] = rand() % 128;
-		data_random_col[i + 3] = 128;
-
-
-		//data_random_pos[i].x = i % 100;
-		//data_random_pos[i].y = i / 100 % 100;
-		//data_random_pos[i].z = i / 100 % 100 % 100;
-	}
-
-
-	printOpenGLError();
-	// Create and initialize the Buffer Objects on the GPU //
-	//////////////////////////////////////////////////
-
-	glGenBuffers(1, &m_buffer_position);
-	glBindBuffer(GL_ARRAY_BUFFER, m_buffer_position);
-	glBufferData(GL_ARRAY_BUFFER, PARTICLES_COUNT * sizeof(vec4), data_random_pos, GL_DYNAMIC_DRAW);
-
-	glGenBuffers(1, &m_buffer_color);
-	glBindBuffer(GL_ARRAY_BUFFER, m_buffer_color);
-	glBufferData(GL_ARRAY_BUFFER, PARTICLES_COUNT * 4 * sizeof(GLubyte), data_random_col, GL_DYNAMIC_DRAW);
-
-
-	delete data_random_pos;
-	delete data_random_col;
 
 
 	printOpenGLError();
@@ -111,17 +68,12 @@ void particle_system::initialize()
 
 
 	printOpenGLError();
-	m_transform_feedback_inst.initialize();
-	m_transform_feedback_inst.SetSourceDataAndGenerateSwapBuffer(m_buffer_position);
 
 }
 
-void particle_system::tick()
+void particle_system::draw(particle_data& particle_data_ref)
 {
 	printOpenGLError();
-
-
-	m_buffer_position = m_transform_feedback_inst.DoTheCalculation();
 
 	// fill in the shader uniforms //
 	/////////////////////////////////
@@ -166,7 +118,7 @@ void particle_system::tick()
 	printOpenGLError(); // !
 	// 2nd attribute buffer : positions of particles' centers
 	glEnableVertexAttribArray(m_in_attrib_position);
-	glBindBuffer(GL_ARRAY_BUFFER, m_buffer_position);
+	glBindBuffer(GL_ARRAY_BUFFER, particle_data_ref.m_buffer_position);
 	glVertexAttribPointer(
 		m_in_attrib_position,                  // attribute. Must match the layout in the shader.
 		4,                  // size : x + y + z + size => 4
@@ -178,7 +130,7 @@ void particle_system::tick()
 
 	// 3rd attribute buffer : particles' colors
 	glEnableVertexAttribArray(m_in_attrib_color);
-	glBindBuffer(GL_ARRAY_BUFFER, m_buffer_color);
+	glBindBuffer(GL_ARRAY_BUFFER, particle_data_ref.m_buffer_color);
 	glVertexAttribPointer(
 		m_in_attrib_color,                   // attribute. Must match the layout in the shader.
 		4,                   // size : r + g + b + a => 4
@@ -204,24 +156,25 @@ void particle_system::tick()
 	// but faster.
 	//glDrawArrays(GL_QUADS, 0, 4);
 	//for (unsigned int i = 0; i < PARTICLES_COUNT; ++i) { glDrawArrays(GL_TRIANGLE_STRIP, 0, 4); }
-	glDrawArraysInstanced(GL_TRIANGLE_STRIP, 0, 4, PARTICLES_COUNT);
+	glDrawArraysInstanced(GL_TRIANGLE_STRIP, 0, 4, particle_data::COUNT);
+
+	glVertexAttribDivisor(m_in_attrib_square, 0);
+	glVertexAttribDivisor(m_in_attrib_position, 0);
+	glVertexAttribDivisor(m_in_attrib_color, 0);
 
 	glDisableVertexAttribArray(m_in_attrib_square);
 	glDisableVertexAttribArray(m_in_attrib_position);
 	glDisableVertexAttribArray(m_in_attrib_color);
 
 	printOpenGLError(); // !
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	//glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glBindTexture(GL_TEXTURE_2D, 0);
 
 }
 
 void particle_system::clean()
 {
 	glDeleteBuffers(1, &m_buffer_billboard_vertex);
-	glDeleteBuffers(1, &m_buffer_position);
-	glDeleteBuffers(1, &m_buffer_color);
-
 	glDeleteProgram(m_shader_program);
 	glDeleteTextures(1, &m_texture);
-
 }

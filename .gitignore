@@ -2,6 +2,7 @@
 #no documentation
 *.html
 */doc/*
+*~
 
 CMakeCache.txt
 CMakeFiles

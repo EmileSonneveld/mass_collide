@@ -26,6 +26,7 @@ using namespace glm;
 
 
 
+#include "particle_data.h"
 #include "particle_system.h"
 #include "transform_feedback.h"
 
@@ -108,6 +109,13 @@ int main(void)
 	//////////////////////////////////////////////////////////////
 	particle_system particle_system_inst;
 	particle_system_inst.initialize();
+
+	particle_data particle_data_inst;
+	initialize_buffers(particle_data_inst);
+	initialize_velocity(particle_data_inst);
+
+	transform_feedback transform_feedback_inst;
+	transform_feedback_inst.initialize();
 	//////////////////////////////////////////////////////////////
 	bool isFirstTime = true;
 
@@ -124,7 +132,16 @@ int main(void)
 		isFirstTime = false;
 
 		//////////////////////////////////////////////////////////////
-		particle_system_inst.tick();
+		if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS){
+			transform_feedback_inst.DoTheCalculation(particle_data_inst);
+		}
+		if (glfwGetKey(window, GLFW_KEY_R) == GLFW_PRESS){
+			transform_feedback_inst.initialize();
+		}
+		if (glfwGetKey(window, GLFW_KEY_T) == GLFW_PRESS){
+			initialize_buffers(particle_data_inst);
+		}
+		particle_system_inst.draw(particle_data_inst);
 		//////////////////////////////////////////////////////////////
 
 
@@ -140,7 +157,9 @@ int main(void)
 	printOpenGLError();
 
 	//////////////////////////////////////////////////////////////
+	particle_data_inst.clean();
 	particle_system_inst.clean();
+	transform_feedback_inst.clean();
 	//////////////////////////////////////////////////////////////
 
 

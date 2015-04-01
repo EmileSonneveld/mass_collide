@@ -1,12 +1,13 @@
 # CMake entry point
-cmake_minimum_required (VERSION 2.6)
+cmake_minimum_required (VERSION 2.8)
 project (Tutorials)
 
 find_package(OpenGL REQUIRED)
 
-if(CMAKE_COMPILER_IS_GNUCXX)
-	SET( APPEND CMAKE_CXX_FLAGS "-std=c++0x")
-endif()
+#if(CMAKE_COMPILER_IS_GNUCXX)
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
+	#SET( APPEND CMAKE_CXX_FLAGS "-std=c++11")
+#endif()
 
 
 if( CMAKE_BINARY_DIR STREQUAL CMAKE_SOURCE_DIR )
@@ -84,6 +85,8 @@ create_target_launcher(playground WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}
 
 # mass_collide_test ####################################
 add_executable(mass_collide_test
+	mass_collide_project/particle_data.h
+	mass_collide_project/particle_data.cpp
 	mass_collide_project/particle_system.cpp
 	mass_collide_project/particle_system.h
 	mass_collide_project/transform_feedback.cpp

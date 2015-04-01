@@ -24,7 +24,7 @@ using namespace glm;
 #include <common/texture.hpp>
 #include <common/controls.hpp>
 
-
+#include "particle_data.h"
 #include "globals.h"
 
 //#define TESTCASE
@@ -80,92 +80,18 @@ GLint CompileComputeShader(const GLchar* filename)
 }
 
 
-void transform_feedback::SetSourceDataAndGenerateSwapBuffer(GLint source)
-{
-#ifndef TESTCASE
-	m_buffer_input = source;
-
-	glBindBuffer(GL_ARRAY_BUFFER, source);
-	glGetBufferParameteriv(GL_ARRAY_BUFFER, GL_BUFFER_SIZE, &m_buffer_size);
-	// int originalVertexArraySize = (nBufferSize / sizeof(float));
-
-	// resutlt VBO
-	glGenBuffers(1, &m_buffer_result);
-	glBindBuffer(GL_ARRAY_BUFFER, m_buffer_result);
-	glBufferData(GL_ARRAY_BUFFER, m_buffer_size, nullptr, GL_DYNAMIC_DRAW); //GL_DYNAMIC_DRAW GL_STATIC_READ
-
-	int nBufferSize2 = 0; // check value
-	glGetBufferParameteriv(GL_ARRAY_BUFFER, GL_BUFFER_SIZE, &nBufferSize2);
-	assert(nBufferSize2 == m_buffer_size);
-
-	auto nr_of_particles = m_buffer_size / sizeof(glm::vec4);
-
-	std::default_random_engine generator;
-	std::normal_distribution<float> distribution(0, 0.1f); // between zero and 10
-
-	auto* data_random_vel = new vec4[nr_of_particles];
-	for (unsigned int i = 0; i < nr_of_particles; ++i){
-		vec4 tmp;
-		tmp.x = distribution(generator);
-		tmp.y = distribution(generator);
-		tmp.z = distribution(generator);
-		tmp.a = 0; // padding
-		data_random_vel[i] = tmp;
-	}
-
-	vec4 tmp;
-	tmp.x = 0.02f;
-	tmp.y = 0.0f;
-	tmp.z = 0.0f;
-	tmp.a = 0; // padding
-	data_random_vel[0] = tmp;
-
-	//1.000000 1.414214 1.732051 2.000000 2.236068
-	//for (unsigned int i = 0; i < nr_of_particles; ++i){
-	//	std::cout << "x: " << data_random_vel[i].x << "\n";
-	//}
-
-	glGenBuffers(1, &m_buffer_velocity);
-	glBindBuffer(GL_ARRAY_BUFFER, m_buffer_velocity);
-	glBufferData(GL_ARRAY_BUFFER, m_buffer_size, data_random_vel, GL_DYNAMIC_DRAW);
-
-	delete data_random_vel;
-
-#endif
-}
 
 
 void transform_feedback::initialize()
 {
 	printOpenGLError();
-
-	if (m_program != 0){
-		glDeleteProgram(m_program);
-		m_program = 0;
-	}
+	clean();
 	m_program = CompileComputeShader("compute.glsl");
-
-
-
-
-
-#ifdef TESTCASE
-	GLfloat data[] = { 1.0f, 2.0f, 3.0f, 4.0f, 5.0f };  // demo data
-
-	glGenBuffers(1, &m_buffer_input);
-	glBindBuffer(GL_ARRAY_BUFFER, m_buffer_input);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(data), data, GL_STATIC_DRAW);
-
-	// resutlt VBO gets generated from source buffer
-	glGenBuffers(1, &m_buffer_result);
-	glBindBuffer(GL_ARRAY_BUFFER, m_buffer_result);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(data), nullptr, GL_STATIC_READ);
-#endif
 
 	printOpenGLError();
 }
 
-GLint transform_feedback::DoTheCalculation()
+GLint transform_feedback::DoTheCalculation(particle_data& particle_data_ref)
 {
 	// gives more misery and has no visible efect when disabled
 	//glEnable(GL_RASTERIZER_DISCARD); 
@@ -173,27 +99,28 @@ GLint transform_feedback::DoTheCalculation()
 
 	printOpenGLError();
 	// bind our buffer to the Transform feedback
-	glBindBufferBase(GL_TRANSFORM_FEEDBACK_BUFFER, 0, m_buffer_result);
+	glBindBufferBase(GL_TRANSFORM_FEEDBACK_BUFFER, 0, particle_data_ref.m_buffer_position_swap);
 
 	printOpenGLError();
 
 	glEnableVertexAttribArray(m_in_attrib_position);
-	glBindBuffer(GL_ARRAY_BUFFER, m_buffer_input);
+	glBindBuffer(GL_ARRAY_BUFFER, particle_data_ref.m_buffer_position);
 	glVertexAttribPointer(m_in_attrib_position, 4, GL_FLOAT, GL_FALSE, 0, nullptr);
 
 	glEnableVertexAttribArray(m_in_attrib_velocity);
-	glBindBuffer(GL_ARRAY_BUFFER, m_buffer_velocity);
+	glBindBuffer(GL_ARRAY_BUFFER, particle_data_ref.m_buffer_velocity);
 	glVertexAttribPointer(m_in_attrib_velocity, 4, GL_FLOAT, GL_FALSE, 0, nullptr);
 
 	//glVertexAttribDivisor(0, 1);
-	//glVertexAttribDivisor(1, 1);
-	//glVertexAttribDivisor(2, 1);
+	//texAttribDivisor(1, 1);
+	//texAttribDivisor(2, 1);
 
 	// GL_POINTS — GL_POINTS
 	// GL_LINES — GL_LINES, GL_LINE_LOOP, GL_LINE_STRIP, GL_LINES_ADJACENCY, GL_LINE_STRIP_ADJACENCY
 	// GL_TRIANGLES — GL_TRIANGLES, GL_TRIANGLE_STRIP, GL_TRIANGLE_FAN, GL_TRIANGLES_ADJACENCY, GL_TRIANGLE_STRIP_ADJACENCY
 	glBeginTransformFeedback(GL_POINTS);
-	glDrawArrays(GL_POINTS, 0, m_buffer_size);
+	glDrawArrays(GL_POINTS, 0, particle_data::COUNT);
+	//glDrawArraysInstanced(GL_POINTS, 0, 4, particle_data::COUNT);
 	glEndTransformFeedback();
 
 
@@ -201,7 +128,7 @@ GLint transform_feedback::DoTheCalculation()
 	// get the data back to CPU
 	auto nr_catch_particles = 1;
 	vec4* feedback = new vec4[nr_catch_particles];
-	glGetBufferSubData(GL_TRANSFORM_FEEDBACK_BUFFER, 0, nr_catch_particles *4*  sizeof(GLfloat), feedback);
+	glGetBufferSubData(GL_TRANSFORM_FEEDBACK_BUFFER, 0, nr_catch_particles * sizeof(vec4), feedback);
 	printf("feedback: %f %f %f %f\n", feedback[0].x, feedback[0].y, feedback[0].z, feedback[0].a);
 	printOpenGLError();
 
@@ -219,9 +146,9 @@ GLint transform_feedback::DoTheCalculation()
 	//1.000000 1.414214 1.732051 2.000000 2.236068
 #endif
 
-	auto tmp_result = m_buffer_result;
-	m_buffer_result = m_buffer_input;
-	m_buffer_input = tmp_result;
+	auto tmp_result = particle_data_ref.m_buffer_position_swap;
+	particle_data_ref.m_buffer_position_swap = particle_data_ref.m_buffer_position;
+	particle_data_ref.m_buffer_position = tmp_result;
 
 	return tmp_result;
 }
@@ -230,5 +157,5 @@ void transform_feedback::clean()
 {
 	if (m_program != 0)
 		glDeleteProgram(m_program);
-	glDeleteBuffers(1, &m_buffer_velocity);
+	m_program = 0;
 }
