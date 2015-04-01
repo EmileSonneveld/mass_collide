@@ -57,7 +57,7 @@ void initialize_buffers(particle_data& particle_data_ref)
 		GL_DYNAMIC_DRAW
 		);
 
-	glBindBuffer(GL_ARRAY_BUFFER, particle_data_ref.m_buffer_position_swap);
+	glBindBuffer(GL_ARRAY_BUFFER, particle_data_ref.m_buffer_swap);
 	glBufferData(
 		GL_ARRAY_BUFFER,
 		particle_data::COUNT * sizeof(vec4), data_random_pos, GL_DYNAMIC_DRAW

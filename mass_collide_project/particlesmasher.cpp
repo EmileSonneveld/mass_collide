@@ -90,8 +90,11 @@ int main(void)
 	initialize_buffers(particle_data_inst);
 	initialize_velocity(particle_data_inst);
 
-	transform_feedback transform_feedback_inst;
-	transform_feedback_inst.initialize();
+	transform_feedback transform_positions;
+	transform_positions.initialize("compute.glsl");
+
+	transform_feedback transform_velocities;
+	transform_velocities.initialize("forces.glsl");
 	//////////////////////////////////////////////////////////////
 	bool isFirstTime = true;
 
@@ -109,10 +112,12 @@ int main(void)
 
 		//////////////////////////////////////////////////////////////
 		if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS){
-			transform_feedback_inst.DoTheCalculation(particle_data_inst);
+			transform_positions.ProccesPositions(particle_data_inst);
+			transform_velocities.ProccesVelocities(particle_data_inst);
 		}
 		if (glfwGetKey(window, GLFW_KEY_R) == GLFW_PRESS){
-			transform_feedback_inst.initialize();
+			transform_positions.initialize("compute.glsl");
+			transform_velocities.initialize("forces.glsl");
 		}
 		if (glfwGetKey(window, GLFW_KEY_T) == GLFW_PRESS){
 			initialize_buffers(particle_data_inst);
@@ -134,7 +139,7 @@ int main(void)
 	//////////////////////////////////////////////////////////////
 	particle_data_inst.clean();
 	particle_system_inst.clean();
-	transform_feedback_inst.clean();
+	transform_positions.clean();
 	//////////////////////////////////////////////////////////////
 
 

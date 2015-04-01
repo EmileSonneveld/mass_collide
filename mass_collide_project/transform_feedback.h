@@ -1,5 +1,7 @@
 #pragma once
 
+#include <string>
+
 #include <GL/glew.h>
 
 struct particle_data;
@@ -12,8 +14,9 @@ public:
 	{}
 	virtual ~transform_feedback(){}
 
-	void initialize();
-	GLint DoTheCalculation(particle_data& particle_data_ref);
+	void initialize(std::string file_name = "compute.glsl");
+	GLint ProccesPositions(particle_data& particle_data_ref);
+	GLint ProccesVelocities(particle_data& particle_data_ref);
 	void clean();
 
 private:
