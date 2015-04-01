@@ -10,7 +10,8 @@ class transform_feedback
 {
 public:
 	transform_feedback() :
-		m_program(0)
+		m_program(0),
+		m_uniform_point()
 	{}
 	virtual ~transform_feedback(){}
 
@@ -23,6 +24,8 @@ private:
 	GLint m_program;
 	static const GLint m_in_attrib_position = 0; //defined in shader
 	static const GLint m_in_attrib_velocity = 1; //defined in shader
+
+	GLint m_uniform_point;
 };
 
 

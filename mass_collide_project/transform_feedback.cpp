@@ -30,13 +30,26 @@ using namespace glm;
 GLint CompileComputeShader(const GLchar* filename)
 {
 	printOpenGLError();
+	GLuint shader = LoadTemporaryShader(filename, GL_VERTEX_SHADER);
 
-	GLuint shader = glCreateShader(GL_VERTEX_SHADER);
-	auto shader_compute = getCodeFromFile(filename);
-	char const * shader_compute_pointer = shader_compute.c_str();
-	glShaderSource(shader, 1, &shader_compute_pointer, nullptr);
-	glCompileShader(shader);
-	printOpenGLError();
+	// GLuint shader = glCreateShader(GL_VERTEX_SHADER);
+	// auto shader_compute = getCodeFromFile(filename);
+	// char const * shader_compute_pointer = shader_compute.c_str();
+	// glShaderSource(shader, 1, &shader_compute_pointer, nullptr);
+	// glCompileShader(shader);
+	// printOpenGLError();
+	// 
+	// 
+	// // Check Vertex Shader
+	// GLint Result = GL_FALSE;
+	// int InfoLogLength;
+	// glGetShaderiv(shader, GL_COMPILE_STATUS, &Result);
+	// glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &InfoLogLength);
+	// if (InfoLogLength > 0){
+	// 	std::vector<char> VertexShaderErrorMessage(InfoLogLength + 1);
+	// 	glGetShaderInfoLog(shader, InfoLogLength, NULL, &VertexShaderErrorMessage[0]);
+	// 	printf("%s\n", &VertexShaderErrorMessage[0]);
+	// }
 
 	GLuint program = glCreateProgram();
 	glAttachShader(program, shader);
@@ -77,6 +90,7 @@ void transform_feedback::initialize(std::string file_name)
 {
 	clean();
 	m_program = CompileComputeShader(file_name.c_str());
+	m_uniform_point = glGetUniformLocation(m_program, "point");
 }
 
 GLint transform_feedback::ProccesPositions(particle_data& particle_data_ref)
@@ -127,6 +141,11 @@ GLint transform_feedback::ProccesVelocities(particle_data& particle_data_ref)
 	glBindBufferBase(GL_TRANSFORM_FEEDBACK_BUFFER, 0, particle_data_ref.m_buffer_swap);
 
 	printOpenGLError();
+
+	glm::mat4 ViewMatrix = getViewMatrix();
+	//glUniform3f(m_uniform_point, 0, 0, 0);
+	glm::vec4 pos = CursorToWorldspace(0.5); // pos(0, 0, 0, 0); // 
+	glUniform3f(m_uniform_point, pos.x, pos.y, pos.z);
 
 	glEnableVertexAttribArray(m_in_attrib_position);
 	glBindBuffer(GL_ARRAY_BUFFER, particle_data_ref.m_buffer_position);

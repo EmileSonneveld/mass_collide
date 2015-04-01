@@ -32,9 +32,11 @@ void particle_system::initialize()
 	// Create and compile our GLSL program from the shaders //
 	//////////////////////////////////////////////////////////
 	m_shader_program = LoadShaders("Particle.vertexshader", "Particle.fragmentshader");
+	printOpenGLError();
 
 	// Vertex shader
 	m_uniform_CameraRight_worldspace = glGetUniformLocation(m_shader_program, "CameraRight_worldspace");
+	printOpenGLError();
 	m_uniform_CameraUp_worldspace = glGetUniformLocation(m_shader_program, "CameraUp_worldspace");
 	m_uniform_ViewProjMatrix = glGetUniformLocation(m_shader_program, "ViewProjMatrix");
 	// fragment shader

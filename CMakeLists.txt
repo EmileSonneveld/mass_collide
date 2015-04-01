@@ -103,6 +103,7 @@ add_executable(mass_collide_test
 	mass_collide_project/Particle.fragmentshader
 	mass_collide_project/Particle.vertexshader
 	mass_collide_project/compute.glsl
+	mass_collide_project/forces.glsl
 )
 
 target_link_libraries(mass_collide_test

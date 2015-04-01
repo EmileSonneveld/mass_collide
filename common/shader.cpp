@@ -26,60 +26,43 @@ std::string getCodeFromFile(const char * file_path)
 		fileStream.close();
 	}
 	else{
-		printf("Impossible to open %s. Are you in the right directory ? Don't forget to read the FAQ !\n", file_path);
+		printf("Impossible to open %s. Are you in the right directory?\n", file_path);
 	}
 	return shaderCode;
 }
 
+GLuint LoadTemporaryShader(const char * glsl_file_path, GLenum kind)
+{
+	GLuint shaderID = glCreateShader(kind);
 
-GLuint LoadShaders(const char * vertex_file_path,const char * fragment_file_path){
-
-	// Create the shaders
-	GLuint VertexShaderID = glCreateShader(GL_VERTEX_SHADER);
-	GLuint FragmentShaderID = glCreateShader(GL_FRAGMENT_SHADER);
-
-	auto shader_vertex = getCodeFromFile(vertex_file_path);
-	auto shader_fragment = getCodeFromFile(fragment_file_path);
-
+	auto shader_text = getCodeFromFile(glsl_file_path);
 
 	GLint Result = GL_FALSE;
 	int InfoLogLength;
 
-
-
 	// Compile Vertex Shader
-	printf("Compiling shader : %s\n", vertex_file_path);
-	char const * VertexSourcePointer = shader_vertex.c_str();
-	glShaderSource(VertexShaderID, 1, &VertexSourcePointer , NULL);
-	glCompileShader(VertexShaderID);
+	printf("Compiling shader : %s\n", glsl_file_path);
+	char const * VertexSourcePointer = shader_text.c_str();
+	glShaderSource(shaderID, 1, &VertexSourcePointer, NULL);
+	glCompileShader(shaderID);
 
 	// Check Vertex Shader
-	glGetShaderiv(VertexShaderID, GL_COMPILE_STATUS, &Result);
-	glGetShaderiv(VertexShaderID, GL_INFO_LOG_LENGTH, &InfoLogLength);
-	if ( InfoLogLength > 0 ){
-		std::vector<char> VertexShaderErrorMessage(InfoLogLength+1);
-		glGetShaderInfoLog(VertexShaderID, InfoLogLength, NULL, &VertexShaderErrorMessage[0]);
-		printf("%s\n", &VertexShaderErrorMessage[0]);
+	glGetShaderiv(shaderID, GL_COMPILE_STATUS, &Result);
+	glGetShaderiv(shaderID, GL_INFO_LOG_LENGTH, &InfoLogLength);
+	if (InfoLogLength > 0){
+		std::vector<char> ErrorMessage(InfoLogLength + 1);
+		glGetShaderInfoLog(shaderID, InfoLogLength, NULL, &ErrorMessage[0]);
+		printf("%s\n", &ErrorMessage[0]);
 	}
 
+	return shaderID; // !needs to get deleted after program creation!
+}
 
+GLuint LoadShaders(const char * vertex_file_path, const char * fragment_file_path){
 
-	// Compile Fragment Shader
-	printf("Compiling shader : %s\n", fragment_file_path);
-	char const * FragmentSourcePointer = shader_fragment.c_str();
-	glShaderSource(FragmentShaderID, 1, &FragmentSourcePointer , NULL);
-	glCompileShader(FragmentShaderID);
-
-	// Check Fragment Shader
-	glGetShaderiv(FragmentShaderID, GL_COMPILE_STATUS, &Result);
-	glGetShaderiv(FragmentShaderID, GL_INFO_LOG_LENGTH, &InfoLogLength);
-	if ( InfoLogLength > 0 ){
-		std::vector<char> FragmentShaderErrorMessage(InfoLogLength+1);
-		glGetShaderInfoLog(FragmentShaderID, InfoLogLength, NULL, &FragmentShaderErrorMessage[0]);
-		printf("%s\n", &FragmentShaderErrorMessage[0]);
-	}
-
-
+	// Create the shaders
+	GLuint VertexShaderID = LoadTemporaryShader(vertex_file_path, GL_VERTEX_SHADER);
+	GLuint FragmentShaderID = LoadTemporaryShader(fragment_file_path, GL_FRAGMENT_SHADER);
 
 	// Link the program
 	printf("Linking program\n");
@@ -89,6 +72,8 @@ GLuint LoadShaders(const char * vertex_file_path,const char * fragment_file_path
 	glLinkProgram(ProgramID);
 
 	// Check the program
+	GLint Result = GL_FALSE;
+	int InfoLogLength;
 	glGetProgramiv(ProgramID, GL_LINK_STATUS, &Result);
 	glGetProgramiv(ProgramID, GL_INFO_LOG_LENGTH, &InfoLogLength);
 	if ( InfoLogLength > 0 ){
@@ -102,80 +87,3 @@ GLuint LoadShaders(const char * vertex_file_path,const char * fragment_file_path
 
 	return ProgramID;
 }
-
-/*
-// adition by Emile
-GLuint LoadComputeShader(const char * compute_file_path){
-
-
-	printOpenGLError();
-
-	// Read the Vertex Shader code from the file
-	std::string ShaderStream;
-	std::ifstream VertexShaderStream(compute_file_path, std::ios::in);
-	if (VertexShaderStream.is_open()){
-		std::string Line = "";
-		while (getline(VertexShaderStream, Line))
-			ShaderStream += "\n" + Line;
-		VertexShaderStream.close();
-	}
-	else{
-		printf("Impossible to open %s. Are you in the right directory ? Don't forget to read the FAQ !\n", compute_file_path);
-		//getchar();
-		return 0;
-	}
-	printOpenGLError();
-
-
-	const char* FuckingCString = ShaderStream.c_str();
-	// Create th compute program, to which the compute shader will be assigned
-	GLuint gComputeProgram = glCreateProgram();
-	// Create and compile the compute shader
-	printOpenGLError();
-	GLuint mComputeShader = glCreateShader(GL_COMPUTE_SHADER); // invalid operation needs openGl 4
-	printOpenGLError();
-	glShaderSource(mComputeShader, 1, &FuckingCString, 0);
-	printOpenGLError();
-	glCompileShader(mComputeShader);
-
-
-
-	printOpenGLError();
-
-	const int log_max = 1000;
-	GLsizei get_len; //futile
-	char get_log[log_max];
-	// Check if there were any issues when compiling the shader
-	int rvalue;
-	glGetShaderiv(mComputeShader, GL_COMPILE_STATUS, &rvalue);
-	if (!rvalue)
-	{
-		glGetShaderInfoLog(mComputeShader, log_max, &get_len, get_log);
-		printf("Error: Compiler log:\n%s\n", get_log);
-		return NULL;
-	}
-
-	// Attach and link the shader against to the compute program
-	glAttachShader(gComputeProgram, mComputeShader);
-	glLinkProgram(gComputeProgram);
-
-
-	printOpenGLError();
-
-	// Check if there were some issues when linking the shader.
-	glGetProgramiv(gComputeProgram, GL_LINK_STATUS, &rvalue);
-	if (!rvalue)
-	{
-		//Link info
-		//---------
-		//No shader objects attached.
-		glGetProgramInfoLog(gComputeProgram, log_max, &get_len, get_log);
-		printf("Error: Linker log:\n%s\n", get_log);
-		return NULL;
-	}
-
-	printOpenGLError();
-
-	return gComputeProgram;
-}
-*/

@@ -1,19 +1,19 @@
 #version 330 core
 
 // Interpolated values from the vertex shaders
-in vec2 UV;
-in vec4 particlecolor;
+in vec2 outUV;
+in vec4 outColor;
 
 // Ouput data
-out vec4 color;
+out vec4 finalColor;
 
 uniform sampler2D TextureSampler;
 
 void main(){
 	// Output color = color of the texture at the specified UV
-	color = texture2D( TextureSampler, UV ) * particlecolor;
-	color.a *= 3;
-	if(color.a < 0.15){
+    finalColor = texture2D( TextureSampler, outUV ) * outColor;
+    finalColor.a *= 3;
+    if(finalColor.a < 0.15){
 		discard;
 	}
 }

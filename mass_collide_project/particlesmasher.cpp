@@ -110,6 +110,8 @@ int main(void)
 			computeMatricesFromInputs();
 		isFirstTime = false;
 
+		glfwGetCursorPos(window, &g_cursor_x, &g_cursor_y);
+
 		//////////////////////////////////////////////////////////////
 		if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS){
 			transform_positions.ProccesPositions(particle_data_inst);
