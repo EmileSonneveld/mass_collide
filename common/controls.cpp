@@ -40,27 +40,20 @@ void computeMatricesFromInputs(){
 	// glfwGetTime is called only once, the first time this function is called
 	static double lastTime = glfwGetTime();
 
-	// Compute time difference between current and last frame
 	double currentTime = glfwGetTime();
 	float deltaTime = float(currentTime - lastTime);
 
+	lastTime = currentTime;
 
-	// Get mouse position
 	double xpos, ypos;
 	glfwGetCursorPos(window, &xpos, &ypos);
-	if (!glfwGetMouseButton(window, 0))
-	{
-		lastMouseX = xpos;
-		lastMouseY = ypos;
-		return;
-	}
 
-	// Compute new orientation
-	if (lastMouseX != -108108 && lastMouseY != -108108){
-		horizontalAngle += mouseSpeed * float(lastMouseX - xpos);
-		verticalAngle += mouseSpeed * float(lastMouseY - ypos);
+	if (glfwGetMouseButton(window, 0)){
+		if (lastMouseX != -108108 && lastMouseY != -108108){
+			horizontalAngle += mouseSpeed * float(lastMouseX - xpos);
+			verticalAngle += mouseSpeed * float(lastMouseY - ypos);
+		}
 	}
-
 	lastMouseX = xpos;
 	lastMouseY = ypos;
 
@@ -69,14 +62,13 @@ void computeMatricesFromInputs(){
 		cos(verticalAngle) * sin(horizontalAngle),
 		sin(verticalAngle),
 		cos(verticalAngle) * cos(horizontalAngle)
-	);
+		);
 
-	// Right vector
 	glm::vec3 right = glm::vec3(
-		sin(horizontalAngle - 3.14f/2.0f),
+		sin(horizontalAngle - 3.14f / 2.0f),
 		0,
-		cos(horizontalAngle - 3.14f/2.0f)
-	);
+		cos(horizontalAngle - 3.14f / 2.0f)
+		);
 
 	// Up vector
 	glm::vec3 up = glm::cross( right, direction );
@@ -108,7 +100,4 @@ void computeMatricesFromInputs(){
 								position+direction, // and looks here : at the same position, plus "direction"
 								up                  // Head is up (set to 0,-1,0 to look upside-down)
 						   );
-
-	// For the next frame, the "last time" will be "now"
-	lastTime = currentTime;
 }
