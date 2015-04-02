@@ -27,8 +27,16 @@ using namespace glm;
 #include "transform_feedback.h"
 
 
+#include <signal.h>
+#define _CRT_SECURE_NO_WARNINGS
+
 int main(void)
 {
+#ifdef WIN32
+	// _crtBreakAlloc= 161;
+	_CrtSetBreakAlloc(1);
+#endif
+
 	// Initialise GLFW
 	if (!glfwInit())
 	{
@@ -149,6 +157,10 @@ int main(void)
 	glfwTerminate();
 
 	printOpenGLError();
+
+#ifdef WIN32
+	_CrtDumpMemoryLeaks();
+#endif
 
 	return 0;
 }
