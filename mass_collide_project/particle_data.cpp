@@ -6,6 +6,7 @@
 #include <fstream>
 #include <assert.h>
 #include <random>
+#include <math.h>
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -24,7 +25,7 @@ void initialize_buffers(particle_data& particle_data_ref)
 	///////////////////////////////////////////
 
 	auto* data_random_pos = new vec4[particle_data::COUNT];
-	auto* data_random_col = new GLubyte[particle_data::COUNT * 4];
+	auto* data_random_col = new vec4[particle_data::COUNT];
 
 	for (unsigned int i = 0; i < particle_data::COUNT; ++i){
 		data_random_pos[i].x = (float)(rand() % 100) / 10.0f - 5.0f;
@@ -32,16 +33,19 @@ void initialize_buffers(particle_data& particle_data_ref)
 		data_random_pos[i].z = (float)(rand() % 100) / 10.0f - 5.0f;
 		data_random_pos[i].a = 0.04f; // size
 
-		data_random_col[i + 0] = rand() % 128;
-		data_random_col[i + 1] = rand() % 128;
-		data_random_col[i + 2] = rand() % 128;
-		data_random_col[i + 3] = 128;
-
-
 		float size = 0.1f;
 		data_random_pos[i].x = (i / 1 % 100) * size;
 		data_random_pos[i].y = (i / 100 % 100) * size;
 		data_random_pos[i].z = (i / 100 / 100 % 100) * size;
+
+		data_random_col[i].x = std::sin(data_random_pos[i].x*2.1f) / 2.f + 0.5f;
+		data_random_col[i].y = std::sin(data_random_pos[i].y*2.2f) / 2.f + 0.5f;
+		data_random_col[i].z = std::sin(data_random_pos[i].z*2.3f) / 2.f + 0.25f;
+		data_random_col[i].a = 1;
+
+		data_random_col[i].x *= (float)i / particle_data::COUNT;
+		data_random_col[i].y *= (float)i / particle_data::COUNT;
+		data_random_col[i].z *= (float)i / particle_data::COUNT;
 	}
 
 	printOpenGLError();
@@ -60,13 +64,14 @@ void initialize_buffers(particle_data& particle_data_ref)
 	glBindBuffer(GL_ARRAY_BUFFER, particle_data_ref.m_buffer_swap);
 	glBufferData(
 		GL_ARRAY_BUFFER,
-		particle_data::COUNT * sizeof(vec4), data_random_pos, GL_DYNAMIC_DRAW
+		particle_data::COUNT * sizeof(vec4), data_random_pos,
+		GL_DYNAMIC_DRAW
 		);
 
 	glBindBuffer(GL_ARRAY_BUFFER, particle_data_ref.m_buffer_color);
 	glBufferData(
 		GL_ARRAY_BUFFER,
-		particle_data::COUNT * 4 * sizeof(GLubyte),
+		particle_data::COUNT * sizeof(vec4), // GLubyte
 		data_random_col,
 		GL_DYNAMIC_DRAW
 		);

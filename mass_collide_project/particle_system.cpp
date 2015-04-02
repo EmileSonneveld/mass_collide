@@ -116,8 +116,8 @@ void particle_system::draw(particle_data& particle_data_ref)
 	glVertexAttribPointer(
 		m_in_attrib_color,
 		4,
-		GL_UNSIGNED_BYTE,
-		GL_TRUE,             // YES, this means that the unsigned char[4] will be accessible with a vec4 (floats) in the shader
+		GL_FLOAT, //GL_UNSIGNED_BYTE,
+		GL_FALSE,             // YES, this means that the unsigned char[4] will be accessible with a vec4 (floats) in the shader
 		0,
 		nullptr
 		);

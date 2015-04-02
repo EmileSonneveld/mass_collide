@@ -15,7 +15,7 @@ void main() {
 
 	vec3 delta = point - vec3(inPosition.x, inPosition.y, inPosition.z);
 	float len = length(delta);
-	if (len < 50){
+	if (len < 5){
 		outValue += vec4(delta, 0) / len * 0.01;
 	}
 }
