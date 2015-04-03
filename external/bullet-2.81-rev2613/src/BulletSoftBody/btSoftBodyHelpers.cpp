@@ -909,11 +909,12 @@ btSoftBody*		btSoftBodyHelpers::CreateFromConvexHull(btSoftBodyWorldInfo& worldI
 	hlib.CreateConvexHull(hdsc,hres);
 	btSoftBody*		psb=new btSoftBody(&worldInfo,(int)hres.mNumOutputVertices,
 		&hres.m_OutputVertices[0],0);
-	for(int i=0;i<(int)hres.mNumFaces;++i)
+	for(unsigned int i=0;i<(int)hres.mNumFaces;++i)
 	{
-		const int idx[]={	hres.m_Indices[i*3+0],
-			hres.m_Indices[i*3+1],
-			hres.m_Indices[i*3+2]};
+		const int idx[]={	
+			(int)hres.m_Indices[i*3+0],
+			(int)hres.m_Indices[i*3+1],
+			(int)hres.m_Indices[i*3+2]};
 		if(idx[0]<idx[1]) psb->appendLink(	idx[0],idx[1]);
 		if(idx[1]<idx[2]) psb->appendLink(	idx[1],idx[2]);
 		if(idx[2]<idx[0]) psb->appendLink(	idx[2],idx[0]);

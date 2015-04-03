@@ -1,5 +1,6 @@
 #include "globals.h"
 #include <string>
+#include <iostream>
 
 #include <GL/glew.h>
 #include <glm/glm.hpp>
@@ -26,6 +27,8 @@ int printOglError(const char *file, const int line)
 	glErr = glGetError();
 	if (glErr != GL_NO_ERROR)
 	{
+		std::cout << file << ":" << std::to_string(line) << " " << (char*)gluErrorString(glErr) << "\n";
+
 		OutputDebugStringA(file);
 		OutputDebugStringA(": ");
 		OutputDebugStringA(std::to_string(line).c_str());

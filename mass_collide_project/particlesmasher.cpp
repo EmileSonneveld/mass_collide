@@ -30,12 +30,20 @@ using namespace glm;
 #include <signal.h>
 #define _CRT_SECURE_NO_WARNINGS
 
+void glfw_error_callback(int error, const char* description)
+{
+    std::cout << "glfw error: " << description << std::endl;
+}
+
+
 int main(void)
 {
 #ifdef WIN32
 	// _crtBreakAlloc= 161;
 	_CrtSetBreakAlloc(1);
 #endif
+    
+    glfwSetErrorCallback(glfw_error_callback);
 
 	// Initialise GLFW
 	if (!glfwInit())
@@ -47,7 +55,8 @@ int main(void)
 	glfwWindowHint(GLFW_SAMPLES, 4);
 	glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3); // was 3.3
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
 	// Open a window and create its OpenGL context
@@ -122,8 +131,11 @@ int main(void)
 
 		//////////////////////////////////////////////////////////////
 		if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS){
+			printOpenGLError();
 			transform_positions.ProccesPositions(particle_data_inst);
+			printOpenGLError();
 			transform_velocities.ProccesVelocities(particle_data_inst);
+			printOpenGLError();
 		}
 		if (glfwGetKey(window, GLFW_KEY_R) == GLFW_PRESS){
 			transform_positions.initialize("compute.glsl");

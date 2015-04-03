@@ -1,7 +1,7 @@
 #version 330 core
 
-layout(location = 0) in vec4 inPosition;
-layout(location = 1) in vec4 inVelocity;
+in vec4 inPosition;
+in vec4 inVelocity;
 //layout(location = 2) in vec4 inIndexes;
 
 out vec4 outValue;

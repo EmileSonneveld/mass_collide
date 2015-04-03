@@ -22,8 +22,8 @@ public:
 
 private:
 	GLint m_program;
-	static const GLint m_in_attrib_position = 0; //defined in shader
-	static const GLint m_in_attrib_velocity = 1; //defined in shader
+	GLint m_in_attrib_position = 0; //defined in shader
+	GLint m_in_attrib_velocity = 1; //defined in shader
 
 	GLint m_uniform_point;
 };
