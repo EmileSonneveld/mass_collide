@@ -39,8 +39,8 @@ GLint CompileComputeShader(const GLchar* filename)
 	// glShaderSource(shader, 1, &shader_compute_pointer, nullptr);
 	// glCompileShader(shader);
 	// printOpenGLError();
-	// 
-	// 
+	//
+	//
 	// // Check Vertex Shader
 	// GLint Result = GL_FALSE;
 	// int InfoLogLength;
@@ -64,6 +64,8 @@ GLint CompileComputeShader(const GLchar* filename)
 	printOpenGLError();
 
 	glLinkProgram(program);
+    glValidateProgram(program);
+
 	// Check the program
 	{
 		GLint Result = GL_FALSE;
@@ -98,10 +100,9 @@ void transform_feedback::initialize(std::string file_name)
 
 GLint transform_feedback::ProccesPositions(particle_data& particle_data_ref)
 {
-	// gives more misery and has no visible efect when disabled
-	//glEnable(GL_RASTERIZER_DISCARD); 
 	glUseProgram(m_program);
 
+    glEnable(GL_RASTERIZER_DISCARD);
 	// bind our buffer to the Transform feedback
 	glBindBufferBase(GL_TRANSFORM_FEEDBACK_BUFFER, 0, particle_data_ref.m_buffer_swap);
 
@@ -122,7 +123,8 @@ GLint transform_feedback::ProccesPositions(particle_data& particle_data_ref)
 	glBeginTransformFeedback(GL_POINTS);
 	glDrawArrays(GL_POINTS, 0, particle_data::COUNT);
 	glEndTransformFeedback();
-	printOpenGLError();
+
+    glDisable(GL_RASTERIZER_DISCARD);
 
 	glDisableVertexAttribArray(m_in_attrib_position);
 	glDisableVertexAttribArray(m_in_attrib_velocity);
@@ -141,20 +143,21 @@ GLint transform_feedback::ProccesPositions(particle_data& particle_data_ref)
 GLint transform_feedback::ProccesVelocities(particle_data& particle_data_ref)
 {
 	// gives more misery and has no visible efect when disabled
-	//glEnable(GL_RASTERIZER_DISCARD); 
+	//glEnable(GL_RASTERIZER_DISCARD);
 	printOpenGLError();
 	glUseProgram(m_program);
 	std::cout << m_program;
 
-	printOpenGLError();
+    printOpenGLError();
+    glEnable(GL_RASTERIZER_DISCARD);
 	// bind our buffer to the Transform feedback
 	glBindBufferBase(GL_TRANSFORM_FEEDBACK_BUFFER, 0, particle_data_ref.m_buffer_swap);
 
 	printOpenGLError();
 
-	glm::mat4 ViewMatrix = getViewMatrix();
+	//glm::mat4 ViewMatrix = getViewMatrix();
 	//glUniform3f(m_uniform_point, 0, 0, 0);
-	glm::vec4 pos = CursorToWorldspace(0.5); // pos(0, 0, 0, 0); // 
+	glm::vec4 pos = CursorToWorldspace(0.5); // pos(0, 0, 0, 0); //
 	glUniform3f(m_uniform_point, pos.x, pos.y, pos.z);
 
 	glEnableVertexAttribArray(m_in_attrib_position);
@@ -170,11 +173,12 @@ GLint transform_feedback::ProccesVelocities(particle_data& particle_data_ref)
 	// GL_POINTS
 	// GL_LINES, GL_LINE_LOOP, GL_LINE_STRIP, GL_LINES_ADJACENCY, GL_LINE_STRIP_ADJACENCY
 	// GL_TRIANGLES, GL_TRIANGLE_STRIP, GL_TRIANGLE_FAN, GL_TRIANGLES_ADJACENCY, GL_TRIANGLE_STRIP_ADJACENCY
-	glBeginTransformFeedback(GL_POINTS);
-	glDrawArrays(GL_POINTS, 0, particle_data::COUNT);
+    glBeginTransformFeedback(GL_POINTS);
+    glDrawArrays(GL_POINTS, 0, particle_data::COUNT);
 	glEndTransformFeedback();
 
-	printOpenGLError();
+    glDisable(GL_RASTERIZER_DISCARD);
+
 	glDisableVertexAttribArray(m_in_attrib_position);
 	glDisableVertexAttribArray(m_in_attrib_velocity);
 

@@ -27,8 +27,10 @@ using namespace glm;
 #include "transform_feedback.h"
 
 
-#include <signal.h>
-#define _CRT_SECURE_NO_WARNINGS
+#ifdef WIN32
+#	include <signal.h>
+#	define _CRT_SECURE_NO_WARNINGS
+#endif
 
 void glfw_error_callback(int error, const char* description)
 {
@@ -115,7 +117,6 @@ int main(void)
 	//////////////////////////////////////////////////////////////
 	bool isFirstTime = true;
 
-	double lastTime = glfwGetTime();
 	do
 	{
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
