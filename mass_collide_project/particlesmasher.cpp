@@ -25,6 +25,7 @@ using namespace glm;
 #include "particle_data.h"
 #include "particle_system.h"
 #include "transform_feedback.h"
+#include "INIReader.h"
 
 
 #ifdef WIN32
@@ -53,16 +54,27 @@ int main(void)
 		fprintf(stderr, "Failed to initialize GLFW\n");
 		return -1;
 	}
+    
+    INIReader reader("settings.ini");
+    
+    if (reader.ParseError() < 0)
+        std::cout << "Can't load .ini file\n";
 
 	glfwWindowHint(GLFW_SAMPLES, 4);
-	glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
+	glfwWindowHint(GLFW_RESIZABLE, GL_TRUE);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3); // was 3.3
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
+    auto iniWindowWidth = reader.GetInteger("window", "width", 1024);
+    auto iniWindowHeight = reader.GetInteger("window", "height", 768);
+    
 	// Open a window and create its OpenGL context
-	window = glfwCreateWindow(1024, 768, "Tutorial 18 - Particules", NULL, NULL);
+	window = glfwCreateWindow(
+                              iniWindowWidth,
+                              iniWindowHeight,
+                              "Tutorial 18 - Particules", NULL, NULL);
 	if (window == NULL){
 		fprintf(stderr, "Failed to open GLFW window. If you have an Intel GPU, they are not 3.3 compatible. Try the 2.1 version of the tutorials.\n");
 		glfwTerminate();
@@ -70,7 +82,7 @@ int main(void)
 	}
 	glfwMakeContextCurrent(window);
 
-	glfwSetCursorPos(window, 1024 / 2, 768 / 2);
+	glfwSetCursorPos(window, iniWindowWidth / 2, iniWindowHeight / 2);
 	glfwSwapInterval(1);
 	printOpenGLError();
 
@@ -84,6 +96,12 @@ int main(void)
 
 	// Ensure we can capture the escape key being pressed below
 	glfwSetInputMode(window, GLFW_STICKY_KEYS, GL_TRUE);
+    
+    
+    
+    auto iniCount = reader.GetInteger("ps_system", "count", 100);
+
+    
 
 	// Dark blue background
 	glClearColor(0.0f, 0.0f, 0.4f, 0.0f);
@@ -106,6 +124,7 @@ int main(void)
 	particle_system_inst.initialize();
 
 	particle_data particle_data_inst;
+    particle_data_inst.COUNT = iniCount;
 	initialize_buffers(particle_data_inst);
 	initialize_velocity(particle_data_inst);
 
