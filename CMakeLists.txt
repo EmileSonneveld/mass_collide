@@ -100,6 +100,8 @@ add_executable(mass_collide_test
 	mass_collide_project/globals.cpp
 	mass_collide_project/globals.h
 	mass_collide_project/particlesmasher.cpp
+	mass_collide_project/ini.c
+	mass_collide_project/INIReader.cpp
 	common/shader.cpp
 	common/shader.hpp
 	common/texture.cpp
