@@ -138,7 +138,7 @@ void particle_system::draw(particle_data& particle_data_ref)
 
 	printOpenGLError();
 
-	glDrawArraysInstanced(GL_TRIANGLE_STRIP, 0, 4, particle_data::COUNT);
+	glDrawArraysInstanced(GL_TRIANGLE_STRIP, 0, 4, particle_data_ref.COUNT);
 
 	glVertexAttribDivisor(m_in_attrib_square, 0);
 	glVertexAttribDivisor(m_in_attrib_position, 0);

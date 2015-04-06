@@ -121,7 +121,7 @@ GLint transform_feedback::ProccesPositions(particle_data& particle_data_ref)
 	// GL_LINES, GL_LINE_LOOP, GL_LINE_STRIP, GL_LINES_ADJACENCY, GL_LINE_STRIP_ADJACENCY
 	// GL_TRIANGLES, GL_TRIANGLE_STRIP, GL_TRIANGLE_FAN, GL_TRIANGLES_ADJACENCY, GL_TRIANGLE_STRIP_ADJACENCY
 	glBeginTransformFeedback(GL_POINTS);
-	glDrawArrays(GL_POINTS, 0, particle_data::COUNT);
+	glDrawArrays(GL_POINTS, 0, particle_data_ref.COUNT);
 	glEndTransformFeedback();
 
     glDisable(GL_RASTERIZER_DISCARD);
@@ -174,7 +174,7 @@ GLint transform_feedback::ProccesVelocities(particle_data& particle_data_ref)
 	// GL_LINES, GL_LINE_LOOP, GL_LINE_STRIP, GL_LINES_ADJACENCY, GL_LINE_STRIP_ADJACENCY
 	// GL_TRIANGLES, GL_TRIANGLE_STRIP, GL_TRIANGLE_FAN, GL_TRIANGLES_ADJACENCY, GL_TRIANGLE_STRIP_ADJACENCY
     glBeginTransformFeedback(GL_POINTS);
-    glDrawArrays(GL_POINTS, 0, particle_data::COUNT);
+    glDrawArrays(GL_POINTS, 0, particle_data_ref.COUNT);
 	glEndTransformFeedback();
 
     glDisable(GL_RASTERIZER_DISCARD);

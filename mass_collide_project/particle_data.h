@@ -26,7 +26,7 @@ struct particle_data
 	GLuint m_buffer_color;
 	GLuint m_buffer_velocity;
 
-	static const unsigned int COUNT = 100000;
+	unsigned int COUNT = 100000;
 };
 
 void initialize_buffers(particle_data& particle_data_ref);
