@@ -11,7 +11,7 @@ uniform sampler2D TextureSampler;
 
 void main(){
 	// Output color = color of the texture at the specified UV
-    finalColor = texture2D( TextureSampler, outUV ) * outColor;
+    finalColor = texture( TextureSampler, outUV ) * outColor;
     if(finalColor.a < 0.15){
 		discard;
 	}

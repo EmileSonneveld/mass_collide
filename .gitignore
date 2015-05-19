@@ -3,6 +3,7 @@
 *.html
 */doc/*
 *~
+*.DS_Store
 
 CMakeCache.txt
 CMakeFiles
@@ -14,4 +15,3 @@ gliLog.txt
 
 playground/playground
 playground/playground.exe
-

@@ -4,10 +4,16 @@ project (Tutorials)
 
 find_package(OpenGL REQUIRED)
 
-#if(CMAKE_COMPILER_IS_GNUCXX)
+#cmake_policy(SET CMP0053 NEW)
+
+if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
+	set(CMAKE_CXX_FLAGS "-std=c++11 -stdlib=libc++")
+	#set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wc++11-extensions")
+endif()
+
+if(CMAKE_COMPILER_IS_GNUCXX)
 	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
-	#SET( APPEND CMAKE_CXX_FLAGS "-std=c++11")
-#endif()
+endif()
 
 
 if( CMAKE_BINARY_DIR STREQUAL CMAKE_SOURCE_DIR )
@@ -77,8 +83,8 @@ target_link_libraries(playground
 )
 
 # Xcode and Visual working directories
-set_target_properties(playground PROPERTIES XCODE_ATTRIBUTE_CONFIGURATION_BUILD_DIR "${CMAKE_CURRENT_SOURCE_DIR}/mass_collide_project/")
-create_target_launcher(playground WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/mass_collide_project/")
+#set_target_properties(playground PROPERTIES XCODE_ATTRIBUTE_CONFIGURATION_BUILD_DIR "${CMAKE_CURRENT_SOURCE_DIR}/mass_collide_project/")
+#create_target_launcher(playground WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/mass_collide_project/")
 
 
 
@@ -94,6 +100,8 @@ add_executable(mass_collide_test
 	mass_collide_project/globals.cpp
 	mass_collide_project/globals.h
 	mass_collide_project/particlesmasher.cpp
+	mass_collide_project/ini.c
+	mass_collide_project/INIReader.cpp
 	common/shader.cpp
 	common/shader.hpp
 	common/texture.cpp
@@ -111,8 +119,8 @@ target_link_libraries(mass_collide_test
 )
 
 # Xcode and Visual working directories
-set_target_properties(mass_collide_test PROPERTIES XCODE_ATTRIBUTE_CONFIGURATION_BUILD_DIR "${CMAKE_CURRENT_SOURCE_DIR}/mass_collide_project/")
-create_target_launcher(mass_collide_test WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/mass_collide_project/")
+#set_target_properties(mass_collide_test PROPERTIES XCODE_ATTRIBUTE_CONFIGURATION_BUILD_DIR "${CMAKE_CURRENT_SOURCE_DIR}/mass_collide_project/")
+#create_target_launcher(mass_collide_test WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/mass_collide_project/")
 
 
 
@@ -136,8 +144,8 @@ add_custom_command(
    COMMAND ${CMAKE_COMMAND} -E copy "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_CFG_INTDIR}/playground${CMAKE_EXECUTABLE_SUFFIX}" "${CMAKE_CURRENT_SOURCE_DIR}/playground/"
 )
 add_custom_command(
-   TARGET mass_collide_project POST_BUILD
-   COMMAND ${CMAKE_COMMAND} -E copy "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_CFG_INTDIR}/mass_collide_project${CMAKE_EXECUTABLE_SUFFIX}" "${CMAKE_CURRENT_SOURCE_DIR}/mass_collide_project/"
+   TARGET mass_collide_test POST_BUILD
+   COMMAND ${CMAKE_COMMAND} -E copy "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_CFG_INTDIR}/mass_collide_test${CMAKE_EXECUTABLE_SUFFIX}" "${CMAKE_CURRENT_SOURCE_DIR}/mass_collide_project/"
 )
 
 elseif (${CMAKE_GENERATOR} MATCHES "Xcode" )

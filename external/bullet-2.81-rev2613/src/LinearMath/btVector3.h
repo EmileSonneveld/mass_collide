@@ -1122,22 +1122,18 @@ public:
 		if (m_floats[0] > maxVal)
 		{
 			maxIndex = 0;
-			maxVal = m_floats[0];
 		}
 		if (m_floats[1] > maxVal)
 		{
 			maxIndex = 1;
-			maxVal = m_floats[1];
 		}
 		if (m_floats[2] > maxVal)
 		{
 			maxIndex = 2;
-			maxVal =m_floats[2];
 		}
 		if (m_floats[3] > maxVal)
 		{
 			maxIndex = 3;
-			maxVal = m_floats[3];
 		}
 
 		return maxIndex;

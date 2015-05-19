@@ -1,5 +1,6 @@
 #include "transform_feedback.h"
 
+#include <iostream>
 #include <stdio.h>
 #include <stdlib.h>
 #include <vector>
@@ -38,8 +39,8 @@ GLint CompileComputeShader(const GLchar* filename)
 	// glShaderSource(shader, 1, &shader_compute_pointer, nullptr);
 	// glCompileShader(shader);
 	// printOpenGLError();
-	// 
-	// 
+	//
+	//
 	// // Check Vertex Shader
 	// GLint Result = GL_FALSE;
 	// int InfoLogLength;
@@ -63,6 +64,8 @@ GLint CompileComputeShader(const GLchar* filename)
 	printOpenGLError();
 
 	glLinkProgram(program);
+    glValidateProgram(program);
+
 	// Check the program
 	{
 		GLint Result = GL_FALSE;
@@ -91,14 +94,15 @@ void transform_feedback::initialize(std::string file_name)
 	clean();
 	m_program = CompileComputeShader(file_name.c_str());
 	m_uniform_point = glGetUniformLocation(m_program, "point");
+	m_in_attrib_position = glGetAttribLocation(m_program, "inPosition");
+	m_in_attrib_velocity = glGetAttribLocation(m_program, "inVelocity");
 }
 
 GLint transform_feedback::ProccesPositions(particle_data& particle_data_ref)
 {
-	// gives more misery and has no visible efect when disabled
-	//glEnable(GL_RASTERIZER_DISCARD); 
 	glUseProgram(m_program);
 
+    glEnable(GL_RASTERIZER_DISCARD);
 	// bind our buffer to the Transform feedback
 	glBindBufferBase(GL_TRANSFORM_FEEDBACK_BUFFER, 0, particle_data_ref.m_buffer_swap);
 
@@ -111,19 +115,24 @@ GLint transform_feedback::ProccesPositions(particle_data& particle_data_ref)
 	glEnableVertexAttribArray(m_in_attrib_velocity);
 	glBindBuffer(GL_ARRAY_BUFFER, particle_data_ref.m_buffer_velocity);
 	glVertexAttribPointer(m_in_attrib_velocity, 4, GL_FLOAT, GL_FALSE, 0, nullptr);
+	printOpenGLError();
 
 	// GL_POINTS
 	// GL_LINES, GL_LINE_LOOP, GL_LINE_STRIP, GL_LINES_ADJACENCY, GL_LINE_STRIP_ADJACENCY
 	// GL_TRIANGLES, GL_TRIANGLE_STRIP, GL_TRIANGLE_FAN, GL_TRIANGLES_ADJACENCY, GL_TRIANGLE_STRIP_ADJACENCY
 	glBeginTransformFeedback(GL_POINTS);
-	glDrawArrays(GL_POINTS, 0, particle_data::COUNT);
+	glDrawArrays(GL_POINTS, 0, particle_data_ref.COUNT);
 	glEndTransformFeedback();
+
+    glDisable(GL_RASTERIZER_DISCARD);
 
 	glDisableVertexAttribArray(m_in_attrib_position);
 	glDisableVertexAttribArray(m_in_attrib_velocity);
 
+	printOpenGLError();
 	glFlush();
 
+	printOpenGLError();
 	auto tmp_result = particle_data_ref.m_buffer_swap;
 	particle_data_ref.m_buffer_swap = particle_data_ref.m_buffer_position;
 	particle_data_ref.m_buffer_position = tmp_result;
@@ -134,17 +143,21 @@ GLint transform_feedback::ProccesPositions(particle_data& particle_data_ref)
 GLint transform_feedback::ProccesVelocities(particle_data& particle_data_ref)
 {
 	// gives more misery and has no visible efect when disabled
-	//glEnable(GL_RASTERIZER_DISCARD); 
+	//glEnable(GL_RASTERIZER_DISCARD);
+	printOpenGLError();
 	glUseProgram(m_program);
+	std::cout << m_program;
 
+    printOpenGLError();
+    glEnable(GL_RASTERIZER_DISCARD);
 	// bind our buffer to the Transform feedback
 	glBindBufferBase(GL_TRANSFORM_FEEDBACK_BUFFER, 0, particle_data_ref.m_buffer_swap);
 
 	printOpenGLError();
 
-	glm::mat4 ViewMatrix = getViewMatrix();
+	//glm::mat4 ViewMatrix = getViewMatrix();
 	//glUniform3f(m_uniform_point, 0, 0, 0);
-	glm::vec4 pos = CursorToWorldspace(0.5); // pos(0, 0, 0, 0); // 
+	glm::vec4 pos = CursorToWorldspace(0.5); // pos(0, 0, 0, 0); //
 	glUniform3f(m_uniform_point, pos.x, pos.y, pos.z);
 
 	glEnableVertexAttribArray(m_in_attrib_position);
@@ -160,20 +173,23 @@ GLint transform_feedback::ProccesVelocities(particle_data& particle_data_ref)
 	// GL_POINTS
 	// GL_LINES, GL_LINE_LOOP, GL_LINE_STRIP, GL_LINES_ADJACENCY, GL_LINE_STRIP_ADJACENCY
 	// GL_TRIANGLES, GL_TRIANGLE_STRIP, GL_TRIANGLE_FAN, GL_TRIANGLES_ADJACENCY, GL_TRIANGLE_STRIP_ADJACENCY
-	glBeginTransformFeedback(GL_POINTS);
-	glDrawArrays(GL_POINTS, 0, particle_data::COUNT);
+    glBeginTransformFeedback(GL_POINTS);
+    glDrawArrays(GL_POINTS, 0, particle_data_ref.COUNT);
 	glEndTransformFeedback();
 
-	printOpenGLError();
+    glDisable(GL_RASTERIZER_DISCARD);
+
 	glDisableVertexAttribArray(m_in_attrib_position);
 	glDisableVertexAttribArray(m_in_attrib_velocity);
 
 	printOpenGLError();
 	glFlush();
+	printOpenGLError();
 
 	auto tmp_result = particle_data_ref.m_buffer_swap;
 	particle_data_ref.m_buffer_swap = particle_data_ref.m_buffer_velocity;
 	particle_data_ref.m_buffer_velocity = tmp_result;
+	printOpenGLError();
 
 	return tmp_result;
 }

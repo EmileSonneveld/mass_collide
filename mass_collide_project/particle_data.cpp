@@ -24,10 +24,10 @@ void initialize_buffers(particle_data& particle_data_ref)
 	// single serving data to init GPU stuff //
 	///////////////////////////////////////////
 
-	auto* data_random_pos = new vec4[particle_data::COUNT];
-	auto* data_random_col = new vec4[particle_data::COUNT];
+	auto* data_random_pos = new vec4[particle_data_ref.COUNT];
+	auto* data_random_col = new vec4[particle_data_ref.COUNT];
 
-	for (unsigned int i = 0; i < particle_data::COUNT; ++i){
+	for (unsigned int i = 0; i < particle_data_ref.COUNT; ++i){
 		data_random_pos[i].x = (float)(rand() % 100) / 10.0f - 5.0f;
 		data_random_pos[i].y = (float)(rand() % 100) / 10.0f - 5.0f;
 		data_random_pos[i].z = (float)(rand() % 100) / 10.0f - 5.0f;
@@ -43,9 +43,9 @@ void initialize_buffers(particle_data& particle_data_ref)
 		data_random_col[i].z = std::sin(data_random_pos[i].z*2.3f) / 2.f + 0.25f;
 		data_random_col[i].a = 1;
 
-		data_random_col[i].x *= (float)i / particle_data::COUNT;
-		data_random_col[i].y *= (float)i / particle_data::COUNT;
-		data_random_col[i].z *= (float)i / particle_data::COUNT;
+		data_random_col[i].x *= (float)i / particle_data_ref.COUNT;
+		data_random_col[i].y *= (float)i / particle_data_ref.COUNT;
+		data_random_col[i].z *= (float)i / particle_data_ref.COUNT;
 	}
 
 	printOpenGLError();
@@ -56,7 +56,7 @@ void initialize_buffers(particle_data& particle_data_ref)
 	glBindBuffer(GL_ARRAY_BUFFER, particle_data_ref.m_buffer_position);
 	glBufferData(
 		GL_ARRAY_BUFFER,
-		particle_data::COUNT * sizeof(vec4),
+		particle_data_ref.COUNT * sizeof(vec4),
 		data_random_pos,
 		GL_DYNAMIC_DRAW
 		);
@@ -64,14 +64,14 @@ void initialize_buffers(particle_data& particle_data_ref)
 	glBindBuffer(GL_ARRAY_BUFFER, particle_data_ref.m_buffer_swap);
 	glBufferData(
 		GL_ARRAY_BUFFER,
-		particle_data::COUNT * sizeof(vec4), data_random_pos,
+		particle_data_ref.COUNT * sizeof(vec4), data_random_pos,
 		GL_DYNAMIC_DRAW
 		);
 
 	glBindBuffer(GL_ARRAY_BUFFER, particle_data_ref.m_buffer_color);
 	glBufferData(
 		GL_ARRAY_BUFFER,
-		particle_data::COUNT * sizeof(vec4), // GLubyte
+		particle_data_ref.COUNT * sizeof(vec4), // GLubyte
 		data_random_col,
 		GL_DYNAMIC_DRAW
 		);
@@ -85,8 +85,8 @@ void initialize_velocity(particle_data& particle_data_ref)
 	std::default_random_engine generator;
 	std::normal_distribution<float> distribution(0, 0.1f);
 
-	auto* data_random_vel = new vec4[particle_data::COUNT];
-	for (unsigned int i = 0; i < particle_data::COUNT; ++i){
+	auto* data_random_vel = new vec4[particle_data_ref.COUNT];
+	for (unsigned int i = 0; i < particle_data_ref.COUNT; ++i){
 		vec4 tmp;
 		tmp.x = distribution(generator);
 		tmp.y = distribution(generator);
@@ -98,7 +98,7 @@ void initialize_velocity(particle_data& particle_data_ref)
 	glBindBuffer(GL_ARRAY_BUFFER, particle_data_ref.m_buffer_velocity);
 	glBufferData(
 		GL_ARRAY_BUFFER,
-		particle_data::COUNT * sizeof(vec4),
+		particle_data_ref.COUNT * sizeof(vec4),
 		data_random_vel,
 		GL_STATIC_DRAW
 		);

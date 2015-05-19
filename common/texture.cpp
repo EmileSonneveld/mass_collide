@@ -49,7 +49,7 @@ GLuint loadBMP_custom(const char * imagepath){
 
 	// Some BMP files are misformatted, guess missing information
 	if (imageSize==0)    imageSize=width*height*3; // 3 : one byte for each Red, Green and Blue component
-	if (dataPos==0)      dataPos=54; // The BMP header is done that way
+	//if (dataPos==0)      dataPos=54; // The BMP header is done that way
 
 	// Create a buffer
 	data = new unsigned char [imageSize];
@@ -159,7 +159,7 @@ GLuint loadDDS(const char * imagepath){
 	/* close the file pointer */ 
 	fclose(fp);
 
-	unsigned int components  = (fourCC == FOURCC_DXT1) ? 3 : 4; 
+	//unsigned int components  = (fourCC == FOURCC_DXT1) ? 3 : 4;
 	unsigned int format;
 	switch(fourCC) 
 	{ 

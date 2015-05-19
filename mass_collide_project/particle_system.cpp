@@ -42,6 +42,12 @@ void particle_system::initialize()
 	// fragment shader
 	m_uniform_TextureSampler = glGetUniformLocation(m_shader_program, "TextureSampler");
 
+
+	m_in_attrib_square = glGetAttribLocation(m_shader_program, "squareVertices");
+	m_in_attrib_position = glGetAttribLocation(m_shader_program, "inPosition");
+	m_in_attrib_color = glGetAttribLocation(m_shader_program, "inColor");
+
+
 	m_texture = loadDDS("particle.DDS");
 
 	printOpenGLError();
@@ -132,7 +138,7 @@ void particle_system::draw(particle_data& particle_data_ref)
 
 	printOpenGLError();
 
-	glDrawArraysInstanced(GL_TRIANGLE_STRIP, 0, 4, particle_data::COUNT);
+	glDrawArraysInstanced(GL_TRIANGLE_STRIP, 0, 4, particle_data_ref.COUNT);
 
 	glVertexAttribDivisor(m_in_attrib_square, 0);
 	glVertexAttribDivisor(m_in_attrib_position, 0);
