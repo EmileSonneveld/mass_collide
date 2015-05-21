@@ -108,10 +108,10 @@ add_executable(mass_collide_test
 	common/texture.hpp
 	common/controls.cpp
 	common/controls.hpp
-	mass_collide_project/Particle.fragmentshader
-	mass_collide_project/Particle.vertexshader
-	mass_collide_project/compute.glsl
-	mass_collide_project/forces.glsl
+	mass_collide_project/rc/Particle.fragmentshader
+	mass_collide_project/rc/Particle.vertexshader
+	mass_collide_project/rc/compute.glsl
+	mass_collide_project/rc/forces.glsl
 )
 
 target_link_libraries(mass_collide_test
