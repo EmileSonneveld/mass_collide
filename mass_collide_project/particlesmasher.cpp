@@ -60,12 +60,17 @@ int main(void)
     if (reader.ParseError() < 0)
         std::cout << "Can't load .ini file\n";
 
+    int iniOglMajor = reader.GetInteger("window", "version_major", 2);
+    int iniOglMinor = reader.GetInteger("window", "version_minor", 1);
+    std::cout << "Ogl version from ini: " << iniOglMajor << "." << iniOglMinor << '\n';
+
 	glfwWindowHint(GLFW_SAMPLES, 4);
 	glfwWindowHint(GLFW_RESIZABLE, GL_TRUE);
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3); // was 3.3
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
-	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, iniOglMajor); // was 3.3
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, iniOglMinor);
+    //glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+	//glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+
 
     auto iniWindowWidth = reader.GetInteger("window", "width", 1024);
     auto iniWindowHeight = reader.GetInteger("window", "height", 768);
