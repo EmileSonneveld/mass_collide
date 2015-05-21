@@ -15,7 +15,7 @@ public:
 	{}
 	virtual ~transform_feedback(){}
 
-	void initialize(std::string file_name = "compute.glsl");
+	void initialize(std::string file_name = "rc/compute.glsl");
 	GLint ProccesPositions(particle_data& particle_data_ref);
 	GLint ProccesVelocities(particle_data& particle_data_ref);
 	void clean();

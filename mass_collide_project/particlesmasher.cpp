@@ -55,7 +55,7 @@ int main(void)
 		return -1;
 	}
     
-    INIReader reader("settings.ini");
+    INIReader reader("rc/settings.ini");
     
     if (reader.ParseError() < 0)
         std::cout << "Can't load .ini file\n";
@@ -129,10 +129,10 @@ int main(void)
 	initialize_velocity(particle_data_inst);
 
 	transform_feedback transform_positions;
-	transform_positions.initialize("compute.glsl");
+	transform_positions.initialize("rc/compute.glsl");
 
 	transform_feedback transform_velocities;
-	transform_velocities.initialize("forces.glsl");
+	transform_velocities.initialize("rc/forces.glsl");
 	//////////////////////////////////////////////////////////////
 	bool isFirstTime = true;
 
@@ -158,8 +158,8 @@ int main(void)
 			printOpenGLError();
 		}
 		if (glfwGetKey(window, GLFW_KEY_R) == GLFW_PRESS){
-			transform_positions.initialize("compute.glsl");
-			transform_velocities.initialize("forces.glsl");
+			transform_positions.initialize("rc/compute.glsl");
+			transform_velocities.initialize("rc/forces.glsl");
 		}
 		if (glfwGetKey(window, GLFW_KEY_T) == GLFW_PRESS){
 			initialize_buffers(particle_data_inst);

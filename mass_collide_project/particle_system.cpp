@@ -31,7 +31,7 @@ void particle_system::initialize()
 {
 	// Create and compile our GLSL program from the shaders //
 	//////////////////////////////////////////////////////////
-	m_shader_program = LoadShaders("Particle.vertexshader", "Particle.fragmentshader");
+	m_shader_program = LoadShaders("rc/Particle.vertexshader", "rc/Particle.fragmentshader");
 	printOpenGLError();
 
 	// Vertex shader
@@ -48,7 +48,7 @@ void particle_system::initialize()
 	m_in_attrib_color = glGetAttribLocation(m_shader_program, "inColor");
 
 
-	m_texture = loadDDS("particle.DDS");
+	m_texture = loadDDS("rc/particle.DDS");
 
 	printOpenGLError();
 
