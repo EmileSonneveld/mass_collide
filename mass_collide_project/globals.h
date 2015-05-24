@@ -11,3 +11,8 @@ extern double g_cursor_x;
 extern double g_cursor_y; // get set by particle smasher
 
 glm::vec4 CursorToWorldspace(float depth);
+
+bool FileExists(const char* filename );
+bool DirExists(const char*pathname);
+void ChangeDir(const char* dir);
+void LogCurrentDir();

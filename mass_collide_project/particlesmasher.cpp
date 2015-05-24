@@ -55,6 +55,13 @@ int main(void)
 		return -1;
 	}
     
+    
+    if(DirExists("../../mass_collide/mass_collide_project/rc")){
+        ChangeDir("../../mass_collide/mass_collide_project");
+        std::cout << "found recource folder and changed directory\n";
+    }
+    LogCurrentDir();
+    
     INIReader reader("rc/settings.ini");
     
     if (reader.ParseError() < 0)
