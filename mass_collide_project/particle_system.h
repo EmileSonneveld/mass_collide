@@ -2,9 +2,11 @@
 
 #include <GL/glew.h>
 
+#include "calculate.h"
+
 struct particle_data;
 
-class particle_system
+class particle_system : calculate
 {
 public:
 	particle_system() :

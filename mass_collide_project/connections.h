@@ -8,18 +8,18 @@
 
 struct particle_data;
 
-class transform_feedback : calculate
+class connections : calculate
 {
 public:
-	transform_feedback() :
+	connections() :
 		m_program(0),
 		m_uniform_point()
 	{}
-	virtual ~transform_feedback(){}
+	virtual ~connections(){}
 
 	void initialize(std::string file_name = "rc/compute.glsl");
-	GLint ProccesPositions(particle_data& particle_data_ref);
-	GLint ProccesVelocities(particle_data& particle_data_ref);
+	GLint Procces(particle_data& particle_data_ref);
+    void draw();
 	void clean();
 
 private:
