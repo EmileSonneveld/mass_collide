@@ -2,7 +2,13 @@
 #include <string>
 #include <iostream>
 #include <fstream>
-#include <unistd.h>
+
+#ifdef __APPLE__
+#	include <unistd.h>
+#elif defined _WIN32 || defined _WIN64
+#	include <direct.h>
+//const auto& chdir = _chdir;  // Windows wil make an alias like this, but will also throw a warning :/
+#endif
 
 // For DirExists()
 #include <sys/types.h>
