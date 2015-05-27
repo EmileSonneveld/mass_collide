@@ -2,12 +2,7 @@
 
 struct particle_data
 {
-	particle_data() :
-		m_buffer_position(0),
-		m_buffer_swap(0),
-		m_buffer_color(0),
-		m_buffer_velocity(0),
-		m_buffer_connection_index(0)
+	particle_data()
 	{
 		glGenBuffers(1, &m_buffer_position);
 		glGenBuffers(1, &m_buffer_swap);
@@ -35,4 +30,5 @@ struct particle_data
 };
 
 void initialize_buffers(particle_data& particle_data_ref);
+void initialize_swap_buffer(particle_data& particle_data_ref);
 void initialize_velocity(particle_data& particle_data_ref);

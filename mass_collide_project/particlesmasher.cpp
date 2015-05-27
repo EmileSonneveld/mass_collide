@@ -155,6 +155,7 @@ int main_windows_managment()
 
 	particle_data particle_data_inst;
 	particle_data_inst.COUNT = iniCount;
+	initialize_swap_buffer(particle_data_inst);
 	initialize_buffers(particle_data_inst);
 	initialize_velocity(particle_data_inst);
 
@@ -166,7 +167,6 @@ int main_windows_managment()
 
 	connections connections_inst;
 	connections_inst.initialize();
-	connections_inst.initialize_buffers(particle_data_inst);
 	//////////////////////////////////////////////////////////////
 	bool isFirstTime = true;
 

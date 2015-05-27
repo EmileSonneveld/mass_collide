@@ -26,6 +26,7 @@ public:
 private:
 	GLint m_program;
 	GLint m_in_attrib_position = 0;
+	GLint m_in_attrib_color = 1;
 
 	GLint m_uniform_matrix;
 };

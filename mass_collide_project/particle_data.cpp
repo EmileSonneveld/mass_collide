@@ -27,12 +27,12 @@ static void pattern_fill_cube_nicely(unsigned int count, vec4* data_pos, vec4* d
 		data_pos[i].y = (i / 100 % 100) * size;
 		data_pos[i].z = (i / 100 / 100 % 100) * size;
 		data_pos[i].a = 0.04f; // size
-		
+
 		data_col[i].x = std::sin(data_pos[i].x*2.1f) / 2.f + 0.5f;
 		data_col[i].y = std::sin(data_pos[i].y*2.2f) / 2.f + 0.5f;
 		data_col[i].z = std::sin(data_pos[i].z*2.3f) / 2.f + 0.25f;
 		data_col[i].a = 1;
-		
+
 		data_col[i].x *= (float)i / count;
 		data_col[i].y *= (float)i / count;
 		data_col[i].z *= (float)i / count;
@@ -67,7 +67,25 @@ void initialize_buffers(particle_data& particle_data_ref)
 
 	pattern_fill_cube_random(particle_data_ref.COUNT, data_pos, data_col);
 
-	printOpenGLError();
+
+	std::vector<unsigned int>data_indices; // = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11 };
+
+	data_indices.reserve(1000);
+	for (unsigned int ia = 0; ia < particle_data_ref.COUNT; ++ia){
+		for (unsigned int ib = ia+1; ib < particle_data_ref.COUNT; ++ib){
+			auto len2 = glm::length2(data_pos[ia] - data_pos[ib]);
+			if (len2 < .35f*.35f){
+				data_indices.push_back(ia);
+				data_indices.push_back(ib);
+			}
+		}
+	}
+	particle_data_ref.CONNECTION_COUNT = data_indices.size();
+
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, particle_data_ref.m_buffer_connection_index);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, data_indices.size() * sizeof(unsigned int), &data_indices[0], GL_STATIC_DRAW);
+
+
 
 	// Create and initialize the Buffer Objects on the GPU //
 	/////////////////////////////////////////////////////////
@@ -77,13 +95,6 @@ void initialize_buffers(particle_data& particle_data_ref)
 		GL_ARRAY_BUFFER,
 		particle_data_ref.COUNT * sizeof(vec4),
 		data_pos,
-		GL_DYNAMIC_DRAW
-		);
-
-	glBindBuffer(GL_ARRAY_BUFFER, particle_data_ref.m_buffer_swap);
-	glBufferData(
-		GL_ARRAY_BUFFER,
-		particle_data_ref.COUNT * sizeof(vec4), data_pos,
 		GL_DYNAMIC_DRAW
 		);
 
@@ -97,6 +108,16 @@ void initialize_buffers(particle_data& particle_data_ref)
 
 	delete data_pos;
 	delete data_col;
+}
+
+void initialize_swap_buffer(particle_data& particle_data_ref)
+{
+	glBindBuffer(GL_ARRAY_BUFFER, particle_data_ref.m_buffer_swap);
+	glBufferData(
+		GL_ARRAY_BUFFER,
+		particle_data_ref.COUNT * sizeof(vec4), nullptr,
+		GL_DYNAMIC_DRAW
+		);
 }
 
 void initialize_velocity(particle_data& particle_data_ref)

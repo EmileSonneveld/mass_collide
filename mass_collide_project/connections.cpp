@@ -72,16 +72,6 @@ static GLint CompileComputeShader(const GLchar* filename)
 	return program;
 }
 
-void connections::initialize_buffers(particle_data& particle_data_ref)
-{
-	std::vector<unsigned int> indices = { 0, 1, 2, 3, 4, 5 , 6, 7, 8, 9, 10, 11};
-	particle_data_ref.CONNECTION_COUNT = indices.size();
-
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, particle_data_ref.m_buffer_connection_index);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(unsigned int), &indices[0], GL_STATIC_DRAW);
-}
-
-
 void connections::initialize()
 {
 	clean();
@@ -89,6 +79,7 @@ void connections::initialize()
 	printOpenGLError();
 	m_uniform_matrix = glGetUniformLocation(m_program, "ViewProjectionMatrix");
 	m_in_attrib_position = glGetAttribLocation(m_program, "inPosition");
+	m_in_attrib_color = glGetAttribLocation(m_program, "inColor");
 }
 
 void connections::draw(particle_data& particle_data_ref)
@@ -107,6 +98,11 @@ void connections::draw(particle_data& particle_data_ref)
 	glEnableVertexAttribArray(m_in_attrib_position);
 	glBindBuffer(GL_ARRAY_BUFFER, particle_data_ref.m_buffer_position);
 	glVertexAttribPointer(m_in_attrib_position, 4, GL_FLOAT, GL_FALSE, 0, nullptr);
+
+	glEnableVertexAttribArray(m_in_attrib_color);
+	glBindBuffer(GL_ARRAY_BUFFER, particle_data_ref.m_buffer_color);
+	glVertexAttribPointer(m_in_attrib_color, 4, GL_FLOAT, GL_FALSE, 0, nullptr);
+
 
 	//glBindBuffer(GL_ARRAY_BUFFER, particle_data_ref.m_buffer_position);
 	printOpenGLError();
