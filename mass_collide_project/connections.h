@@ -13,21 +13,21 @@ class connections : calculate
 public:
 	connections() :
 		m_program(0),
-		m_uniform_point()
+		m_uniform_matrix(0)
 	{}
 	virtual ~connections(){}
 
-	void initialize(std::string file_name = "rc/compute.glsl");
+	void initialize_buffers(particle_data& particle_data_ref);
+	void initialize();
 	GLint Procces(particle_data& particle_data_ref);
-    void draw();
+	void draw(particle_data& particle_data_ref);
 	void clean();
 
 private:
 	GLint m_program;
-	GLint m_in_attrib_position = 0; //defined in shader
-	GLint m_in_attrib_velocity = 1; //defined in shader
+	GLint m_in_attrib_position = 0;
 
-	GLint m_uniform_point;
+	GLint m_uniform_matrix;
 };
 
 

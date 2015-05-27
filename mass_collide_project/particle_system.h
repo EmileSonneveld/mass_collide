@@ -11,7 +11,7 @@ class particle_system : calculate
 public:
 	particle_system() :
 		m_buffer_billboard_vertex(0),
-        m_shader_program(0),
+        m_program(0),
         m_in_attrib_square(0),
         m_in_attrib_position(1),
         m_in_attrib_color(2),
@@ -30,7 +30,7 @@ public:
 private:
 	GLuint m_buffer_billboard_vertex;
 
-	GLuint m_shader_program;
+	GLuint m_program;
 	GLint m_in_attrib_square = 0; //defined in shader
 	GLint m_in_attrib_position = 1; //defined in shader
 	GLint m_in_attrib_color = 2; //defined in shader

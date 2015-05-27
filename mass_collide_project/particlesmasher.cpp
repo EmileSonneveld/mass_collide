@@ -21,6 +21,7 @@ using namespace glm;
 #include <common/texture.hpp>
 #include <common/controls.hpp>
 
+#include "connections.h"
 #include "globals.h"
 #include "particle_data.h"
 #include "particle_system.h"
@@ -149,6 +150,10 @@ int main(void)
 
 	transform_feedback transform_velocities;
 	transform_velocities.initialize("rc/forces.glsl");
+
+	connections connections_inst;
+	connections_inst.initialize();
+	connections_inst.initialize_buffers(particle_data_inst);
 	//////////////////////////////////////////////////////////////
 	bool isFirstTime = true;
 
@@ -181,6 +186,10 @@ int main(void)
 			initialize_buffers(particle_data_inst);
 		}
 		particle_system_inst.draw(particle_data_inst);
+		if (glfwGetKey(window, GLFW_KEY_C) != GLFW_PRESS){
+			connections_inst.draw(particle_data_inst);
+			printOpenGLError();
+		}
 		//////////////////////////////////////////////////////////////
 
 

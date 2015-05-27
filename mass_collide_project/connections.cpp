@@ -35,9 +35,9 @@ static GLint CompileComputeShader(const GLchar* filename)
 
 	GLuint program = glCreateProgram();
 	glAttachShader(program, shader);
-    
-    glDeleteShader(shader);
-    
+
+	glDeleteShader(shader);
+
 	printOpenGLError();
 	// transform feedback specefic
 	const GLchar* feedbackVaryings[] = { "outValue" };
@@ -47,7 +47,7 @@ static GLint CompileComputeShader(const GLchar* filename)
 	printOpenGLError();
 
 	glLinkProgram(program);
-    glValidateProgram(program);
+	glValidateProgram(program);
 
 	// Check the program
 	{
@@ -72,18 +72,56 @@ static GLint CompileComputeShader(const GLchar* filename)
 	return program;
 }
 
-void connections::initialize(std::string file_name)
+void connections::initialize_buffers(particle_data& particle_data_ref)
 {
-	clean();
-	m_program = CompileComputeShader(file_name.c_str());
-	m_uniform_point = glGetUniformLocation(m_program, "point");
-	m_in_attrib_position = glGetAttribLocation(m_program, "inPosition");
-	m_in_attrib_velocity = glGetAttribLocation(m_program, "inVelocity");
+	std::vector<unsigned int> indices = { 0, 1, 2, 3, 4, 5 , 6, 7, 8, 9, 10, 11};
+	particle_data_ref.CONNECTION_COUNT = indices.size();
+
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, particle_data_ref.m_buffer_connection_index);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(unsigned int), &indices[0], GL_STATIC_DRAW);
 }
 
-void Draw()
+
+void connections::initialize()
 {
-    // draw with simple shader
+	clean();
+	m_program = LoadShaders("rc/simple_vert.glsl", "rc/simple_frag.glsl");
+	printOpenGLError();
+	m_uniform_matrix = glGetUniformLocation(m_program, "ViewProjectionMatrix");
+	m_in_attrib_position = glGetAttribLocation(m_program, "inPosition");
+}
+
+void connections::draw(particle_data& particle_data_ref)
+{
+	glUseProgram(m_program);
+	printOpenGLError();
+
+	glCullFace(GL_FRONT_AND_BACK);
+
+	glm::mat4 ProjectionMatrix = getProjectionMatrix();
+	glm::mat4 ViewMatrix = getViewMatrix();
+	glm::mat4 ViewProjectionMatrix = ProjectionMatrix * ViewMatrix;
+	//glm::mat4 ViewProjectionMatrix = getProjectionMatrix() * getViewMatrix();
+	glUniformMatrix4fv(m_uniform_matrix, 1, GL_FALSE, &ViewProjectionMatrix[0][0]);
+
+	glEnableVertexAttribArray(m_in_attrib_position);
+	glBindBuffer(GL_ARRAY_BUFFER, particle_data_ref.m_buffer_position);
+	glVertexAttribPointer(m_in_attrib_position, 4, GL_FLOAT, GL_FALSE, 0, nullptr);
+
+	//glBindBuffer(GL_ARRAY_BUFFER, particle_data_ref.m_buffer_position);
+	printOpenGLError();
+	// Index buffer
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, particle_data_ref.m_buffer_connection_index);
+	printOpenGLError();
+
+	glDrawElements(
+		GL_LINES,
+		particle_data_ref.CONNECTION_COUNT,
+		GL_UNSIGNED_INT,
+		(void*)0
+		);
+	printOpenGLError();
+
 }
 
 void connections::clean()
