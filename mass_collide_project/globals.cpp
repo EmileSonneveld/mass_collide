@@ -103,4 +103,5 @@ void LogCurrentDir()
 {
     char * dir = getcwd(NULL, 0); // Platform-dependent...
     printf("Current dir: %s\n", dir);
+	delete dir;
 }

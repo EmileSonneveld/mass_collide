@@ -36,18 +36,31 @@ using namespace glm;
 
 void glfw_error_callback(int error, const char* description)
 {
-    std::cout << "glfw error: " << description << std::endl;
+	std::cout << "glfw error: " << description << std::endl;
 }
 
+int main_windows_managment();
 
-int main(void)
+// main() appart becouse INIReader uses RAII and don't get deleted before leack checking.
+int main()
 {
 #ifdef WIN32
-	// _crtBreakAlloc= 161;
-	_CrtSetBreakAlloc(1);
+	//_crtBreakAlloc = 235;
+	//_CrtSetBreakAlloc(180);
 #endif
-    
-    glfwSetErrorCallback(glfw_error_callback);
+
+	int result = main_windows_managment();
+
+#ifdef WIN32
+	_CrtDumpMemoryLeaks();
+#endif
+
+	return result;
+}
+
+int main_windows_managment()
+{
+	glfwSetErrorCallback(glfw_error_callback);
 
 	// Initialise GLFW
 	if (!glfwInit())
@@ -55,43 +68,43 @@ int main(void)
 		fprintf(stderr, "Failed to initialize GLFW\n");
 		return -1;
 	}
-    
-    
-    if(DirExists("../../mass_collide/mass_collide_project/rc")){
-        ChangeDir("../../mass_collide/mass_collide_project");
-        std::cout << "found recource folder and changed directory\n";
+
+
+	if (DirExists("../../mass_collide/mass_collide_project/rc")){
+		ChangeDir("../../mass_collide/mass_collide_project");
+		std::cout << "found recource folder and changed directory\n";
 	}
 	if (DirExists("../mass_collide/mass_collide_project/rc")){
 		ChangeDir("../mass_collide/mass_collide_project");
 		std::cout << "found recource folder and changed directory\n";
 	}
-    LogCurrentDir();
-    
-    INIReader reader("rc/settings.ini");
-    
-    if (reader.ParseError() < 0)
-        std::cout << "Can't load .ini file\n";
+	LogCurrentDir();
 
-    int iniOglMajor = reader.GetInteger("window", "version_major", 2);
-    int iniOglMinor = reader.GetInteger("window", "version_minor", 1);
-    std::cout << "Ogl version from ini: " << iniOglMajor << "." << iniOglMinor << '\n';
+	INIReader reader("rc/settings.ini");
+
+	if (reader.ParseError() < 0)
+		std::cout << "Can't load .ini file\n";
+
+	int iniOglMajor = reader.GetInteger("window", "version_major", 2);
+	int iniOglMinor = reader.GetInteger("window", "version_minor", 1);
+	std::cout << "Ogl version from ini: " << iniOglMajor << "." << iniOglMinor << '\n';
 
 	glfwWindowHint(GLFW_SAMPLES, 4);
 	glfwWindowHint(GLFW_RESIZABLE, GL_TRUE);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, iniOglMajor); // was 3.3
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, iniOglMinor);
-    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, iniOglMinor);
+	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
 
-    auto iniWindowWidth = reader.GetInteger("window", "width", 1024);
-    auto iniWindowHeight = reader.GetInteger("window", "height", 768);
-    
+	auto iniWindowWidth = reader.GetInteger("window", "width", 1024);
+	auto iniWindowHeight = reader.GetInteger("window", "height", 768);
+
 	// Open a window and create its OpenGL context
 	window = glfwCreateWindow(
-                              iniWindowWidth,
-                              iniWindowHeight,
-                              "Tutorial 18 - Particules", NULL, NULL);
+		iniWindowWidth,
+		iniWindowHeight,
+		"Tutorial 18 - Particules", NULL, NULL);
 	if (window == NULL){
 		fprintf(stderr, "Failed to open GLFW window. If you have an Intel GPU, they are not 3.3 compatible. Try the 2.1 version of the tutorials.\n");
 		glfwTerminate();
@@ -113,12 +126,12 @@ int main(void)
 
 	// Ensure we can capture the escape key being pressed below
 	glfwSetInputMode(window, GLFW_STICKY_KEYS, GL_TRUE);
-    
-    
-    
-    auto iniCount = reader.GetInteger("ps_system", "count", 100);
 
-    
+
+
+	auto iniCount = reader.GetInteger("ps_system", "count", 100);
+
+
 
 	// Dark blue background
 	glClearColor(0.0f, 0.0f, 0.4f, 0.0f);
@@ -141,7 +154,7 @@ int main(void)
 	particle_system_inst.initialize();
 
 	particle_data particle_data_inst;
-    particle_data_inst.COUNT = iniCount;
+	particle_data_inst.COUNT = iniCount;
 	initialize_buffers(particle_data_inst);
 	initialize_velocity(particle_data_inst);
 
@@ -214,10 +227,6 @@ int main(void)
 	glfwTerminate();
 
 	printOpenGLError();
-
-#ifdef WIN32
-	_CrtDumpMemoryLeaks();
-#endif
 
 	return 0;
 }
