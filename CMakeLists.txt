@@ -1,6 +1,6 @@
 # CMake entry point
 cmake_minimum_required (VERSION 2.8)
-project (Tutorials)
+project (mass_collide_build_system)
 
 find_package(OpenGL REQUIRED)
 
@@ -91,27 +91,26 @@ target_link_libraries(playground
 
 # mass_collide_test ####################################
 add_executable(mass_collide_test
-	mass_collide_project/particle_data.h
-	mass_collide_project/particle_data.cpp
-	mass_collide_project/particle_system.cpp
-	mass_collide_project/particle_system.h
-	mass_collide_project/transform_feedback.cpp
-	mass_collide_project/transform_feedback.h
+	mass_collide_project/connections.cpp
+	mass_collide_project/connections.h
 	mass_collide_project/globals.cpp
 	mass_collide_project/globals.h
-	mass_collide_project/particlesmasher.cpp
 	mass_collide_project/ini.c
+	mass_collide_project/ini.h
 	mass_collide_project/INIReader.cpp
+	mass_collide_project/particle_data.cpp
+	mass_collide_project/particle_data.h
+	mass_collide_project/particle_system.cpp
+	mass_collide_project/particle_system.h
+	mass_collide_project/particlesmasher.cpp
+	mass_collide_project/transform_feedback.cpp
+	mass_collide_project/transform_feedback.h
 	common/shader.cpp
 	common/shader.hpp
 	common/texture.cpp
 	common/texture.hpp
 	common/controls.cpp
 	common/controls.hpp
-	mass_collide_project/rc/Particle.fragmentshader
-	mass_collide_project/rc/Particle.vertexshader
-	mass_collide_project/rc/compute.glsl
-	mass_collide_project/rc/forces.glsl
 )
 
 target_link_libraries(mass_collide_test
@@ -134,7 +133,7 @@ target_link_libraries(mass_collide_test
 
 
 SOURCE_GROUP(common REGULAR_EXPRESSION ".*/common/.*" )
-SOURCE_GROUP(shaders REGULAR_EXPRESSION ".*/.*shader$" )
+SOURCE_GROUP(shaders REGULAR_EXPRESSION "(.*/.*shader$)|(*.glsl$)" )
 
 
 if (NOT ${CMAKE_GENERATOR} MATCHES "Xcode" )
