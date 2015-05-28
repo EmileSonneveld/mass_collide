@@ -1,8 +1,15 @@
 #include "globals.h"
+#include "INIReader.h"
 #include <string>
 #include <iostream>
 #include <fstream>
-#include <unistd.h>
+
+#ifdef __APPLE__
+#	include <unistd.h>
+#elif defined _WIN32 || defined _WIN64
+#	include <direct.h>
+//const auto& chdir = _chdir;  // Windows wil make an alias like this, but will also throw a warning :/
+#endif
 
 // For DirExists()
 #include <sys/types.h>
@@ -95,6 +102,22 @@ void ChangeDir(const char* dir)
 
 void LogCurrentDir()
 {
-    char * dir = getcwd(NULL, 0); // Platform-dependent...
+    char * dir = getcwd(NULL, 0);
     printf("Current dir: %s\n", dir);
+	delete dir;
+}
+
+INIReader* g_settings;
+
+int GetPsSetting_Int(const char* var_name, int default_value)
+{
+	return g_settings->GetInteger("ps_system", var_name, default_value);
+}
+bool GetPsSetting_Bool(const char* var_name, bool default_value)
+{
+	return g_settings->GetBoolean("ps_system", var_name, default_value);
+}
+float GetPsSetting_Float(const char* var_name, float default_value)
+{
+	return g_settings->GetFloat("ps_system", var_name, default_value);
 }

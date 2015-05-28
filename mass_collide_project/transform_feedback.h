@@ -4,9 +4,11 @@
 
 #include <GL/glew.h>
 
+#include "calculate.h"
+
 struct particle_data;
 
-class transform_feedback
+class transform_feedback : calculate
 {
 public:
 	transform_feedback() :
@@ -29,4 +31,4 @@ private:
 };
 
 
-GLint CompileComputeShader(const GLchar* filename);
+//GLint CompileComputeShader(const GLchar* filename);

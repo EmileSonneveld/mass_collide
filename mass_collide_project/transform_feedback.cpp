@@ -33,25 +33,6 @@ GLint CompileComputeShader(const GLchar* filename)
 	printOpenGLError();
 	GLuint shader = LoadTemporaryShader(filename, GL_VERTEX_SHADER);
 
-	// GLuint shader = glCreateShader(GL_VERTEX_SHADER);
-	// auto shader_compute = getCodeFromFile(filename);
-	// char const * shader_compute_pointer = shader_compute.c_str();
-	// glShaderSource(shader, 1, &shader_compute_pointer, nullptr);
-	// glCompileShader(shader);
-	// printOpenGLError();
-	//
-	//
-	// // Check Vertex Shader
-	// GLint Result = GL_FALSE;
-	// int InfoLogLength;
-	// glGetShaderiv(shader, GL_COMPILE_STATUS, &Result);
-	// glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &InfoLogLength);
-	// if (InfoLogLength > 0){
-	// 	std::vector<char> VertexShaderErrorMessage(InfoLogLength + 1);
-	// 	glGetShaderInfoLog(shader, InfoLogLength, NULL, &VertexShaderErrorMessage[0]);
-	// 	printf("%s\n", &VertexShaderErrorMessage[0]);
-	// }
-
 	GLuint program = glCreateProgram();
 	glAttachShader(program, shader);
 

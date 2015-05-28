@@ -31,21 +31,21 @@ void particle_system::initialize()
 {
 	// Create and compile our GLSL program from the shaders //
 	//////////////////////////////////////////////////////////
-	m_shader_program = LoadShaders("rc/Particle.vertexshader", "rc/Particle.fragmentshader");
+	m_program = LoadShaders("rc/Particle.vertexshader", "rc/Particle.fragmentshader");
 	printOpenGLError();
 
 	// Vertex shader
-	m_uniform_CameraRight_worldspace = glGetUniformLocation(m_shader_program, "CameraRight_worldspace");
+	m_uniform_CameraRight_worldspace = glGetUniformLocation(m_program, "CameraRight_worldspace");
 	printOpenGLError();
-	m_uniform_CameraUp_worldspace = glGetUniformLocation(m_shader_program, "CameraUp_worldspace");
-	m_uniform_ViewProjMatrix = glGetUniformLocation(m_shader_program, "ViewProjMatrix");
+	m_uniform_CameraUp_worldspace = glGetUniformLocation(m_program, "CameraUp_worldspace");
+	m_uniform_ViewProjMatrix = glGetUniformLocation(m_program, "ViewProjMatrix");
 	// fragment shader
-	m_uniform_TextureSampler = glGetUniformLocation(m_shader_program, "TextureSampler");
+	m_uniform_TextureSampler = glGetUniformLocation(m_program, "TextureSampler");
 
 
-	m_in_attrib_square = glGetAttribLocation(m_shader_program, "squareVertices");
-	m_in_attrib_position = glGetAttribLocation(m_shader_program, "inPosition");
-	m_in_attrib_color = glGetAttribLocation(m_shader_program, "inColor");
+	m_in_attrib_square = glGetAttribLocation(m_program, "squareVertices");
+	m_in_attrib_position = glGetAttribLocation(m_program, "inPosition");
+	m_in_attrib_color = glGetAttribLocation(m_program, "inColor");
 
 
 	m_texture = loadDDS("rc/particle.DDS");
@@ -55,10 +55,10 @@ void particle_system::initialize()
 	// Create and fill in the graphical mesh //
 	///////////////////////////////////////////
 	static const GLfloat g_vertex_buffer_data[] = {
-		-0.5f, -0.5f, 0.0f,
-		0.5f, -0.5f, 0.0f,
-		-0.5f, 0.5f, 0.0f,
-		0.5f, 0.5f, 0.0f,
+		-0.5f, -0.5f,
+		0.5f, -0.5f,
+		-0.5f, 0.5f,
+		0.5f, 0.5f,
 	};
 	glGenBuffers(1, &m_buffer_billboard_vertex);
 	glBindBuffer(GL_ARRAY_BUFFER, m_buffer_billboard_vertex);
@@ -73,7 +73,7 @@ void particle_system::draw(particle_data& particle_data_ref)
 {
 	// fill in the shader uniforms //
 	/////////////////////////////////
-	glUseProgram(m_shader_program);
+	glUseProgram(m_program);
 
 
 	glActiveTexture(GL_TEXTURE0);
@@ -99,7 +99,7 @@ void particle_system::draw(particle_data& particle_data_ref)
 	glBindBuffer(GL_ARRAY_BUFFER, m_buffer_billboard_vertex);
 	glVertexAttribPointer(
 		m_in_attrib_square,                  // attribute. Must match the layout in the shader.
-		3,                  // size
+		2,                  // size
 		GL_FLOAT,           // type
 		GL_FALSE,           // normalized?
 		0,                  // stride
@@ -160,9 +160,9 @@ void particle_system::clean()
 		glDeleteBuffers(1, &m_buffer_billboard_vertex);
 	m_buffer_billboard_vertex = 0;
 
-	if (m_shader_program)
-		glDeleteProgram(m_shader_program);
-	m_shader_program = 0;
+	if (m_program)
+		glDeleteProgram(m_program);
+	m_program = 0;
 
 	if (m_texture)
 		glDeleteTextures(1, &m_texture);
