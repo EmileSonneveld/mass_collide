@@ -22,3 +22,9 @@ D&D    | rotate view
 S      | simulate
 T      | Respawn particles and reload parameters
 R      | Reload shader
+
+
+Travis
+======
+
+project can be found here: https://travis-ci.org/EmileSonneveld/mass_collide
