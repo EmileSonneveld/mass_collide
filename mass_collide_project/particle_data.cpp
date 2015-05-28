@@ -75,11 +75,12 @@ void initialize_buffers(particle_data& particle_data_ref)
 	std::vector<unsigned int>data_indices; // = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11 };
 
 	float distance = GetPsSetting_Float("connection_max_distance", 0.35f);
-	data_indices.reserve(1000);
+	float distanseSqr = distance * distance;
+	data_indices.reserve(190000);
 	for (unsigned int ia = 0; ia < particle_data_ref.COUNT; ++ia){
 		for (unsigned int ib = ia+1; ib < particle_data_ref.COUNT; ++ib){
 			auto len2 = glm::length2(data_pos[ia] - data_pos[ib]);
-			if (len2 < distance * distance){
+			if (len2 < distanseSqr){
 				data_indices.push_back(ia);
 				data_indices.push_back(ib);
 			}

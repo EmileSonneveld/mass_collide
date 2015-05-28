@@ -194,6 +194,7 @@ int main_windows_managment()
 			transform_velocities.initialize("rc/forces.glsl");
 		}
 		if (glfwGetKey(window, GLFW_KEY_T) == GLFW_PRESS){
+			reader = INIReader("rc/settings.ini");
 			particle_data_inst.COUNT = GetPsSetting_Int("count", 100);
 			initialize_swap_buffer(particle_data_inst);
 			initialize_buffers(particle_data_inst);
