@@ -81,6 +81,7 @@ int main_windows_managment()
 	LogCurrentDir();
 
 	INIReader reader("rc/settings.ini");
+	g_settings = &reader;
 
 	if (reader.ParseError() < 0)
 		std::cout << "Can't load .ini file\n";
@@ -104,7 +105,7 @@ int main_windows_managment()
 	window = glfwCreateWindow(
 		iniWindowWidth,
 		iniWindowHeight,
-		"Tutorial 18 - Particules", NULL, NULL);
+		"mass_collide, simulations on the GPU --Emile Sonneveld", NULL, NULL);
 	if (window == NULL){
 		fprintf(stderr, "Failed to open GLFW window. If you have an Intel GPU, they are not 3.3 compatible. Try the 2.1 version of the tutorials.\n");
 		glfwTerminate();
@@ -129,9 +130,6 @@ int main_windows_managment()
 
 
 
-	auto iniCount = reader.GetInteger("ps_system", "count", 100);
-
-
 
 	// Dark blue background
 	glClearColor(0.0f, 0.0f, 0.4f, 0.0f);
@@ -154,7 +152,7 @@ int main_windows_managment()
 	particle_system_inst.initialize();
 
 	particle_data particle_data_inst;
-	particle_data_inst.COUNT = iniCount;
+	particle_data_inst.COUNT = GetPsSetting_Int("count", 100);
 	initialize_swap_buffer(particle_data_inst);
 	initialize_buffers(particle_data_inst);
 	initialize_velocity(particle_data_inst);
@@ -196,7 +194,10 @@ int main_windows_managment()
 			transform_velocities.initialize("rc/forces.glsl");
 		}
 		if (glfwGetKey(window, GLFW_KEY_T) == GLFW_PRESS){
+			particle_data_inst.COUNT = GetPsSetting_Int("count", 100);
+			initialize_swap_buffer(particle_data_inst);
 			initialize_buffers(particle_data_inst);
+			initialize_velocity(particle_data_inst);
 		}
 		particle_system_inst.draw(particle_data_inst);
 		if (glfwGetKey(window, GLFW_KEY_C) != GLFW_PRESS){

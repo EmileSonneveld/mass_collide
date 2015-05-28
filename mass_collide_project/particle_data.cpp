@@ -26,7 +26,7 @@ static void pattern_fill_cube_nicely(unsigned int count, vec4* data_pos, vec4* d
 		data_pos[i].x = (i / 1 % 100) * size;
 		data_pos[i].y = (i / 100 % 100) * size;
 		data_pos[i].z = (i / 100 / 100 % 100) * size;
-		data_pos[i].a = 0.04f; // size
+		data_pos[i].a = GetPsSetting_Float("particle_size", 0.04f);
 
 		data_col[i].x = std::sin(data_pos[i].x*2.1f) / 2.f + 0.5f;
 		data_col[i].y = std::sin(data_pos[i].y*2.2f) / 2.f + 0.5f;
@@ -43,11 +43,11 @@ static void pattern_fill_cube_nicely(unsigned int count, vec4* data_pos, vec4* d
 static void pattern_fill_cube_random(unsigned int count, vec4* data_pos, vec4* data_col)
 {
 	for (unsigned int i = 0; i < count; ++i){
-		float size = 5;
+		float size = GetPsSetting_Float("random_box_size", 10);
 		data_pos[i].x = (0.5f - (float)(rand() % 100) * 0.01f) * size;
 		data_pos[i].y = (0.5f - (float)(rand() % 100) * 0.01f) * size;
 		data_pos[i].z = (0.5f - (float)(rand() % 100) * 0.01f) * size;
-		data_pos[i].a = 0.04f; // size
+		data_pos[i].a = GetPsSetting_Float("particle_size", 0.04f);
 
 		data_col[i].x = float(rand() % 256) / 256.0f;
 		data_col[i].y = float(rand() % 256) / 256.0f;
@@ -65,16 +65,21 @@ void initialize_buffers(particle_data& particle_data_ref)
 	auto* data_pos = new vec4[particle_data_ref.COUNT];
 	auto* data_col = new vec4[particle_data_ref.COUNT];
 
-	pattern_fill_cube_random(particle_data_ref.COUNT, data_pos, data_col);
+	if (GetPsSetting_Bool("use_structured_spawning", true))
+		pattern_fill_cube_nicely(particle_data_ref.COUNT, data_pos, data_col);
+	else
+		pattern_fill_cube_random(particle_data_ref.COUNT, data_pos, data_col);
+	
 
 
 	std::vector<unsigned int>data_indices; // = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11 };
 
+	float distance = GetPsSetting_Float("connection_max_distance", 0.35f);
 	data_indices.reserve(1000);
 	for (unsigned int ia = 0; ia < particle_data_ref.COUNT; ++ia){
 		for (unsigned int ib = ia+1; ib < particle_data_ref.COUNT; ++ib){
 			auto len2 = glm::length2(data_pos[ia] - data_pos[ib]);
-			if (len2 < .35f*.35f){
+			if (len2 < distance * distance){
 				data_indices.push_back(ia);
 				data_indices.push_back(ib);
 			}

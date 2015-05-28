@@ -48,6 +48,15 @@ double INIReader::GetReal(string section, string name, double default_value)
     return end > value ? n : default_value;
 }
 
+float INIReader::GetFloat(string section, string name, float default_value)
+{
+	string valstr = Get(section, name, "");
+	const char* value = valstr.c_str();
+	char* end;
+	auto n = strtof(value, &end);
+	return end > value ? n : default_value;
+}
+
 bool INIReader::GetBoolean(string section, string name, bool default_value)
 {
     string valstr = Get(section, name, "");
