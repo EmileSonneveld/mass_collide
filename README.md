@@ -9,3 +9,16 @@ When this is succesfully done, the plan is to link the particles together to mak
 The next step would be to program collition between particles and so be able to make solid soft meshes that can collide with each other!
 
 Hope my computer can handle it!
+
+
+
+Controls
+========
+
+. | .
+------ | ------
+Arrows | move view
+D&D    | rotate view
+S      | simulate
+T      | Respawn particles and reload parameters
+R      | Reload shader
