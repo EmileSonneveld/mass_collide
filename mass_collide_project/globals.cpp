@@ -4,7 +4,7 @@
 #include <iostream>
 #include <fstream>
 
-#ifdef __APPLE__ || __gnu_linux__
+#ifdef __APPLE__ || defined __gnu_linux__ || defined linux
 #	include <unistd.h>
 #elif defined _WIN32 || defined _WIN64
 #	include <direct.h>
