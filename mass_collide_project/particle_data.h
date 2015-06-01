@@ -10,7 +10,7 @@ struct data_struct
 };
 
 // add an element to this enum to use a shared
-enum
+enum bufferName
 {
 	swap,
 	position,

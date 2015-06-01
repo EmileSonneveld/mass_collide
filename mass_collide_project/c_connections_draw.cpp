@@ -1,4 +1,4 @@
-#include "connections.h"
+#include "c_connections_draw.h"
 
 #include <iostream>
 #include <stdio.h>
@@ -27,9 +27,8 @@ using namespace glm;
 #include "particle_data.h"
 #include "globals.h"
 
-void connections::initialize()
+void c_connections_draw::initialize()
 {
-	clean();
 	m_program = LoadShaders("rc/simple_vert.glsl", "rc/simple_frag.glsl");
 	printOpenGLError();
 	m_uniform_matrix = glGetUniformLocation(m_program, "ViewProjectionMatrix");
@@ -37,7 +36,7 @@ void connections::initialize()
 	m_in_attrib_color = glGetAttribLocation(m_program, "inColor");
 }
 
-void connections::draw(particle_data& particle_data_ref)
+void c_connections_draw::process(particle_data& particle_data_ref)
 {
 	glUseProgram(m_program);
 	printOpenGLError();
@@ -72,7 +71,7 @@ void connections::draw(particle_data& particle_data_ref)
 
 }
 
-void connections::clean()
+void c_connections_draw::clean()
 {
 	if (m_program != 0)
 		glDeleteProgram(m_program);

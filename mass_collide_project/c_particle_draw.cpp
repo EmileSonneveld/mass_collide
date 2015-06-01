@@ -1,4 +1,4 @@
-#include "particle_system.h"
+#include "c_particle_draw.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -27,7 +27,7 @@ using namespace glm;
 #include "particle_data.h"
 
 
-void particle_system::initialize()
+void c_particle_draw::initialize()
 {
 	// Create and compile our GLSL program from the shaders //
 	//////////////////////////////////////////////////////////
@@ -69,7 +69,7 @@ void particle_system::initialize()
 	printOpenGLError();
 }
 
-void particle_system::draw(particle_data& particle_data_ref)
+void c_particle_draw::process(particle_data& particle_data_ref)
 {
 	// fill in the shader uniforms //
 	/////////////////////////////////
@@ -154,7 +154,7 @@ void particle_system::draw(particle_data& particle_data_ref)
 
 }
 
-void particle_system::clean()
+void c_particle_draw::clean()
 {
 	if (m_buffer_billboard_vertex)
 		glDeleteBuffers(1, &m_buffer_billboard_vertex);

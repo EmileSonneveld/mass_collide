@@ -6,10 +6,10 @@
 
 struct particle_data;
 
-class particle_system : calculate
+class c_particle_draw : calculate
 {
 public:
-	particle_system() :
+	c_particle_draw() :
 		m_buffer_billboard_vertex(0),
         m_program(0),
         m_in_attrib_square(0),
@@ -21,10 +21,10 @@ public:
         m_uniform_TextureSampler(0),
 		m_texture(0)
 	{}
-	virtual ~particle_system(){}
+	virtual ~c_particle_draw(){}
 
 	void initialize();
-	void draw(particle_data& particle_data_ref);
+	void process(particle_data& particle_data_ref);
 	void clean();
 
 private:

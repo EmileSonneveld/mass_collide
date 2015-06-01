@@ -21,11 +21,11 @@ using namespace glm;
 #include <common/texture.hpp>
 #include <common/controls.hpp>
 
-#include "connections.h"
+#include "c_connections_draw.h"
 #include "globals.h"
 #include "particle_data.h"
-#include "particle_system.h"
-#include "transform_feedback.h"
+#include "c_particle_draw.h"
+#include "c_transform_feedback.h"
 #include "INIReader.h"
 
 
@@ -145,23 +145,21 @@ int main_windows_managment()
 	glfwSetCursorPos(window, 1024 / 2, 768 / 2);
 
 	//////////////////////////////////////////////////////////////
-	particle_system particle_system_inst;
-	particle_system_inst.initialize();
-
 	particle_data particle_data_inst;
 	particle_data_inst.COUNT = GetPsSetting_Int("count", 100);
 	initialize_swap_buffer(particle_data_inst);
 	initialize_buffers(particle_data_inst);
 	initialize_velocity(particle_data_inst);
 
-	transform_feedback transform_positions;
-	transform_positions.initialize("rc/compute.glsl");
+	c_particle_draw particle_draw;
+	c_transform_feedback transform_positions;
+	c_transform_feedback transform_velocities;
+	c_connections_draw connections_draw;
 
-	transform_feedback transform_velocities;
-	transform_velocities.initialize("rc/forces.glsl");
-
-	connections connections_inst;
-	connections_inst.initialize();
+	particle_draw.initialize();
+	transform_positions.initialize("rc/compute.glsl", bufferName::position);
+	transform_velocities.initialize("rc/forces.glsl", bufferName::velocity);
+	connections_draw.initialize();
 	//////////////////////////////////////////////////////////////
 	bool isFirstTime = true;
 
@@ -180,19 +178,20 @@ int main_windows_managment()
 
 		//////////////////////////////////////////////////////////////
 		if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS){
-			printOpenGLError();
-			transform_positions.ProccesPositions(particle_data_inst);
-			printOpenGLError();
-			transform_velocities.ProccesVelocities(particle_data_inst);
+			transform_positions.process(particle_data_inst);
+			transform_velocities.process(particle_data_inst);
 			printOpenGLError();
 		}
 		if (glfwGetKey(window, GLFW_KEY_R) == GLFW_PRESS){
-			connections_inst.clean();
+			particle_draw.clean();
 			transform_positions.clean();
 			transform_velocities.clean();
-			connections_inst.initialize();
-			transform_positions.initialize("rc/compute.glsl");
-			transform_velocities.initialize("rc/forces.glsl");
+			connections_draw.clean();
+
+			particle_draw.initialize();
+			transform_positions.initialize("rc/compute.glsl", bufferName::position);
+			transform_velocities.initialize("rc/forces.glsl", bufferName::velocity);
+			connections_draw.initialize();
 		}
 		if (glfwGetKey(window, GLFW_KEY_T) == GLFW_PRESS){
 			reader = INIReader("rc/settings.ini");
@@ -201,9 +200,9 @@ int main_windows_managment()
 			initialize_buffers(particle_data_inst);
 			initialize_velocity(particle_data_inst);
 		}
-		particle_system_inst.draw(particle_data_inst);
+		particle_draw.process(particle_data_inst);
 		if (glfwGetKey(window, GLFW_KEY_C) != GLFW_PRESS){
-			connections_inst.draw(particle_data_inst);
+			connections_draw.process(particle_data_inst);
 			printOpenGLError();
 		}
 		//////////////////////////////////////////////////////////////
@@ -221,7 +220,7 @@ int main_windows_managment()
 
 	//////////////////////////////////////////////////////////////
 	particle_data_inst.clean();
-	particle_system_inst.clean();
+	particle_draw.clean();
 	transform_positions.clean();
 	//////////////////////////////////////////////////////////////
 

@@ -8,19 +8,18 @@
 
 struct particle_data;
 
-class connections : calculate
+class c_connections_draw : calculate
 {
 public:
-	connections() :
+	c_connections_draw() :
 		m_program(0),
 		m_uniform_matrix(0)
 	{}
-	virtual ~connections(){}
+	virtual ~c_connections_draw(){}
 
 	void initialize_buffers(particle_data& particle_data_ref);
 	void initialize();
-	GLint Procces(particle_data& particle_data_ref);
-	void draw(particle_data& particle_data_ref);
+	void process(particle_data& particle_data_ref);
 	void clean();
 
 private:
