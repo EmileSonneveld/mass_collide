@@ -1,4 +1,4 @@
-#include "c_transform_feedback.h"
+#include "c_connections_transform_feedback.h"
 
 #include <iostream>
 #include <stdio.h>
@@ -29,17 +29,18 @@ using namespace glm;
 
 
 
-void c_transform_feedback::initialize(std::string file_name, bufferName output_buffer_name)
+void c_connections_transform_feedback::initialize(std::string file_name, bufferName output_buffer_name)
 {
 	m_transform_feedback_out = output_buffer_name;
 
 	m_program = LoadShaderWithTransformFeedback(file_name.c_str());
-	m_uniform_point = glGetUniformLocation(m_program, "point");
 	m_in_attrib_position = glGetAttribLocation(m_program, "inPosition");
 	m_in_attrib_velocity = glGetAttribLocation(m_program, "inVelocity");
+	m_uniform_buff_position = glGetUniformLocation(m_program, "buffPosition");
+	m_uniform_buff_velocity = glGetUniformLocation(m_program, "buffVelocity");
 }
 
-void c_transform_feedback::process(particle_data& particle_data_ref)
+void c_connections_transform_feedback::process(particle_data& particle_data_ref)
 {
 	glUseProgram(m_program);
 
@@ -79,7 +80,7 @@ void c_transform_feedback::process(particle_data& particle_data_ref)
 	particle_data_ref.buffer[m_transform_feedback_out] = tmp_result;
 }
 
-void c_transform_feedback::clean()
+void c_connections_transform_feedback::clean()
 {
 	if (m_program != 0)
 		glDeleteProgram(m_program);

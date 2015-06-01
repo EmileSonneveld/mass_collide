@@ -17,6 +17,7 @@ enum bufferName
 	color,
 	velocity,
 	connection_index,
+	connection_index_alt,
 	size_element
 };
 
@@ -24,14 +25,14 @@ struct particle_data
 {
 	particle_data()
 	{
-		glGenBuffers(size_element , &buffer[0]);
+		glGenBuffers(size_element, &buffer[0]);
 	}
 	void clean()
 	{
-		glDeleteBuffers(size_element , &buffer[0]);
+		glDeleteBuffers(size_element, &buffer[0]);
 	}
 
-	GLuint buffer[size_element ];
+	GLuint buffer[size_element];
 
 	unsigned int CONNECTION_COUNT;
 	unsigned int COUNT = 100000;

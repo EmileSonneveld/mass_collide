@@ -72,6 +72,8 @@ void initialize_buffers(particle_data& particle_data_ref)
 	
 
 
+	/////////////////////////////////////////////////////////
+
 	std::vector<unsigned int>data_indices(190000);
 
 	float distance = GetPsSetting_Float("connection_max_distance", 0.35f);
@@ -92,7 +94,31 @@ void initialize_buffers(particle_data& particle_data_ref)
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, particle_data_ref.buffer[connection_index]);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, data_indices.size() * sizeof(unsigned int), &data_indices[0], GL_STATIC_DRAW);
 
+	/////////////////////////////////////////////////////////
 
+	const int maxConn = 4;
+	std::vector<unsigned int>data_indices_alt;
+	data_indices_alt.reserve(particle_data_ref.COUNT * maxConn);
+	for (unsigned int ia = 0; ia < particle_data_ref.COUNT; ++ia){
+		int num = 0;
+		for (unsigned int ib = 0; ib < particle_data_ref.COUNT; ++ib){
+			if (ia == ib) continue;
+			auto len2 = glm::length2(data_pos[ia] - data_pos[ib]);
+			if (len2 < distanseSqr){
+				data_indices_alt.push_back(ib);
+				++num;
+				if (num >= maxConn){
+					break;
+				}
+			}
+		}
+		for (int rest = num; rest < maxConn; ++rest){
+			data_indices_alt.push_back(data_indices_alt.size()); // a no connection
+		}
+	}
+
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, particle_data_ref.buffer[connection_index_alt]);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, data_indices_alt.size() * sizeof(unsigned int), &data_indices_alt[0], GL_STATIC_DRAW);
 
 	// Create and initialize the Buffer Objects on the GPU //
 	/////////////////////////////////////////////////////////

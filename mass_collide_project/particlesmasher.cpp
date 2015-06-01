@@ -21,9 +21,10 @@ using namespace glm;
 #include <common/texture.hpp>
 #include <common/controls.hpp>
 
-#include "c_connections_draw.h"
 #include "globals.h"
 #include "particle_data.h"
+#include "c_connections_draw.h"
+#include "c_connections_transform_feedback.h"
 #include "c_particle_draw.h"
 #include "c_transform_feedback.h"
 #include "INIReader.h"
@@ -154,11 +155,13 @@ int main_windows_managment()
 	c_particle_draw particle_draw;
 	c_transform_feedback transform_positions;
 	c_transform_feedback transform_velocities;
+	c_connections_transform_feedback connection_force;
 	c_connections_draw connections_draw;
 
 	particle_draw.initialize();
 	transform_positions.initialize("rc/compute.glsl", bufferName::position);
 	transform_velocities.initialize("rc/forces.glsl", bufferName::velocity);
+	connection_force.initialize("rc/connection_force.glsl", bufferName::velocity);
 	connections_draw.initialize();
 	//////////////////////////////////////////////////////////////
 	bool isFirstTime = true;
@@ -203,6 +206,10 @@ int main_windows_managment()
 		particle_draw.process(particle_data_inst);
 		if (glfwGetKey(window, GLFW_KEY_C) != GLFW_PRESS){
 			connections_draw.process(particle_data_inst);
+			printOpenGLError();
+		}
+		if (glfwGetKey(window, GLFW_KEY_V) == GLFW_PRESS){
+			connection_force.process(particle_data_inst);
 			printOpenGLError();
 		}
 		//////////////////////////////////////////////////////////////
