@@ -90,22 +90,15 @@ target_link_libraries(playground
 
 
 # mass_collide_test ####################################
+
+file(GLOB mass_collide_project_SRC
+    "mass_collide_project/*.h"
+    "mass_collide_project/*.cpp"
+    "mass_collide_project/*.c"
+)
+
 add_executable(mass_collide_test
-	mass_collide_project/calculate.h
-	mass_collide_project/c_connections_draw.cpp
-	mass_collide_project/c_connections_draw.h
-	mass_collide_project/c_particle_draw.cpp
-	mass_collide_project/c_particle_draw.h
-	mass_collide_project/c_transform_feedback.cpp
-	mass_collide_project/c_transform_feedback.h
-	mass_collide_project/globals.cpp
-	mass_collide_project/globals.h
-	mass_collide_project/ini.c
-	mass_collide_project/ini.h
-	mass_collide_project/INIReader.cpp
-	mass_collide_project/particle_data.cpp
-	mass_collide_project/particle_data.h
-	mass_collide_project/particlesmasher.cpp
+	${mass_collide_project_SRC}
 	common/shader.cpp
 	common/shader.hpp
 	common/texture.cpp
