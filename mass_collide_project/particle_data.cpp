@@ -89,7 +89,7 @@ void initialize_buffers(particle_data& particle_data_ref)
 	}
 	particle_data_ref.CONNECTION_COUNT = data_indices.size();
 
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, particle_data_ref.m_buffer_connection_index);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, particle_data_ref.buffer[connection_index]);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, data_indices.size() * sizeof(unsigned int), &data_indices[0], GL_STATIC_DRAW);
 
 
@@ -97,7 +97,7 @@ void initialize_buffers(particle_data& particle_data_ref)
 	// Create and initialize the Buffer Objects on the GPU //
 	/////////////////////////////////////////////////////////
 
-	glBindBuffer(GL_ARRAY_BUFFER, particle_data_ref.m_buffer_position);
+	glBindBuffer(GL_ARRAY_BUFFER, particle_data_ref.buffer[position]);
 	glBufferData(
 		GL_ARRAY_BUFFER,
 		particle_data_ref.COUNT * sizeof(vec4),
@@ -105,7 +105,7 @@ void initialize_buffers(particle_data& particle_data_ref)
 		GL_DYNAMIC_DRAW
 		);
 
-	glBindBuffer(GL_ARRAY_BUFFER, particle_data_ref.m_buffer_color);
+	glBindBuffer(GL_ARRAY_BUFFER, particle_data_ref.buffer[color]);
 	glBufferData(
 		GL_ARRAY_BUFFER,
 		particle_data_ref.COUNT * sizeof(vec4), // GLubyte
@@ -119,7 +119,7 @@ void initialize_buffers(particle_data& particle_data_ref)
 
 void initialize_swap_buffer(particle_data& particle_data_ref)
 {
-	glBindBuffer(GL_ARRAY_BUFFER, particle_data_ref.m_buffer_swap);
+	glBindBuffer(GL_ARRAY_BUFFER, particle_data_ref.buffer[swap]);
 	glBufferData(
 		GL_ARRAY_BUFFER,
 		particle_data_ref.COUNT * sizeof(vec4), nullptr,
@@ -142,7 +142,7 @@ void initialize_velocity(particle_data& particle_data_ref)
 		data_random_vel[i] = tmp;
 	}
 
-	glBindBuffer(GL_ARRAY_BUFFER, particle_data_ref.m_buffer_velocity);
+	glBindBuffer(GL_ARRAY_BUFFER, particle_data_ref.buffer[velocity]);
 	glBufferData(
 		GL_ARRAY_BUFFER,
 		particle_data_ref.COUNT * sizeof(vec4),

@@ -1,29 +1,37 @@
 #pragma once
 
+
+struct data_struct 
+{
+	GLuint buffer;
+	void* cpuPtr;
+	bool isBufferUpToDate;
+	unsigned int size;
+};
+
+// add an element to this enum to use a shared
+enum
+{
+	swap,
+	position,
+	color,
+	velocity,
+	connection_index,
+	size_element
+};
+
 struct particle_data
 {
 	particle_data()
 	{
-		glGenBuffers(1, &m_buffer_position);
-		glGenBuffers(1, &m_buffer_swap);
-		glGenBuffers(1, &m_buffer_color);
-		glGenBuffers(1, &m_buffer_velocity);
-		glGenBuffers(1, &m_buffer_connection_index);
+		glGenBuffers(size_element , &buffer[0]);
 	}
 	void clean()
 	{
-		glDeleteBuffers(1, &m_buffer_position);
-		glDeleteBuffers(1, &m_buffer_swap);
-		glDeleteBuffers(1, &m_buffer_color);
-		glDeleteBuffers(1, &m_buffer_velocity);
-		glDeleteBuffers(1, &m_buffer_connection_index);
+		glDeleteBuffers(size_element , &buffer[0]);
 	}
 
-	GLuint m_buffer_position;
-	GLuint m_buffer_swap;
-	GLuint m_buffer_color;
-	GLuint m_buffer_velocity;
-	GLuint m_buffer_connection_index;
+	GLuint buffer[size_element ];
 
 	unsigned int CONNECTION_COUNT;
 	unsigned int COUNT = 100000;

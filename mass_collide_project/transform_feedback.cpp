@@ -85,16 +85,16 @@ GLint transform_feedback::ProccesPositions(particle_data& particle_data_ref)
 
     glEnable(GL_RASTERIZER_DISCARD);
 	// bind our buffer to the Transform feedback
-	glBindBufferBase(GL_TRANSFORM_FEEDBACK_BUFFER, 0, particle_data_ref.m_buffer_swap);
+	glBindBufferBase(GL_TRANSFORM_FEEDBACK_BUFFER, 0, particle_data_ref.buffer[swap]);
 
 	printOpenGLError();
 
 	glEnableVertexAttribArray(m_in_attrib_position);
-	glBindBuffer(GL_ARRAY_BUFFER, particle_data_ref.m_buffer_position);
+	glBindBuffer(GL_ARRAY_BUFFER, particle_data_ref.buffer[position]);
 	glVertexAttribPointer(m_in_attrib_position, 4, GL_FLOAT, GL_FALSE, 0, nullptr);
 
 	glEnableVertexAttribArray(m_in_attrib_velocity);
-	glBindBuffer(GL_ARRAY_BUFFER, particle_data_ref.m_buffer_velocity);
+	glBindBuffer(GL_ARRAY_BUFFER, particle_data_ref.buffer[velocity]);
 	glVertexAttribPointer(m_in_attrib_velocity, 4, GL_FLOAT, GL_FALSE, 0, nullptr);
 	printOpenGLError();
 
@@ -114,9 +114,9 @@ GLint transform_feedback::ProccesPositions(particle_data& particle_data_ref)
 	glFlush();
 
 	printOpenGLError();
-	auto tmp_result = particle_data_ref.m_buffer_swap;
-	particle_data_ref.m_buffer_swap = particle_data_ref.m_buffer_position;
-	particle_data_ref.m_buffer_position = tmp_result;
+	auto tmp_result = particle_data_ref.buffer[swap];
+	particle_data_ref.buffer[swap] = particle_data_ref.buffer[position];
+	particle_data_ref.buffer[position] = tmp_result;
 
 	return tmp_result;
 }
@@ -132,7 +132,7 @@ GLint transform_feedback::ProccesVelocities(particle_data& particle_data_ref)
     printOpenGLError();
     glEnable(GL_RASTERIZER_DISCARD);
 	// bind our buffer to the Transform feedback
-	glBindBufferBase(GL_TRANSFORM_FEEDBACK_BUFFER, 0, particle_data_ref.m_buffer_swap);
+	glBindBufferBase(GL_TRANSFORM_FEEDBACK_BUFFER, 0, particle_data_ref.buffer[swap]);
 
 	printOpenGLError();
 
@@ -142,12 +142,12 @@ GLint transform_feedback::ProccesVelocities(particle_data& particle_data_ref)
 	glUniform3f(m_uniform_point, pos.x, pos.y, pos.z);
 
 	glEnableVertexAttribArray(m_in_attrib_position);
-	glBindBuffer(GL_ARRAY_BUFFER, particle_data_ref.m_buffer_position);
+	glBindBuffer(GL_ARRAY_BUFFER, particle_data_ref.buffer[position]);
 	glVertexAttribPointer(m_in_attrib_position, 4, GL_FLOAT, GL_FALSE, 0, nullptr);
 
 	printOpenGLError();
 	glEnableVertexAttribArray(m_in_attrib_velocity);
-	glBindBuffer(GL_ARRAY_BUFFER, particle_data_ref.m_buffer_velocity);
+	glBindBuffer(GL_ARRAY_BUFFER, particle_data_ref.buffer[velocity]);
 	glVertexAttribPointer(m_in_attrib_velocity, 4, GL_FLOAT, GL_FALSE, 0, nullptr);
 
 	printOpenGLError();
@@ -167,9 +167,9 @@ GLint transform_feedback::ProccesVelocities(particle_data& particle_data_ref)
 	glFlush();
 	printOpenGLError();
 
-	auto tmp_result = particle_data_ref.m_buffer_swap;
-	particle_data_ref.m_buffer_swap = particle_data_ref.m_buffer_velocity;
-	particle_data_ref.m_buffer_velocity = tmp_result;
+	auto tmp_result = particle_data_ref.buffer[swap];
+	particle_data_ref.buffer[swap] = particle_data_ref.buffer[velocity];
+	particle_data_ref.buffer[velocity]= tmp_result;
 	printOpenGLError();
 
 	return tmp_result;

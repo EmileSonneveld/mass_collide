@@ -107,7 +107,7 @@ void particle_system::draw(particle_data& particle_data_ref)
 		);
 
 	glEnableVertexAttribArray(m_in_attrib_position);
-	glBindBuffer(GL_ARRAY_BUFFER, particle_data_ref.m_buffer_position);
+	glBindBuffer(GL_ARRAY_BUFFER, particle_data_ref.buffer[position]);
 	glVertexAttribPointer(
 		m_in_attrib_position,
 		4,
@@ -118,7 +118,7 @@ void particle_system::draw(particle_data& particle_data_ref)
 		);
 
 	glEnableVertexAttribArray(m_in_attrib_color);
-	glBindBuffer(GL_ARRAY_BUFFER, particle_data_ref.m_buffer_color);
+	glBindBuffer(GL_ARRAY_BUFFER, particle_data_ref.buffer[color]);
 	glVertexAttribPointer(
 		m_in_attrib_color,
 		4,

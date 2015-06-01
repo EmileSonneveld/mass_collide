@@ -44,25 +44,22 @@ void connections::draw(particle_data& particle_data_ref)
 
 	glCullFace(GL_FRONT_AND_BACK);
 
-	glm::mat4 ProjectionMatrix = getProjectionMatrix();
-	glm::mat4 ViewMatrix = getViewMatrix();
-	glm::mat4 ViewProjectionMatrix = ProjectionMatrix * ViewMatrix;
-	//glm::mat4 ViewProjectionMatrix = getProjectionMatrix() * getViewMatrix();
+	glm::mat4 ViewProjectionMatrix = getProjectionMatrix() * getViewMatrix();
 	glUniformMatrix4fv(m_uniform_matrix, 1, GL_FALSE, &ViewProjectionMatrix[0][0]);
 
 	glEnableVertexAttribArray(m_in_attrib_position);
-	glBindBuffer(GL_ARRAY_BUFFER, particle_data_ref.m_buffer_position);
+	glBindBuffer(GL_ARRAY_BUFFER, particle_data_ref.buffer[position]);
 	glVertexAttribPointer(m_in_attrib_position, 4, GL_FLOAT, GL_FALSE, 0, nullptr);
 
 	glEnableVertexAttribArray(m_in_attrib_color);
-	glBindBuffer(GL_ARRAY_BUFFER, particle_data_ref.m_buffer_color);
+	glBindBuffer(GL_ARRAY_BUFFER, particle_data_ref.buffer[color]);
 	glVertexAttribPointer(m_in_attrib_color, 4, GL_FLOAT, GL_FALSE, 0, nullptr);
 
 
-	//glBindBuffer(GL_ARRAY_BUFFER, particle_data_ref.m_buffer_position);
+	//glBindBuffer(GL_ARRAY_BUFFER, particle_data_ref.buffer[position]);
 	printOpenGLError();
 	// Index buffer
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, particle_data_ref.m_buffer_connection_index);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, particle_data_ref.buffer[connection_index]);
 	printOpenGLError();
 
 	glDrawElements(
