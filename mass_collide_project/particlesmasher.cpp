@@ -41,12 +41,11 @@ void glfw_error_callback(int error, const char* description)
 
 int main_windows_managment();
 
-// main() appart becouse INIReader uses RAII and don't get deleted before leack checking.
+// main() appart because INIReader uses RAII and don't get deleted before leak checking.
 int main()
 {
 #ifdef WIN32
-	//_crtBreakAlloc = 235;
-	//_CrtSetBreakAlloc(180);
+	//_CrtSetBreakAlloc(*place some value here to debug*);
 #endif
 
 	int result = main_windows_managment();
@@ -131,11 +130,9 @@ int main_windows_managment()
 
 
 
-	// Dark blue background
 	glClearColor(0.0f, 0.0f, 0.4f, 0.0f);
 
 	glEnable(GL_DEPTH_TEST);
-	// Accept fragment if it closer to the camera than the former one
 	glDepthFunc(GL_LESS);
 
 
@@ -190,6 +187,10 @@ int main_windows_managment()
 			printOpenGLError();
 		}
 		if (glfwGetKey(window, GLFW_KEY_R) == GLFW_PRESS){
+			connections_inst.clean();
+			transform_positions.clean();
+			transform_velocities.clean();
+			connections_inst.initialize();
 			transform_positions.initialize("rc/compute.glsl");
 			transform_velocities.initialize("rc/forces.glsl");
 		}

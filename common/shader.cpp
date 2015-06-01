@@ -12,7 +12,6 @@ using namespace std;
 #include <GL/glew.h>
 
 #include "shader.hpp"
-//#include "globals.h"
 
 std::string getCodeFromFile(const char * file_path)
 {
@@ -77,9 +76,9 @@ GLuint LoadShaders(const char * vertex_file_path, const char * fragment_file_pat
 	glGetProgramiv(ProgramID, GL_LINK_STATUS, &Result);
 	glGetProgramiv(ProgramID, GL_INFO_LOG_LENGTH, &InfoLogLength);
 	if ( InfoLogLength > 0 ){
-		std::vector<char> ProgramErrorMessage(InfoLogLength+1);
-		glGetProgramInfoLog(ProgramID, InfoLogLength, NULL, &ProgramErrorMessage[0]);
-		printf("%s\n", &ProgramErrorMessage[0]);
+		std::vector<char> ErrorMessage(InfoLogLength + 1);
+		glGetProgramInfoLog(ProgramID, InfoLogLength, NULL, &ErrorMessage[0]);
+		printf("%s\n", &ErrorMessage[0]);
 	}
 
 	glDeleteShader(VertexShaderID);

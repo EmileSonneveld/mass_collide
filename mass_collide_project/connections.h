@@ -30,6 +30,3 @@ private:
 
 	GLint m_uniform_matrix;
 };
-
-
-//GLint CompileComputeShader(const GLchar* filename);

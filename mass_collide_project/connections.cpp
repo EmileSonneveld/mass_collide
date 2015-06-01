@@ -27,51 +27,6 @@ using namespace glm;
 #include "particle_data.h"
 #include "globals.h"
 
-
-static GLint CompileComputeShader(const GLchar* filename)
-{
-	printOpenGLError();
-	GLuint shader = LoadTemporaryShader(filename, GL_VERTEX_SHADER);
-
-	GLuint program = glCreateProgram();
-	glAttachShader(program, shader);
-
-	glDeleteShader(shader);
-
-	printOpenGLError();
-	// transform feedback specefic
-	const GLchar* feedbackVaryings[] = { "outValue" };
-	// or GL_SEPARATE_ATTRIBS GL_INTERLEAVED_ATTRIBS
-	glTransformFeedbackVaryings(program, 1, feedbackVaryings, GL_INTERLEAVED_ATTRIBS);
-
-	printOpenGLError();
-
-	glLinkProgram(program);
-	glValidateProgram(program);
-
-	// Check the program
-	{
-		GLint Result = GL_FALSE;
-		int InfoLogLength;
-		glGetProgramiv(program, GL_LINK_STATUS, &Result);
-		glGetProgramiv(program, GL_INFO_LOG_LENGTH, &InfoLogLength);
-		if (InfoLogLength > 0){
-			std::vector<char> ProgramErrorMessage(InfoLogLength + 1);
-			glGetProgramInfoLog(program, InfoLogLength, NULL, &ProgramErrorMessage[0]);
-			printf("%s\n", &ProgramErrorMessage[0]);
-		}
-	}
-	glUseProgram(program);
-
-	GLuint vao;
-	glGenVertexArrays(1, &vao);
-	glBindVertexArray(vao);
-
-	printOpenGLError();
-
-	return program;
-}
-
 void connections::initialize()
 {
 	clean();

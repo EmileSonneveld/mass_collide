@@ -39,7 +39,7 @@ int printOglError(const char *file, const int line)
 	glErr = glGetError();
 	if (glErr != GL_NO_ERROR)
 	{
-		std::cout << file << ":" << std::to_string(line) << " " << (char*)gluErrorString(glErr) << "\n";
+		//std::cout << file << ":" << std::to_string(line) << " " << (char*)gluErrorString(glErr) << "\n";
 
 		OutputDebugStringA(file);
 		OutputDebugStringA(": ");
