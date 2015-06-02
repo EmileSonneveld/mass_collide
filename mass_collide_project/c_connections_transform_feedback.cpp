@@ -33,11 +33,13 @@ void c_connections_transform_feedback::initialize(std::string file_name, bufferN
 {
 	m_transform_feedback_out = output_buffer_name;
 
+	glGenTextures(1, &m_texture_buffer);
+
 	m_program = LoadShaderWithTransformFeedback(file_name.c_str());
+	m_uniform_samplerPosition = glGetUniformLocation(m_program, "samplerPosition");
+	m_uniform_samplerVelocity = glGetUniformLocation(m_program, "samplerVelocity");
 	m_in_attrib_position = glGetAttribLocation(m_program, "inPosition");
 	m_in_attrib_velocity = glGetAttribLocation(m_program, "inVelocity");
-	m_uniform_buff_position = glGetUniformLocation(m_program, "buffPosition");
-	m_uniform_buff_velocity = glGetUniformLocation(m_program, "buffVelocity");
 }
 
 void c_connections_transform_feedback::process(particle_data& particle_data_ref)
@@ -58,6 +60,24 @@ void c_connections_transform_feedback::process(particle_data& particle_data_ref)
 	glBindBuffer(GL_ARRAY_BUFFER, particle_data_ref.buffer[velocity]);
 	glVertexAttribPointer(m_in_attrib_velocity, 4, GL_FLOAT, GL_FALSE, 0, nullptr);
 	printOpenGLError();
+
+	////////////////////////////////////////////////////////////////////////
+
+	glActiveTexture(GL_TEXTURE0 + 0);
+	glBindTexture(GL_TEXTURE_2D, m_texture_buffer);
+	//glBindSampler is irrelavant
+
+	//glBindBuffer(GL_UNIFORM_BUFFER, particle_data_ref.buffer[position]);
+	glBindBuffer(GL_TEXTURE_BUFFER, particle_data_ref.buffer[velocity]);
+	glTexBuffer(GL_TEXTURE_BUFFER, GL_RGBA32F, particle_data_ref.buffer[velocity]);
+
+	//glActiveTexture(GL_TEXTURE0);
+	//glBindTexture(GL_TEXTURE_2D, m_texture_buffer);
+	glUniform1i(m_uniform_samplerVelocity, 0); // to user Texture Unit 0
+	
+	// GL_MAX_TEXTURE_BUFFER_SIZE is mininum 65536
+
+	////////////////////////////////////////////////////////////////////////
 
 	// GL_POINTS
 	// GL_LINES, GL_LINE_LOOP, GL_LINE_STRIP, GL_LINES_ADJACENCY, GL_LINE_STRIP_ADJACENCY

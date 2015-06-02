@@ -21,11 +21,14 @@ public:
 	void clean();
 
 private:
-	GLint m_program;
+	GLuint m_program;
 	GLint m_in_attrib_position = 0; //defined in shader
 	GLint m_in_attrib_velocity = 1; //defined in shader
-	GLint m_uniform_buff_position;
-	GLint m_uniform_buff_velocity;
+
+	GLuint m_uniform_samplerPosition;
+	GLuint m_uniform_samplerVelocity;
+
+	GLuint m_texture_buffer; // A Texture wich contains a link to a Buffer
 
 	bufferName m_transform_feedback_out = bufferName::position;
 };

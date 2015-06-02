@@ -43,9 +43,15 @@ void c_transform_feedback::process(particle_data& particle_data_ref)
 {
 	glUseProgram(m_program);
 
-    glEnable(GL_RASTERIZER_DISCARD);
+	glEnable(GL_RASTERIZER_DISCARD);
 	// bind our buffer to the Transform feedback
 	glBindBufferBase(GL_TRANSFORM_FEEDBACK_BUFFER, 0, particle_data_ref.buffer[swap]);
+
+	if (m_uniform_point != -1)
+	{
+		glm::vec4 pos = CursorToWorldspace(0.5);
+		glUniform3f(m_uniform_point, pos.x, pos.y, pos.z);
+	}
 
 	printOpenGLError();
 
