@@ -28,65 +28,35 @@ using namespace glm;
 #include "globals.h"
 
 
-GLint CompileComputeShader(const GLchar* filename)
-{
-	printOpenGLError();
-	GLuint shader = LoadTemporaryShader(filename, GL_VERTEX_SHADER);
-
-	GLuint program = glCreateProgram();
-	glAttachShader(program, shader);
-
-	printOpenGLError();
-	// transform feedback specefic
-	const GLchar* feedbackVaryings[] = { "outValue" };
-	// or GL_SEPARATE_ATTRIBS GL_INTERLEAVED_ATTRIBS
-	glTransformFeedbackVaryings(program, 1, feedbackVaryings, GL_INTERLEAVED_ATTRIBS);
-
-	printOpenGLError();
-
-	glLinkProgram(program);
-    glValidateProgram(program);
-
-	// Check the program
-	{
-		GLint Result = GL_FALSE;
-		int InfoLogLength;
-		glGetProgramiv(program, GL_LINK_STATUS, &Result);
-		glGetProgramiv(program, GL_INFO_LOG_LENGTH, &InfoLogLength);
-		if (InfoLogLength > 0){
-			std::vector<char> ProgramErrorMessage(InfoLogLength + 1);
-			glGetProgramInfoLog(program, InfoLogLength, NULL, &ProgramErrorMessage[0]);
-			printf("%s\n", &ProgramErrorMessage[0]);
-		}
-	}
-	glUseProgram(program);
-
-	GLuint vao;
-	glGenVertexArrays(1, &vao);
-	glBindVertexArray(vao);
-
-	printOpenGLError();
-
-	return program;
-}
 
 void c_transform_feedback::initialize(std::string file_name, bufferName output_buffer_name)
 {
 	m_transform_feedback_out = output_buffer_name;
 
-	m_program = CompileComputeShader(file_name.c_str());
+	m_program = LoadShaderWithTransformFeedback(file_name.c_str());
 	m_uniform_point = glGetUniformLocation(m_program, "point");
 	m_in_attrib_position = glGetAttribLocation(m_program, "inPosition");
 	m_in_attrib_velocity = glGetAttribLocation(m_program, "inVelocity");
 }
 
-void c_transform_feedback::process(particle_data& particle_data_ref) // ProccesPositions
+void c_transform_feedback::process(particle_data& particle_data_ref)
 {
 	glUseProgram(m_program);
 
-    glEnable(GL_RASTERIZER_DISCARD);
+	glEnable(GL_RASTERIZER_DISCARD);
 	// bind our buffer to the Transform feedback
 	glBindBufferBase(GL_TRANSFORM_FEEDBACK_BUFFER, 0, particle_data_ref.buffer[swap]);
+
+	if (m_uniform_point != -1)
+	{
+		if (GetPsSetting_Bool("enable_mouse_input", true))
+		{
+			glm::vec4 pos = CursorToWorldspace(0.5);
+			glUniform3f(m_uniform_point, pos.x, pos.y, pos.z);
+		}else{
+			glUniform3f(m_uniform_point, 9999, 9999, 9999);
+		}
+	}
 
 	printOpenGLError();
 
@@ -106,7 +76,7 @@ void c_transform_feedback::process(particle_data& particle_data_ref) // ProccesP
 	glDrawArrays(GL_POINTS, 0, particle_data_ref.COUNT);
 	glEndTransformFeedback();
 
-    glDisable(GL_RASTERIZER_DISCARD);
+	glDisable(GL_RASTERIZER_DISCARD);
 
 	glDisableVertexAttribArray(m_in_attrib_position);
 	glDisableVertexAttribArray(m_in_attrib_velocity);

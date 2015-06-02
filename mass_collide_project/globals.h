@@ -1,11 +1,13 @@
 #pragma once
 
-#include <stdio.h>
+//#include <stdio.h>
 
 #include <glm/glm.hpp>
 
 #define printOpenGLError() printOglError(__FILE__, __LINE__)
 int printOglError(const char *file, const int line);
+
+void printTransformFeedbackValues(int nr_catch_particles);
 
 extern double g_cursor_x;
 extern double g_cursor_y; // get set by particle smasher

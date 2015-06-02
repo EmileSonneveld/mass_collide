@@ -7,9 +7,13 @@ out vec4 outValue;
 
 
 void main() {
-	//outValue = inPosition + 0.01;
     outValue.x = inPosition.x + inVelocity.x;
 	outValue.y = inPosition.y + inVelocity.y;
 	outValue.z = inPosition.z + inVelocity.z;
 	outValue.a = inPosition.a;
+
+
+	if(inPosition.y<-10 && outValue.y < 0){
+		outValue.y = -10;
+	}
 }

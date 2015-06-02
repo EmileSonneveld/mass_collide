@@ -13,6 +13,7 @@ using namespace std;
 
 #include "shader.hpp"
 
+
 std::string getCodeFromFile(const char * file_path)
 {
 	// Read the Vertex Shader code from the file
@@ -85,4 +86,40 @@ GLuint LoadShaders(const char * vertex_file_path, const char * fragment_file_pat
 	glDeleteShader(FragmentShaderID);
 
 	return ProgramID;
+}
+
+GLuint LoadShaderWithTransformFeedback(const GLchar* filename)
+{
+	GLuint shader = LoadTemporaryShader(filename, GL_VERTEX_SHADER);
+
+	GLuint program = glCreateProgram();
+	glAttachShader(program, shader);
+
+	// transform feedback specefic
+	const GLchar* feedbackVaryings[] = { "outValue" };
+	// or GL_SEPARATE_ATTRIBS GL_INTERLEAVED_ATTRIBS
+	glTransformFeedbackVaryings(program, 1, feedbackVaryings, GL_INTERLEAVED_ATTRIBS);
+
+	glLinkProgram(program);
+	glValidateProgram(program);
+
+	// Check the program
+	{
+		GLint Result = GL_FALSE;
+		int InfoLogLength;
+		glGetProgramiv(program, GL_LINK_STATUS, &Result);
+		glGetProgramiv(program, GL_INFO_LOG_LENGTH, &InfoLogLength);
+		if (InfoLogLength > 0){
+			std::vector<char> ProgramErrorMessage(InfoLogLength + 1);
+			glGetProgramInfoLog(program, InfoLogLength, NULL, &ProgramErrorMessage[0]);
+			printf("%s\n", &ProgramErrorMessage[0]);
+		}
+	}
+	glUseProgram(program);
+
+	GLuint vao;
+	glGenVertexArrays(1, &vao);
+	glBindVertexArray(vao);
+
+	return program;
 }

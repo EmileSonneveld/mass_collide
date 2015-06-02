@@ -30,5 +30,3 @@ private:
 	GLint m_uniform_point;
 };
 
-
-//GLint CompileComputeShader(const GLchar* filename);

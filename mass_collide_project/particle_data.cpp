@@ -72,34 +72,61 @@ void initialize_buffers(particle_data& particle_data_ref)
 	
 
 
-	std::vector<unsigned int>data_indices(190000);
+	/////////////////////////////////////////////////////////
+
+	std::vector<unsigned int>data_indices(200000);
 
 	float distance = GetPsSetting_Float("connection_max_distance", 0.35f);
 	float distanseSqr = distance * distance;
 
+	const int maxConn = 4;
+	std::vector<unsigned int>data_indices_alt;
+	std::vector<float>data_length_alt;
+	data_indices_alt.reserve(particle_data_ref.COUNT * maxConn);
+	data_length_alt.reserve(particle_data_ref.COUNT * maxConn);
 	for (unsigned int ia = 0; ia < particle_data_ref.COUNT; ++ia){
+		int num = 0;
 		for (unsigned int ib = 0; ib < particle_data_ref.COUNT; ++ib){
 			if (ia == ib) continue;
 			auto len2 = glm::length2(data_pos[ia] - data_pos[ib]);
 			if (len2 < distanseSqr){
+
+				data_indices_alt.push_back(ib);
+				data_length_alt.push_back(sqrt(len2));
+
+
 				data_indices.push_back(ia);
 				data_indices.push_back(ib);
+
+				++num;
+				if (num >= maxConn){
+					break;
+				}
 			}
 		}
+		for (int rest = num; rest < maxConn; ++rest){
+			data_indices_alt.push_back(108); // data_indices_alt.size()); // a no connection magic number
+			data_length_alt.push_back(108); // must not be used
+		}
 	}
+
 	particle_data_ref.CONNECTION_COUNT = data_indices.size();
 
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, particle_data_ref.buffer[connection_index]);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, data_indices.size() * sizeof(unsigned int), &data_indices[0], GL_STATIC_DRAW);
 
+	glBindBuffer(GL_TEXTURE_BUFFER, particle_data_ref.buffer[connection_index_alt]);
+	glBufferData(GL_TEXTURE_BUFFER, data_indices_alt.size() * sizeof(unsigned int), &data_indices_alt[0], GL_DYNAMIC_DRAW);
 
+	glBindBuffer(GL_TEXTURE_BUFFER, particle_data_ref.buffer[connection_length_alt]);
+	glBufferData(GL_TEXTURE_BUFFER, data_length_alt.size() * sizeof(float), &data_length_alt[0], GL_DYNAMIC_DRAW);
 
 	// Create and initialize the Buffer Objects on the GPU //
 	/////////////////////////////////////////////////////////
 
-	glBindBuffer(GL_ARRAY_BUFFER, particle_data_ref.buffer[position]);
+	glBindBuffer(GL_TEXTURE_BUFFER, particle_data_ref.buffer[position]);
 	glBufferData(
-		GL_ARRAY_BUFFER,
+		GL_TEXTURE_BUFFER,
 		particle_data_ref.COUNT * sizeof(vec4),
 		data_pos,
 		GL_DYNAMIC_DRAW
@@ -127,10 +154,10 @@ void initialize_swap_buffer(particle_data& particle_data_ref)
 		);
 }
 
-void initialize_velocity(particle_data& particle_data_ref)
+void initialize_velocity_random(particle_data& particle_data_ref)
 {
 	std::default_random_engine generator;
-	std::normal_distribution<float> distribution(0, 0.05f);
+	std::normal_distribution<float> distribution(0,GetPsSetting_Float("init_random_velocity", 0.05f));
 
 	auto* data_random_vel = new vec4[particle_data_ref.COUNT];
 	for (unsigned int i = 0; i < particle_data_ref.COUNT; ++i){
