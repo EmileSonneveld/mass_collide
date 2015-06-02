@@ -52,6 +52,18 @@ int printOglError(const char *file, const int line)
 	return retCode;
 }
 
+void printTransformFeedbackValues(int nr_catch_particles)
+{
+	// get the data back to CPU
+	vec4* feedback = new vec4[nr_catch_particles];
+	glGetBufferSubData(GL_TRANSFORM_FEEDBACK_BUFFER, 0, nr_catch_particles * sizeof(vec4), feedback);
+	for (int i = 0; i < nr_catch_particles; ++i){
+		printf("feedback f: %f %f %f %f\n", feedback[i].x, feedback[i].y, feedback[i].z, feedback[i].a);
+	}
+	printf("-----------------------\n");
+	delete feedback;
+}
+
 double g_cursor_x, g_cursor_y; // get set by particle smasher
 
 extern GLFWwindow* window;

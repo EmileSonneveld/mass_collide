@@ -12,7 +12,13 @@ class c_connections_transform_feedback : calculate
 {
 public:
 	c_connections_transform_feedback() :
-		m_program(0)
+		m_program(-2),
+		m_in_attrib_position(-2),
+		m_in_attrib_velocity(-2),
+		m_uniform_samplerPosition(-2),
+		m_uniform_samplerOtherIndex(-2),
+		m_texture_buffer(-2),
+		m_texture_buffer_OtherIndex(-2)
 	{}
 	virtual ~c_connections_transform_feedback(){}
 
@@ -24,15 +30,13 @@ private:
 	GLuint m_program;
 	GLint m_in_attrib_position;
 	GLint m_in_attrib_velocity;
-	//GLint m_in_attrib_otherIndex;
-	//GLint m_in_attrib_lengthToOther;
 
-	GLuint m_uniform_samplerPosition;
-	GLuint m_uniform_samplerOtherIndex;
+	GLint m_uniform_samplerPosition;
+	GLint m_uniform_samplerOtherIndex;
 
 	GLuint m_texture_buffer; // A Texture wich contains a link to a Buffer
 	GLuint m_texture_buffer_OtherIndex;
 
-	bufferName m_transform_feedback_out = bufferName::position;
+	bufferName m_transform_feedback_out;
 };
 

@@ -120,20 +120,13 @@ void c_connections_transform_feedback::process(particle_data& particle_data_ref)
 	particle_data_ref.buffer[swap] = particle_data_ref.buffer[m_transform_feedback_out];
 	particle_data_ref.buffer[m_transform_feedback_out] = tmp_result;
 
-	// get the data back to CPU
-	auto nr_catch_particles = min(5U, particle_data_ref.COUNT);
-	vec4* feedback = new vec4[nr_catch_particles];
-	glGetBufferSubData(GL_TRANSFORM_FEEDBACK_BUFFER, 0, nr_catch_particles * sizeof(vec4), feedback);
-	for (int i = 0; i < nr_catch_particles; ++i){
-		printf("feedback f: %f %f %f %f\n", feedback[i].x, feedback[i].y, feedback[i].z, feedback[i].a);
-	}
-	printf("-----------------------\n");
+	printTransformFeedbackValues(min(5U, particle_data_ref.COUNT));
 	printOpenGLError();
 }
 
 void c_connections_transform_feedback::clean()
 {
-	if (m_program != 0)
+	if (m_program < 0)
 		glDeleteProgram(m_program);
-	m_program = 0;
+	m_program = -2;
 }
