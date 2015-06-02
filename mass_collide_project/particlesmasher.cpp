@@ -150,7 +150,7 @@ int main_windows_managment()
 	particle_data_inst.COUNT = GetPsSetting_Int("count", 100);
 	initialize_swap_buffer(particle_data_inst);
 	initialize_buffers(particle_data_inst);
-	initialize_velocity(particle_data_inst);
+	initialize_velocity_random(particle_data_inst);
 
 	c_particle_draw particle_draw;
 	c_transform_feedback transform_positions;
@@ -161,7 +161,7 @@ int main_windows_managment()
 	particle_draw.initialize();
 	transform_positions.initialize("rc/compute.glsl", bufferName::position);
 	transform_velocities.initialize("rc/forces.glsl", bufferName::velocity);
-	connection_force.initialize("rc/connection_force.glsl", bufferName::position);
+	connection_force.initialize("rc/connection_force.glsl", bufferName::velocity);
 	connections_draw.initialize();
 	//////////////////////////////////////////////////////////////
 	bool isFirstTime = true;
@@ -189,12 +189,13 @@ int main_windows_managment()
 			particle_draw.clean();
 			transform_positions.clean();
 			transform_velocities.clean();
+			connection_force.clean();
 			connections_draw.clean();
 
 			particle_draw.initialize();
 			transform_positions.initialize("rc/compute.glsl", bufferName::position);
 			transform_velocities.initialize("rc/forces.glsl", bufferName::velocity);
-			connection_force.initialize("rc/connection_force.glsl", bufferName::position);
+			connection_force.initialize("rc/connection_force.glsl", bufferName::velocity);
 			connections_draw.initialize();
 		}
 		if (glfwGetKey(window, GLFW_KEY_T) == GLFW_PRESS){
@@ -202,7 +203,7 @@ int main_windows_managment()
 			particle_data_inst.COUNT = GetPsSetting_Int("count", 100);
 			initialize_swap_buffer(particle_data_inst);
 			initialize_buffers(particle_data_inst);
-			initialize_velocity(particle_data_inst);
+			initialize_velocity_random(particle_data_inst);
 		}
 		particle_draw.process(particle_data_inst);
 		if (glfwGetKey(window, GLFW_KEY_C) != GLFW_PRESS){

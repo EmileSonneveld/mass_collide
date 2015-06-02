@@ -34,61 +34,82 @@ void c_connections_transform_feedback::initialize(std::string file_name, bufferN
 	m_transform_feedback_out = output_buffer_name;
 
 	glGenTextures(1, &m_texture_buffer);
+	glGenTextures(1, &m_texture_buffer_OtherIndex);
 
 	m_program = LoadShaderWithTransformFeedback(file_name.c_str());
 	m_uniform_samplerPosition = glGetUniformLocation(m_program, "samplerPosition");
-	m_uniform_samplerVelocity = glGetUniformLocation(m_program, "samplerVelocity");
+	m_uniform_samplerOtherIndex = glGetUniformLocation(m_program, "samplerOtherIndex");
 	m_in_attrib_position = glGetAttribLocation(m_program, "inPosition");
 	m_in_attrib_velocity = glGetAttribLocation(m_program, "inVelocity");
+	//m_in_attrib_otherIndex = glGetAttribLocation(m_program, "inOtherIndex");
+	//m_in_attrib_lengthToOther = glGetAttribLocation(m_program, "inLengthToOther");
 }
 
 void c_connections_transform_feedback::process(particle_data& particle_data_ref)
 {
 	glUseProgram(m_program);
 
-    glEnable(GL_RASTERIZER_DISCARD);
-	// bind our buffer to the Transform feedback
+	glEnable(GL_RASTERIZER_DISCARD);
 	glBindBufferBase(GL_TRANSFORM_FEEDBACK_BUFFER, 0, particle_data_ref.buffer[swap]);
 
 	printOpenGLError();
 
-	glEnableVertexAttribArray(m_in_attrib_position);
-	glBindBuffer(GL_ARRAY_BUFFER, particle_data_ref.buffer[position]);
-	glVertexAttribPointer(m_in_attrib_position, 4, GL_FLOAT, GL_FALSE, 0, nullptr);
-
+	if (m_in_attrib_position != -1){
+		glEnableVertexAttribArray(m_in_attrib_position);
+		glBindBuffer(GL_ARRAY_BUFFER, particle_data_ref.buffer[position]);
+		glVertexAttribPointer(m_in_attrib_position, 4, GL_FLOAT, GL_FALSE, 0, nullptr);
+	}
 	glEnableVertexAttribArray(m_in_attrib_velocity);
 	glBindBuffer(GL_ARRAY_BUFFER, particle_data_ref.buffer[velocity]);
 	glVertexAttribPointer(m_in_attrib_velocity, 4, GL_FLOAT, GL_FALSE, 0, nullptr);
+
+	// glEnableVertexAttribArray(m_in_attrib_otherIndex);
+	// glBindBuffer(GL_ARRAY_BUFFER, particle_data_ref.buffer[connection_index_alt]);
+	// glVertexAttribPointer(m_in_attrib_otherIndex, 1, GL_INT, GL_FALSE, 0, nullptr);
+	// 
+	// glEnableVertexAttribArray(m_in_attrib_lengthToOther);
+	// glBindBuffer(GL_ARRAY_BUFFER, particle_data_ref.buffer[connection_length_alt]);
+	// glVertexAttribPointer(m_in_attrib_lengthToOther, 1, GL_FLOAT, GL_FALSE, 0, nullptr);
 	printOpenGLError();
 
 	////////////////////////////////////////////////////////////////////////
 
 	glActiveTexture(GL_TEXTURE0 + 0);
-	glBindTexture(GL_TEXTURE_2D, m_texture_buffer);
+	glBindTexture(GL_TEXTURE_BUFFER, m_texture_buffer);
 	//glBindSampler is irrelavant
+	//glBindBuffer(GL_TEXTURE_BUFFER, particle_data_ref.buffer[position]);
+	glTexBuffer(GL_TEXTURE_BUFFER, GL_RGBA32F, particle_data_ref.buffer[position]);
+	glUniform1i(m_uniform_samplerPosition, 0); // to user Texture Unit 0
+	printOpenGLError();
 
-	//glBindBuffer(GL_UNIFORM_BUFFER, particle_data_ref.buffer[position]);
-	glBindBuffer(GL_TEXTURE_BUFFER, particle_data_ref.buffer[velocity]);
-	glTexBuffer(GL_TEXTURE_BUFFER, GL_RGBA32F, particle_data_ref.buffer[velocity]);
-
-	//glActiveTexture(GL_TEXTURE0);
-	//glBindTexture(GL_TEXTURE_2D, m_texture_buffer);
-	glUniform1i(m_uniform_samplerVelocity, 0); // to user Texture Unit 0
-	
-	// GL_MAX_TEXTURE_BUFFER_SIZE is mininum 65536
-
+	glActiveTexture(GL_TEXTURE0 + 1);
+	glBindTexture(GL_TEXTURE_BUFFER, m_texture_buffer_OtherIndex);
+	//glBindSampler is irrelavant
+	//glBindBuffer(GL_TEXTURE_BUFFER, particle_data_ref.buffer[bufferName::connection_index_alt]);
+	glTexBuffer(GL_TEXTURE_BUFFER, GL_R32I, particle_data_ref.buffer[connection_index_alt]);
+	glUniform1i(m_uniform_samplerOtherIndex, 1); // user Texture Unit
+	printOpenGLError();
 	////////////////////////////////////////////////////////////////////////
 
-	// GL_POINTS
-	// GL_LINES, GL_LINE_LOOP, GL_LINE_STRIP, GL_LINES_ADJACENCY, GL_LINE_STRIP_ADJACENCY
-	// GL_TRIANGLES, GL_TRIANGLE_STRIP, GL_TRIANGLE_FAN, GL_TRIANGLES_ADJACENCY, GL_TRIANGLE_STRIP_ADJACENCY
 	glBeginTransformFeedback(GL_POINTS);
+
 	glDrawArrays(GL_POINTS, 0, particle_data_ref.COUNT);
+
+	// glVertexAttribDivisor(m_in_attrib_otherIndex, 4);
+	// glVertexAttribDivisor(m_in_attrib_lengthToOther, 4);
+	// glDrawArraysInstanced(GL_POINTS, 0, 4, particle_data_ref.COUNT);
+	// glVertexAttribDivisor(m_in_attrib_otherIndex, 0);
+	// glVertexAttribDivisor(m_in_attrib_lengthToOther, 0);
+
 	glEndTransformFeedback();
 
-    glDisable(GL_RASTERIZER_DISCARD);
+	glBindTexture(GL_TEXTURE_2D, 0);
 
-	glDisableVertexAttribArray(m_in_attrib_position);
+	glDisable(GL_RASTERIZER_DISCARD);
+
+	if (m_in_attrib_position != -1){
+		glDisableVertexAttribArray(m_in_attrib_position);
+	}
 	glDisableVertexAttribArray(m_in_attrib_velocity);
 
 	printOpenGLError();
@@ -98,6 +119,16 @@ void c_connections_transform_feedback::process(particle_data& particle_data_ref)
 	auto tmp_result = particle_data_ref.buffer[swap];
 	particle_data_ref.buffer[swap] = particle_data_ref.buffer[m_transform_feedback_out];
 	particle_data_ref.buffer[m_transform_feedback_out] = tmp_result;
+
+	// get the data back to CPU
+	auto nr_catch_particles = min(5U, particle_data_ref.COUNT);
+	vec4* feedback = new vec4[nr_catch_particles];
+	glGetBufferSubData(GL_TRANSFORM_FEEDBACK_BUFFER, 0, nr_catch_particles * sizeof(vec4), feedback);
+	for (int i = 0; i < nr_catch_particles; ++i){
+		printf("feedback f: %f %f %f %f\n", feedback[i].x, feedback[i].y, feedback[i].z, feedback[i].a);
+	}
+	printf("-----------------------\n");
+	printOpenGLError();
 }
 
 void c_connections_transform_feedback::clean()

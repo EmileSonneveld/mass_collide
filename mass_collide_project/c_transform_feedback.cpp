@@ -49,8 +49,13 @@ void c_transform_feedback::process(particle_data& particle_data_ref)
 
 	if (m_uniform_point != -1)
 	{
-		glm::vec4 pos = CursorToWorldspace(0.5);
-		glUniform3f(m_uniform_point, pos.x, pos.y, pos.z);
+		if (GetPsSetting_Bool("enable_mouse_input", true))
+		{
+			glm::vec4 pos = CursorToWorldspace(0.5);
+			glUniform3f(m_uniform_point, pos.x, pos.y, pos.z);
+		}else{
+			glUniform3f(m_uniform_point, 9999, 9999, 9999);
+		}
 	}
 
 	printOpenGLError();
@@ -71,7 +76,7 @@ void c_transform_feedback::process(particle_data& particle_data_ref)
 	glDrawArrays(GL_POINTS, 0, particle_data_ref.COUNT);
 	glEndTransformFeedback();
 
-    glDisable(GL_RASTERIZER_DISCARD);
+	glDisable(GL_RASTERIZER_DISCARD);
 
 	glDisableVertexAttribArray(m_in_attrib_position);
 	glDisableVertexAttribArray(m_in_attrib_velocity);

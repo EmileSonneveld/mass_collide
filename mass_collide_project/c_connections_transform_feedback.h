@@ -22,13 +22,16 @@ public:
 
 private:
 	GLuint m_program;
-	GLint m_in_attrib_position = 0; //defined in shader
-	GLint m_in_attrib_velocity = 1; //defined in shader
+	GLint m_in_attrib_position;
+	GLint m_in_attrib_velocity;
+	//GLint m_in_attrib_otherIndex;
+	//GLint m_in_attrib_lengthToOther;
 
 	GLuint m_uniform_samplerPosition;
-	GLuint m_uniform_samplerVelocity;
+	GLuint m_uniform_samplerOtherIndex;
 
 	GLuint m_texture_buffer; // A Texture wich contains a link to a Buffer
+	GLuint m_texture_buffer_OtherIndex;
 
 	bufferName m_transform_feedback_out = bufferName::position;
 };

@@ -18,6 +18,7 @@ enum bufferName
 	velocity,
 	connection_index,
 	connection_index_alt,
+	connection_length_alt,
 	size_element
 };
 
@@ -40,4 +41,4 @@ struct particle_data
 
 void initialize_buffers(particle_data& particle_data_ref);
 void initialize_swap_buffer(particle_data& particle_data_ref);
-void initialize_velocity(particle_data& particle_data_ref);
+void initialize_velocity_random(particle_data& particle_data_ref);
