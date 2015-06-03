@@ -33,9 +33,11 @@ private:
 
 	GLint m_uniform_samplerPosition;
 	GLint m_uniform_samplerOtherIndex;
+	GLint m_uniform_samplerLengthToOther;
 
 	GLuint m_texture_buffer; // A Texture wich contains a link to a Buffer
 	GLuint m_texture_buffer_OtherIndex;
+	GLuint m_texture_buffer_LengthToOther;
 
 	bufferName m_transform_feedback_out;
 };

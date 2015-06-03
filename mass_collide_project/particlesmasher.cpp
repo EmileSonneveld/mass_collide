@@ -147,10 +147,9 @@ int main_windows_managment()
 
 	//////////////////////////////////////////////////////////////
 	particle_data particle_data_inst;
-	particle_data_inst.COUNT = GetPsSetting_Int("count", 100);
-	initialize_swap_buffer(particle_data_inst);
-	initialize_buffers(particle_data_inst);
-	initialize_velocity_random(particle_data_inst);
+	data data_inst;
+	data_inst.doAllTheInitisation(particle_data_inst);
+
 
 	c_particle_draw particle_draw;
 	c_transform_feedback transform_positions;
@@ -200,10 +199,9 @@ int main_windows_managment()
 		}
 		if (glfwGetKey(window, GLFW_KEY_T) == GLFW_PRESS){
 			reader = INIReader("rc/settings.ini");
-			particle_data_inst.COUNT = GetPsSetting_Int("count", 100);
-			initialize_swap_buffer(particle_data_inst);
-			initialize_buffers(particle_data_inst);
-			initialize_velocity_random(particle_data_inst);
+			data_inst.clean();
+			data_inst = data();
+			data_inst.doAllTheInitisation(particle_data_inst);
 		}
 		particle_draw.process(particle_data_inst);
 		if (glfwGetKey(window, GLFW_KEY_C) != GLFW_PRESS){
@@ -211,6 +209,8 @@ int main_windows_managment()
 			printOpenGLError();
 		}
 		if (glfwGetKey(window, GLFW_KEY_V) == GLFW_PRESS){
+			transform_positions.process(particle_data_inst);
+			transform_velocities.process(particle_data_inst);
 			connection_force.process(particle_data_inst);
 			printOpenGLError();
 		}

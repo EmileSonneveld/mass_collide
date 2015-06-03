@@ -35,14 +35,14 @@ void c_connections_transform_feedback::initialize(std::string file_name, bufferN
 
 	glGenTextures(1, &m_texture_buffer);
 	glGenTextures(1, &m_texture_buffer_OtherIndex);
+	glGenTextures(1, &m_texture_buffer_LengthToOther);
 
 	m_program = LoadShaderWithTransformFeedback(file_name.c_str());
 	m_uniform_samplerPosition = glGetUniformLocation(m_program, "samplerPosition");
 	m_uniform_samplerOtherIndex = glGetUniformLocation(m_program, "samplerOtherIndex");
+	m_uniform_samplerLengthToOther = glGetUniformLocation(m_program, "samplerLengthToOther");
 	m_in_attrib_position = glGetAttribLocation(m_program, "inPosition");
 	m_in_attrib_velocity = glGetAttribLocation(m_program, "inVelocity");
-	//m_in_attrib_otherIndex = glGetAttribLocation(m_program, "inOtherIndex");
-	//m_in_attrib_lengthToOther = glGetAttribLocation(m_program, "inLengthToOther");
 }
 
 void c_connections_transform_feedback::process(particle_data& particle_data_ref)
@@ -77,17 +77,21 @@ void c_connections_transform_feedback::process(particle_data& particle_data_ref)
 	glActiveTexture(GL_TEXTURE0 + 0);
 	glBindTexture(GL_TEXTURE_BUFFER, m_texture_buffer);
 	//glBindSampler is irrelavant
-	//glBindBuffer(GL_TEXTURE_BUFFER, particle_data_ref.buffer[position]);
 	glTexBuffer(GL_TEXTURE_BUFFER, GL_RGBA32F, particle_data_ref.buffer[position]);
-	glUniform1i(m_uniform_samplerPosition, 0); // to user Texture Unit 0
-	printOpenGLError();
+	glUniform1i(m_uniform_samplerPosition, 0); // to user Texture Unit
 
 	glActiveTexture(GL_TEXTURE0 + 1);
 	glBindTexture(GL_TEXTURE_BUFFER, m_texture_buffer_OtherIndex);
 	//glBindSampler is irrelavant
-	//glBindBuffer(GL_TEXTURE_BUFFER, particle_data_ref.buffer[bufferName::connection_index_alt]);
 	glTexBuffer(GL_TEXTURE_BUFFER, GL_R32I, particle_data_ref.buffer[connection_index_alt]);
-	glUniform1i(m_uniform_samplerOtherIndex, 1); // user Texture Unit
+	glUniform1i(m_uniform_samplerOtherIndex, 1); // to user Texture Unit
+
+	glActiveTexture(GL_TEXTURE0 + 2);
+	glBindTexture(GL_TEXTURE_BUFFER, m_texture_buffer_LengthToOther);
+	//glBindSampler is irrelavant
+	glTexBuffer(GL_TEXTURE_BUFFER, GL_R32F, particle_data_ref.buffer[connection_length_alt]);
+	glUniform1i(m_uniform_samplerLengthToOther, 2); // to user Texture Unit
+
 	printOpenGLError();
 	////////////////////////////////////////////////////////////////////////
 
@@ -120,6 +124,7 @@ void c_connections_transform_feedback::process(particle_data& particle_data_ref)
 	particle_data_ref.buffer[swap] = particle_data_ref.buffer[m_transform_feedback_out];
 	particle_data_ref.buffer[m_transform_feedback_out] = tmp_result;
 
+	printf("vel after connection_force.glsl \n");
 	printTransformFeedbackValues(min(5U, particle_data_ref.COUNT));
 	printOpenGLError();
 }
