@@ -52,7 +52,8 @@ GLuint LoadTemporaryShader(const char * glsl_file_path, GLenum kind)
 	if (InfoLogLength > 0){
 		std::vector<char> ErrorMessage(InfoLogLength + 1);
 		glGetShaderInfoLog(shaderID, InfoLogLength, NULL, &ErrorMessage[0]);
-		printf("%s\n", &ErrorMessage[0]);
+		if (ErrorMessage[0] != '\0')
+			printf("%s\n", &ErrorMessage[0]);
 	}
 
 	return shaderID; // !needs to get deleted after program creation!
@@ -79,7 +80,8 @@ GLuint LoadShaders(const char * vertex_file_path, const char * fragment_file_pat
 	if ( InfoLogLength > 0 ){
 		std::vector<char> ErrorMessage(InfoLogLength + 1);
 		glGetProgramInfoLog(ProgramID, InfoLogLength, NULL, &ErrorMessage[0]);
-		printf("%s\n", &ErrorMessage[0]);
+		if (ErrorMessage[0] != '\0')
+			printf("%s\n", &ErrorMessage[0]);
 	}
 
 	glDeleteShader(VertexShaderID);
@@ -110,9 +112,10 @@ GLuint LoadShaderWithTransformFeedback(const GLchar* filename)
 		glGetProgramiv(program, GL_LINK_STATUS, &Result);
 		glGetProgramiv(program, GL_INFO_LOG_LENGTH, &InfoLogLength);
 		if (InfoLogLength > 0){
-			std::vector<char> ProgramErrorMessage(InfoLogLength + 1);
-			glGetProgramInfoLog(program, InfoLogLength, NULL, &ProgramErrorMessage[0]);
-			printf("%s\n", &ProgramErrorMessage[0]);
+			std::vector<char> ErrorMessage(InfoLogLength + 1);
+			glGetProgramInfoLog(program, InfoLogLength, NULL, &ErrorMessage[0]);
+			if (ErrorMessage[0] != '\0')
+				printf("%s\n", &ErrorMessage[0]);
 		}
 	}
 	glUseProgram(program);

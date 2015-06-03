@@ -112,6 +112,19 @@ void initialize_buffers(particle_data& particle_data_ref)
 
 	particle_data_ref.CONNECTION_COUNT = data_indices.size();
 
+	std::cout << "data_indices_alt [";
+	for (int i = 0; i < data_indices_alt.size(); i += 1){
+		if (i%maxConn == 0){
+			std::cout << "\n   ";
+			if (i > 5){
+				std::cout << "...";
+				break;
+			}
+		}
+		std::cout << data_indices_alt[i] << " ";
+	}
+	std::cout << "\n]\n";
+
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, particle_data_ref.buffer[connection_index]);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, data_indices.size() * sizeof(unsigned int), &data_indices[0], GL_STATIC_DRAW);
 

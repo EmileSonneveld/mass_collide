@@ -54,13 +54,13 @@ int printOglError(const char *file, const int line)
 
 void printTransformFeedbackValues(int nr_catch_particles)
 {
+	printf("--- buffer feedback ---\n");
 	// get the data back to CPU
 	vec4* feedback = new vec4[nr_catch_particles];
 	glGetBufferSubData(GL_TRANSFORM_FEEDBACK_BUFFER, 0, nr_catch_particles * sizeof(vec4), feedback);
 	for (int i = 0; i < nr_catch_particles; ++i){
-		printf("feedback f: %f %f %f %f\n", feedback[i].x, feedback[i].y, feedback[i].z, feedback[i].a);
+		printf("feedback: %f %f %f %f\n", feedback[i].x, feedback[i].y, feedback[i].z, feedback[i].a);
 	}
-	printf("-----------------------\n");
 	delete feedback;
 }
 
