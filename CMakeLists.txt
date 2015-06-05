@@ -47,7 +47,7 @@ include_directories(
 	external/glfw-3.0.3/include/GLFW/
 	external/glm-0.9.4.0/
 	external/glew-1.9.0/include/
-	external/assimp-3.0.1270/include/
+	external/assimp/include/
 	external/bullet-2.81-rev2613/src/
 	.
 )
@@ -80,6 +80,7 @@ add_executable(playground
 
 target_link_libraries(playground
 	${ALL_LIBS}
+	assimp
 )
 
 # Xcode and Visual working directories

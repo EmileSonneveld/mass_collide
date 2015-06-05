@@ -151,10 +151,10 @@ target_link_libraries(ANTTWEAKBAR_116_OGLCORE_GLFW
 include(CheckIncludeFile)
 include(CheckTypeSize)
 include(CheckFunctionExists)
-add_subdirectory( assimp-3.0.1270/contrib/zlib )
+add_subdirectory( assimp/contrib/zlib )
 
 # Compile without Boost
-include_directories( assimp-3.0.1270/code/BoostWorkaround )
+include_directories( assimp/code/BoostWorkaround )
 add_definitions( -DASSIMP_BUILD_BOOST_WORKAROUND )
 
 # Compile AssImp
@@ -163,7 +163,7 @@ set(LIBASSIMP_COMPONENT libassimp3.0-r1270-OGLtuts)
 set(ZLIB_LIBRARIES zlib)
 set(BUILD_STATIC_LIB ON)
 #set(ZLIB_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/zlib)
-add_subdirectory( assimp-3.0.1270/code )
+add_subdirectory( assimp/code )
 
 
 ### BULLET ###
