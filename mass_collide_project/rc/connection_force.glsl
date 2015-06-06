@@ -9,6 +9,8 @@ uniform samplerBuffer samplerPosition;
 uniform usamplerBuffer samplerOtherIndex;
 uniform samplerBuffer samplerLengthToOther;
 
+#define MAX_CONNECTIONS 26
+
 void main()
 {
 	outValue = inVelocity;
@@ -16,9 +18,9 @@ void main()
 	vec3 summedForce = vec3(0,0,0);
 	int total = 0;
 	//int i=0;
-	for(int i=0; i<4; ++i){
+	for(int i=0; i<MAX_CONNECTIONS; ++i){
 
-		int otherIndex = int( texelFetch(samplerOtherIndex, gl_VertexID*4 + i).x );
+		int otherIndex = int( texelFetch(samplerOtherIndex, gl_VertexID*MAX_CONNECTIONS + i).x );
 
 		if(otherIndex == 108){
 			//outValue.a = 898;
@@ -26,7 +28,7 @@ void main()
 		}
 		++total;
 
-		float targetLen = texelFetch(samplerLengthToOther, gl_VertexID*4 + i).x;
+		float targetLen = texelFetch(samplerLengthToOther, gl_VertexID*MAX_CONNECTIONS + i).x;
 		vec3 pos1 = texelFetch(samplerPosition, gl_VertexID).xyz;
 		vec3 pos2 = texelFetch(samplerPosition, otherIndex).xyz;
 
@@ -34,7 +36,7 @@ void main()
 		float len = length(deltaVec);
 		if(len == 0) continue;
 		float difference = len - targetLen;
-		float k=-0.2;
+		float k=-0.9;
 		float strength = k * difference;
 		//float strength = pow( difference , 1/3f);
 		summedForce += deltaVec/len * strength;

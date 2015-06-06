@@ -4,14 +4,6 @@
 #include <glm/glm.hpp>
 using namespace glm;
 
-struct data_struct 
-{
-	GLuint buffer;
-	void* cpuPtr;
-	bool isBufferUpToDate;
-	unsigned int size;
-};
-
 // add an element to this enum to use a shared
 enum bufferName
 {
@@ -39,6 +31,7 @@ struct particle_data
 	GLuint buffer[size_element];
 
 	unsigned int CONNECTION_COUNT;
+	unsigned int MAX_CONNECTIONS;
 	unsigned int COUNT = 100000;
 };
 
@@ -80,6 +73,7 @@ private:
 	std::vector<unsigned int> m_indices_alt;
 	std::vector<float> m_length_alt;
 	unsigned int m_connection_count;
+	unsigned int m_max_connections;
 
 	void generate_colors_random();
 	void generate_colors_sinus();

@@ -47,6 +47,11 @@ void c_connections_transform_feedback::initialize(std::string file_name, bufferN
 
 void c_connections_transform_feedback::process(particle_data& particle_data_ref)
 {
+	if (particle_data_ref.CONNECTION_COUNT == 0)
+	{
+		// there is nothing to do here if there are no connections
+		return; 
+	}
 	glUseProgram(m_program);
 
 	glEnable(GL_RASTERIZER_DISCARD);

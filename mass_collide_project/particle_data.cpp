@@ -78,18 +78,19 @@ void data::generate_positions_structured()
 	if (m_pos == nullptr)
 		m_pos = new vec4[m_count];
 	float particle_size = GetPsSetting_Float("particle_size", 0.04f);
+	unsigned int sizecount = (unsigned int)GetPsSetting_Int("structured_box_sizecount", 50);
+	float size = GetPsSetting_Float("structured_box_distance", 0.2f);
 	for (unsigned int i = 0; i < m_count; ++i){
-		float size = 0.1f;
-		m_pos[i].x = (i / 1 % 100) * size;
-		m_pos[i].y = (i / 100 % 100) * size;
-		m_pos[i].z = (i / 100 / 100 % 100) * size;
+		m_pos[i].x = (i / 1 % sizecount) * size;
+		m_pos[i].y = (i / sizecount % sizecount) * size;
+		m_pos[i].z = (i / sizecount / sizecount % sizecount) * size;
 		m_pos[i].a = particle_size;
 	}
 }
 
 void data::load_positions_from_model(const char* file_name)
 {
-	auto assimpScene = aiImportFile(file_name,  aiProcess_JoinIdenticalVertices);
+	auto assimpScene = aiImportFile(file_name, aiProcess_JoinIdenticalVertices);
 	//auto nd = assimpScene->mRootNode;  aiProcessPreset_TargetRealtime_MaxQuality |
 	float particle_size = GetPsSetting_Float("particle_size", 0.04f);
 
@@ -137,13 +138,14 @@ void data::generate_indexes()
 	float distance = GetPsSetting_Float("connection_max_distance", 0.35f);
 	float distanseSqr = distance * distance;
 
-	const int maxConn = 4;
-	m_indices_alt.reserve(m_count * maxConn);
-	m_length_alt.reserve(m_count * maxConn);
+	m_max_connections = 26;
+
+	m_indices_alt.reserve(m_count * m_max_connections);
+	m_length_alt.reserve(m_count * m_max_connections);
 
 	for (unsigned int ia = 0; ia < m_count; ++ia)
 	{
-		int num = 0;
+		unsigned int num = 0;
 		for (unsigned int ib = 0; ib < m_count; ++ib){
 			if (ia == ib) continue;
 			auto len2 = glm::length2(m_pos[ia] - m_pos[ib]);
@@ -157,12 +159,12 @@ void data::generate_indexes()
 				m_indices.push_back(ib);
 
 				++num;
-				if (num >= maxConn){
+				if (num >= m_max_connections){
 					break;
 				}
 			}
 		}
-		for (int rest = num; rest < maxConn; ++rest)
+		for (unsigned int rest = num; rest < m_max_connections; ++rest)
 		{
 			m_indices_alt.push_back(108); // m_indices_alt.size()); // a no connection magic number
 			m_length_alt.push_back(108); // must not be used
@@ -173,7 +175,7 @@ void data::generate_indexes()
 
 	std::cout << "m_indices_alt [";
 	for (unsigned int i = 0; i < m_indices_alt.size(); i += 1){
-		if (i%maxConn == 0){
+		if (i%m_max_connections == 0){
 			std::cout << "\n   ";
 			if (i > 5){
 				std::cout << "...";
@@ -190,6 +192,7 @@ void data::generate_indexes()
 void data::initialize_buffers_from_data(particle_data& particle_data_ref)
 {
 	particle_data_ref.COUNT = m_count;
+	particle_data_ref.MAX_CONNECTIONS = m_max_connections;
 	particle_data_ref.CONNECTION_COUNT = m_connection_count;
 
 	glBindBuffer(GL_TEXTURE_BUFFER, particle_data_ref.buffer[position]);
@@ -204,14 +207,16 @@ void data::initialize_buffers_from_data(particle_data& particle_data_ref)
 	glBindBuffer(GL_ARRAY_BUFFER, particle_data_ref.buffer[swap]);
 	glBufferData(GL_ARRAY_BUFFER, particle_data_ref.COUNT * sizeof(vec4), nullptr, GL_DYNAMIC_DRAW);
 
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, particle_data_ref.buffer[connection_index]);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, m_indices.size() * sizeof(unsigned int), &m_indices[0], GL_STATIC_DRAW);
+	if (particle_data_ref.CONNECTION_COUNT > 0){
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, particle_data_ref.buffer[connection_index]);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, m_indices.size() * sizeof(unsigned int), &m_indices[0], GL_STATIC_DRAW);
 
-	glBindBuffer(GL_TEXTURE_BUFFER, particle_data_ref.buffer[connection_index_alt]);
-	glBufferData(GL_TEXTURE_BUFFER, m_indices_alt.size() * sizeof(unsigned int), &m_indices_alt[0], GL_DYNAMIC_DRAW);
+		glBindBuffer(GL_TEXTURE_BUFFER, particle_data_ref.buffer[connection_index_alt]);
+		glBufferData(GL_TEXTURE_BUFFER, m_indices_alt.size() * sizeof(unsigned int), &m_indices_alt[0], GL_DYNAMIC_DRAW);
 
-	glBindBuffer(GL_TEXTURE_BUFFER, particle_data_ref.buffer[connection_length_alt]);
-	glBufferData(GL_TEXTURE_BUFFER, m_length_alt.size() * sizeof(float), &m_length_alt[0], GL_DYNAMIC_DRAW);
+		glBindBuffer(GL_TEXTURE_BUFFER, particle_data_ref.buffer[connection_length_alt]);
+		glBufferData(GL_TEXTURE_BUFFER, m_length_alt.size() * sizeof(float), &m_length_alt[0], GL_DYNAMIC_DRAW);
+	}
 
 }
 
@@ -229,7 +234,7 @@ void data::doAllTheInitisation(particle_data& particle_data_ref)
 		else
 			this->generate_positions_random();
 	}
-	generate_colors_random();
+	generate_colors_sinus();
 	generate_velocities_random();
 	generate_indexes();
 
