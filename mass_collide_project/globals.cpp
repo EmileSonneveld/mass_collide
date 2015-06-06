@@ -121,6 +121,10 @@ void LogCurrentDir()
 
 INIReader* g_settings;
 
+std::string GetPsSetting_String(const char* var_name, std::string default_value)
+{
+	return g_settings->Get("ps_system", var_name, default_value);
+}
 int GetPsSetting_Int(const char* var_name, int default_value)
 {
 	return g_settings->GetInteger("ps_system", var_name, default_value);

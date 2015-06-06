@@ -59,17 +59,11 @@ void c_connections_transform_feedback::process(particle_data& particle_data_ref)
 		glBindBuffer(GL_ARRAY_BUFFER, particle_data_ref.buffer[position]);
 		glVertexAttribPointer(m_in_attrib_position, 4, GL_FLOAT, GL_FALSE, 0, nullptr);
 	}
-	glEnableVertexAttribArray(m_in_attrib_velocity);
-	glBindBuffer(GL_ARRAY_BUFFER, particle_data_ref.buffer[velocity]);
-	glVertexAttribPointer(m_in_attrib_velocity, 4, GL_FLOAT, GL_FALSE, 0, nullptr);
-
-	// glEnableVertexAttribArray(m_in_attrib_otherIndex);
-	// glBindBuffer(GL_ARRAY_BUFFER, particle_data_ref.buffer[connection_index_alt]);
-	// glVertexAttribPointer(m_in_attrib_otherIndex, 1, GL_INT, GL_FALSE, 0, nullptr);
-	// 
-	// glEnableVertexAttribArray(m_in_attrib_lengthToOther);
-	// glBindBuffer(GL_ARRAY_BUFFER, particle_data_ref.buffer[connection_length_alt]);
-	// glVertexAttribPointer(m_in_attrib_lengthToOther, 1, GL_FLOAT, GL_FALSE, 0, nullptr);
+	if (m_in_attrib_velocity != -1){
+		glEnableVertexAttribArray(m_in_attrib_velocity);
+		glBindBuffer(GL_ARRAY_BUFFER, particle_data_ref.buffer[velocity]);
+		glVertexAttribPointer(m_in_attrib_velocity, 4, GL_FLOAT, GL_FALSE, 0, nullptr);
+	}
 	printOpenGLError();
 
 	////////////////////////////////////////////////////////////////////////

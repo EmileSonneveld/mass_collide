@@ -32,6 +32,7 @@ void main()
 
 		vec3 deltaVec = pos1 - pos2;
 		float len = length(deltaVec);
+		if(len == 0) continue;
 		float difference = len - targetLen;
 		float k=-0.2;
 		float strength = k * difference;

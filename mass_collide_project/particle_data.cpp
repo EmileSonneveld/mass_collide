@@ -26,6 +26,8 @@ using namespace glm;
 
 void data::generate_colors_random()
 {
+	if (m_col == nullptr)
+		m_col = new vec4[m_count];
 	for (unsigned int i = 0; i < m_count; ++i){
 		m_col[i].x = float(rand() % 256) / 256.0f;
 		m_col[i].y = float(rand() % 256) / 256.0f;
@@ -36,7 +38,9 @@ void data::generate_colors_random()
 
 void data::generate_colors_sinus()
 {
-	for(unsigned int i = 0; i < m_count; ++i){
+	if (m_col == nullptr)
+		m_col = new vec4[m_count];
+	for (unsigned int i = 0; i < m_count; ++i){
 		m_col[i].x = std::sin(m_pos[i].x*2.1f) / 2.f + 0.5f;
 		m_col[i].y = std::sin(m_pos[i].y*2.2f) / 2.f + 0.5f;
 		m_col[i].z = std::sin(m_pos[i].z*2.3f) / 2.f + 0.25f;
@@ -46,6 +50,8 @@ void data::generate_colors_sinus()
 
 void data::generate_colors_gradient()
 {
+	if (m_col == nullptr)
+		m_col = new vec4[m_count];
 	for (unsigned int i = 0; i < m_count; ++i){
 		m_col[i].x = float(i) / float(m_count);
 		m_col[i].y = float(i) / float(m_count);
@@ -56,6 +62,8 @@ void data::generate_colors_gradient()
 
 void data::generate_positions_random()
 {
+	if (m_pos == nullptr)
+		m_pos = new vec4[m_count];
 	for (unsigned int i = 0; i < m_count; ++i){
 		float size = GetPsSetting_Float("random_box_size", 10);
 		m_pos[i].x = (0.5f - (float)(rand() % 100) * 0.01f) * size;
@@ -67,6 +75,8 @@ void data::generate_positions_random()
 
 void data::generate_positions_structured()
 {
+	if (m_pos == nullptr)
+		m_pos = new vec4[m_count];
 	float particle_size = GetPsSetting_Float("particle_size", 0.04f);
 	for (unsigned int i = 0; i < m_count; ++i){
 		float size = 0.1f;
@@ -79,22 +89,34 @@ void data::generate_positions_structured()
 
 void data::load_positions_from_model(const char* file_name)
 {
-	// TODO: ASSIMP works correctly, now this function needs to work
-	auto assimpScene = aiImportFile(file_name, aiProcessPreset_TargetRealtime_MaxQuality);
-	auto nd = assimpScene->mRootNode;
-	
-	for (unsigned int n = 0; n < nd->mNumMeshes; ++n) {
-		auto mesh = assimpScene->mMeshes[nd->mMeshes[n]];
-		mesh->mNumVertices;
-		mesh->mVertices;
+	auto assimpScene = aiImportFile(file_name,  aiProcess_JoinIdenticalVertices);
+	//auto nd = assimpScene->mRootNode;  aiProcessPreset_TargetRealtime_MaxQuality |
+	float particle_size = GetPsSetting_Float("particle_size", 0.04f);
+
+	std::vector<aiVector3D> meshCopy;
+	for (unsigned int n = 0; n < assimpScene->mNumMeshes; ++n) {
+		auto mesh = assimpScene->mMeshes[n];
+
+		m_count = mesh->mNumVertices;
+		m_pos = new vec4[m_count];
+		meshCopy.reserve(mesh->mNumVertices);
+		for (unsigned int i = 0; i < mesh->mNumVertices; i++)
+		{
+			auto vert = mesh->mVertices[i];
+			m_pos[i] = vec4(vert.x, vert.y, vert.z, particle_size);
+			meshCopy.push_back(vert);
+		}
+		break; // only supports first mesh
 	}
-	
+
 	aiReleaseImport(assimpScene);
 }
 
 
 void data::generate_velocities_random()
 {
+	if (m_vel == nullptr)
+		m_vel = new vec4[m_count];
 	std::default_random_engine generator;
 	std::normal_distribution<float> distribution(0, GetPsSetting_Float("init_random_velocity", 0.05f));
 
@@ -196,15 +218,17 @@ void data::initialize_buffers_from_data(particle_data& particle_data_ref)
 
 void data::doAllTheInitisation(particle_data& particle_data_ref)
 {
-	m_count = GetPsSetting_Int("count", 100);
-	m_pos = new vec4[m_count];
-	m_col = new vec4[m_count];
-	m_vel = new vec4[m_count];
-	if (GetPsSetting_Bool("use_structured_spawning", true))
-		this->generate_positions_structured();
+	auto loadFile = GetPsSetting_String("load_this_file_instead", "");
+	if (loadFile != "")
+		load_positions_from_model(loadFile.c_str());
 	else
-		this->generate_positions_random();
-
+	{
+		m_count = GetPsSetting_Int("count", 100);
+		if (GetPsSetting_Bool("use_structured_spawning", true))
+			this->generate_positions_structured();
+		else
+			this->generate_positions_random();
+	}
 	generate_colors_random();
 	generate_velocities_random();
 	generate_indexes();
