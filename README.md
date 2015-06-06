@@ -28,8 +28,8 @@ V      | Connections transform feedback
 
 Travis
 ======
-
-project can be found here: https://travis-ci.org/EmileSonneveld/mass_collide
+Build status:
+[![Build Status](https://travis-ci.org/EmileSonneveld/mass_collide.png)](https://travis-ci.org/EmileSonneveld/mass_collide)
 
 Download build
 ==============
