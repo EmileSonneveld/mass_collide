@@ -10,7 +10,7 @@ The next step would be to program collition between particles and so be able to 
 
 Hope my computer can handle it!
 
-<img src="https://github.com/EmileSonneveld/mass_collide/blob/wipConnectionForce/screenshots/mass_collide_screenshot_01.PNG"/>
+<img src="https://github.com/EmileSonneveld/mass_collide/blob/master/screenshots/bigBlob100000_05.PNG"/>
 
 Controls
 ========
