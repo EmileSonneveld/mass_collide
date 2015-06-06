@@ -79,16 +79,17 @@ void data::generate_positions_structured()
 
 void data::load_positions_from_model(const char* file_name)
 {
-	// auto assimpScene = aiImportFile(file_name, aiProcessPreset_TargetRealtime_MaxQuality);
-	// auto nd = assimpScene->mRootNode;
-	// 
-	// for (unsigned int n = 0; n < nd->mNumMeshes; ++n) {
-	// 	auto mesh = assimpScene->mMeshes[nd->mMeshes[n]];
-	// 	mesh->mNumVertices;
-	// 	mesh->mVertices;
-	// }
-	// 
-	// aiReleaseImport(assimpScene);
+	// TODO: ASSIMP works correctly, now this function needs to work
+	auto assimpScene = aiImportFile(file_name, aiProcessPreset_TargetRealtime_MaxQuality);
+	auto nd = assimpScene->mRootNode;
+	
+	for (unsigned int n = 0; n < nd->mNumMeshes; ++n) {
+		auto mesh = assimpScene->mMeshes[nd->mMeshes[n]];
+		mesh->mNumVertices;
+		mesh->mVertices;
+	}
+	
+	aiReleaseImport(assimpScene);
 }
 
 

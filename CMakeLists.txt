@@ -80,7 +80,6 @@ add_executable(playground
 
 target_link_libraries(playground
 	${ALL_LIBS}
-	assimp
 )
 
 # Xcode and Visual working directories
@@ -110,6 +109,7 @@ add_executable(mass_collide_test
 
 target_link_libraries(mass_collide_test
 	${ALL_LIBS}
+	assimp
 )
 
 # Xcode and Visual working directories
