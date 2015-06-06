@@ -82,8 +82,8 @@ void data::generate_positions_structured()
 	float size = GetPsSetting_Float("structured_box_distance", 0.2f);
 	for (unsigned int i = 0; i < m_count; ++i){
 		m_pos[i].x = (i / 1 % sizecount) * size;
-		m_pos[i].y = (i / sizecount % sizecount) * size;
-		m_pos[i].z = (i / sizecount / sizecount % sizecount) * size;
+		m_pos[i].z = (i / sizecount % sizecount) * size;
+		m_pos[i].y = (i / sizecount / sizecount) * size;
 		m_pos[i].a = particle_size;
 	}
 }
@@ -136,6 +136,7 @@ void data::generate_indexes()
 {
 	m_indices.reserve(200000);
 	float distance = GetPsSetting_Float("connection_max_distance", 0.35f);
+	if (distance == 0) return;
 	float distanseSqr = distance * distance;
 
 	m_max_connections = 26;
@@ -235,6 +236,7 @@ void data::doAllTheInitisation(particle_data& particle_data_ref)
 			this->generate_positions_random();
 	}
 	generate_colors_sinus();
+	//generate_colors_gradient();
 	generate_velocities_random();
 	generate_indexes();
 
