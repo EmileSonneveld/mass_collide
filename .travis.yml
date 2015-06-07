@@ -1,14 +1,19 @@
 #os:
 #  - osx
 #  - linux
+
+sudo: false
+
 addons:
   apt:
     sources:
     - ubuntu-toolchain-r-test
     
+addons:
+  apt:
     packages:
     - cmake
-    - xorg-dev
+    - xserver-xorg-dev
     - g++-4.8
     
     
