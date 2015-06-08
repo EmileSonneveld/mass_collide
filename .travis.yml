@@ -13,19 +13,18 @@ addons:
     
     
 before_install:
-  - if [ "$TRAVIS_OS_NAME" == "linux" ]; then 
-  -    sudo apt-get update -qq;
-  -    echo $CXX;
-  -    if [ "$CXX" = "g++" ]; then export CXX="g++-4.8" CC="gcc-4.8"; fi
-  -    sudo apt-get install -y xorg-dev; 
-  - fi
+  - if [ "$TRAVIS_OS_NAME" = "linux" ]; then 
+    sudo apt-get update -qq;
+    echo $CXX;
+    if [ "$CXX" = "g++" ]; then export CXX="g++-4.8" CC="gcc-4.8"; fi
+    sudo apt-get install -y xorg-dev; 
+    fi
 
 language: cpp
 
 before_script:
-  - cd ..
-  - mkdir mass_collide_build
-  - cd mass_collide_build
+  - mkdir ../mass_collide_build
+  - cd ../mass_collide_build
   - cmake ../mass_collide -G "Unix Makefiles"
 
 script: make
