@@ -146,6 +146,7 @@ target_link_libraries(ANTTWEAKBAR_116_OGLCORE_GLFW
 
 ### ASSIMP ###
 # AssImp already has a CMakeLists.txt so let's use these
+set(ASSIMP_BUILD_TESTS OFF)
 add_subdirectory( assimp )
 
 
