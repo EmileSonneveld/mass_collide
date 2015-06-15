@@ -50,7 +50,7 @@ void c_connections_transform_feedback::process(particle_data& particle_data_ref)
 	if (particle_data_ref.CONNECTION_COUNT == 0)
 	{
 		// there is nothing to do here if there are no connections
-		return; 
+		return;
 	}
 	glUseProgram(m_program);
 
@@ -130,7 +130,7 @@ void c_connections_transform_feedback::process(particle_data& particle_data_ref)
 
 void c_connections_transform_feedback::clean()
 {
-	if (m_program < 0)
+	if (m_program)
 		glDeleteProgram(m_program);
-	m_program = -2;
+	m_program = 0;
 }

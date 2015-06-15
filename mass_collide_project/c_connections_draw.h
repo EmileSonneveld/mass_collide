@@ -23,7 +23,7 @@ public:
 	void clean();
 
 private:
-	GLint m_program;
+	GLuint m_program;
 	GLint m_in_attrib_position = 0;
 	GLint m_in_attrib_color = 1;
 

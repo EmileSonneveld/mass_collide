@@ -12,7 +12,7 @@ class c_connections_transform_feedback : calculate
 {
 public:
 	c_connections_transform_feedback() :
-		m_program(-2),
+		m_program(0),
 		m_in_attrib_position(-2),
 		m_in_attrib_velocity(-2),
 		m_uniform_samplerPosition(-2),

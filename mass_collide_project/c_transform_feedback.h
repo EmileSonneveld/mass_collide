@@ -22,7 +22,7 @@ public:
 	void clean();
 
 private:
-	GLint m_program;
+	GLuint m_program;
 	GLint m_in_attrib_position = 0; //defined in shader
 	GLint m_in_attrib_velocity = 1; //defined in shader
 

@@ -73,7 +73,7 @@ void c_connections_draw::process(particle_data& particle_data_ref)
 
 void c_connections_draw::clean()
 {
-	if (m_program != 0)
+	if (m_program)
 		glDeleteProgram(m_program);
 	m_program = 0;
 }

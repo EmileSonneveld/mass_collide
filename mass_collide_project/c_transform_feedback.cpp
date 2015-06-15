@@ -94,7 +94,7 @@ void c_transform_feedback::process(particle_data& particle_data_ref)
 
 void c_transform_feedback::clean()
 {
-	if (m_program != 0)
+	if (m_program)
 		glDeleteProgram(m_program);
-	m_program = 0;
+	m_program = 0U;
 }
