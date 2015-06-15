@@ -134,51 +134,88 @@ void data::generate_velocities_random()
 
 void data::generate_indexes()
 {
-	m_indices.reserve(200000);
+	const unsigned int EMPTY_VALUE = 108108U;
+	const unsigned int NOTFOUND_VALUE = 999999;
+
+	m_indices.reserve(444000);
 	float distance = GetPsSetting_Float("connection_max_distance", 0.35f);
 	if (distance == 0) return;
 	float distanseSqr = distance * distance;
 
-	m_max_connections = 26;
+	m_max_connections = 16;
 
 	m_indices_alt.reserve(m_count * m_max_connections);
 	m_length_alt.reserve(m_count * m_max_connections);
 
+	for (unsigned int i = 0; i < m_count * m_max_connections; ++i)
+	{
+		m_indices_alt.push_back(EMPTY_VALUE);
+		m_length_alt.push_back(123456.0f); // don't care
+	}
+
+	unsigned int overflowedConnections = 0;
+	unsigned int overflowedConnectionsA = 0;
 	for (unsigned int ia = 0; ia < m_count; ++ia)
 	{
-		unsigned int num = 0;
-		for (unsigned int ib = 0; ib < m_count; ++ib){
+		// find empty spot in a
+		unsigned int relativePosMoverA = NOTFOUND_VALUE;
+		for (unsigned int mini_it = 0; mini_it < m_max_connections; ++mini_it)
+		{
+			if (m_indices_alt[ia*m_max_connections + mini_it] == EMPTY_VALUE){
+				relativePosMoverA = mini_it;
+				break;
+			}
+		}
+		if (relativePosMoverA == NOTFOUND_VALUE){
+			overflowedConnectionsA += 1;
+			continue;
+		}
+
+		// we don't need to seek in the past, because those connections will be already made
+		for (unsigned int ib = ia + 1; ib < m_count; ++ib)
+		{
 			if (ia == ib) continue;
 			auto len2 = glm::length2(m_pos[ia] - m_pos[ib]);
-			if (len2 < distanseSqr){
-
-				m_indices_alt.push_back(ib);
-				m_length_alt.push_back(sqrt(len2));
+			if (len2 > distanseSqr) continue;
 
 
-				m_indices.push_back(ia);
-				m_indices.push_back(ib);
-
-				++num;
-				if (num >= m_max_connections){
+			// find empty spot in b
+			unsigned int absoluteEmptySpotB = NOTFOUND_VALUE;
+			for (unsigned int mini_it = 0; mini_it < m_max_connections; ++mini_it)
+			{
+				if (m_indices_alt[ib*m_max_connections + mini_it] == EMPTY_VALUE){
+					absoluteEmptySpotB = ib*m_max_connections + mini_it;
 					break;
 				}
 			}
-		}
-		for (unsigned int rest = num; rest < m_max_connections; ++rest)
-		{
-			m_indices_alt.push_back(108); // m_indices_alt.size()); // a no connection magic number
-			m_length_alt.push_back(108); // must not be used
+			if (absoluteEmptySpotB == NOTFOUND_VALUE){
+				overflowedConnections += 1;
+				continue;
+			}
+
+			m_indices_alt[ia*m_max_connections + relativePosMoverA] = ib;
+			m_length_alt[ia*m_max_connections + relativePosMoverA] = sqrt(len2);
+
+			m_indices_alt[absoluteEmptySpotB] = ia;
+			m_length_alt[absoluteEmptySpotB] = sqrt(len2);
+
+			m_indices.push_back(ia);
+			m_indices.push_back(ib);
+
+			++relativePosMoverA;
+			if (relativePosMoverA >= m_max_connections) break;
+
 		}
 	}
-
+	std::cout << "overflowedConnections: " << overflowedConnections << "\n";
+	std::cout << "overflowedConnectionsA: " << overflowedConnectionsA << "\n";
 	m_connection_count = m_indices.size();
 
 	std::cout << "m_indices_alt [";
 	for (unsigned int i = 0; i < m_indices_alt.size(); i += 1){
 		if (i%m_max_connections == 0){
 			std::cout << "\n   ";
-			if (i > 5){
+			if (i > 20){
 				std::cout << "...";
 				break;
 			}

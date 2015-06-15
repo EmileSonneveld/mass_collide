@@ -9,7 +9,8 @@ uniform samplerBuffer samplerPosition;
 uniform usamplerBuffer samplerOtherIndex;
 uniform samplerBuffer samplerLengthToOther;
 
-#define MAX_CONNECTIONS 26
+#define MAX_CONNECTIONS 16
+#define EMPTY_VALUE 108108
 
 void main()
 {
@@ -17,12 +18,11 @@ void main()
 
 	vec3 summedForce = vec3(0,0,0);
 	int total = 0;
-	//int i=0;
 	for(int i=0; i<MAX_CONNECTIONS; ++i){
 
 		int otherIndex = int( texelFetch(samplerOtherIndex, gl_VertexID*MAX_CONNECTIONS + i).x );
 
-		if(otherIndex == 108){
+		if(otherIndex == EMPTY_VALUE){
 			//outValue.a = 898;
 			continue;
 		}
@@ -36,11 +36,10 @@ void main()
 		float len = length(deltaVec);
 		if(len == 0) continue;
 		float difference = len - targetLen;
-		float k=-0.9;
+		float k=-1.5;
 		float strength = k * difference;
-		//float strength = pow( difference , 1/3f);
+
 		summedForce += deltaVec/len * strength;
-		//outValueOther -= deltaVec/len * strength;
 
 		outValue.a = float(difference); // debug output
 	}
