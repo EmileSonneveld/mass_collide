@@ -17,6 +17,8 @@ GLFWwindow* window;
 #include <glm/gtx/norm.hpp>
 using namespace glm;
 
+#include <AntTweakBar.h>
+
 #include <common/shader.hpp>
 #include <common/texture.hpp>
 #include <common/controls.hpp>
@@ -100,6 +102,7 @@ int main_windows_managment()
 
 	auto iniWindowWidth = reader.GetInteger("window", "width", 1024);
 	auto iniWindowHeight = reader.GetInteger("window", "height", 768);
+	TwWindowSize(iniWindowWidth, iniWindowHeight);
 
 	// Open a window and create its OpenGL context
 	window = glfwCreateWindow(
@@ -130,8 +133,12 @@ int main_windows_managment()
 
 
 
+	double dt;// Current time and enlapsed time
+	float bgColor[] = { .0f, .0f, .4f };
+	bool drawConnections = true;
+	bool simulateConnections = false;
 
-	glClearColor(0.0f, 0.0f, 0.4f, 0.0f);
+	glClearColor(bgColor[0], bgColor[1], bgColor[2], 1);
 
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LESS);
@@ -144,6 +151,30 @@ int main_windows_managment()
 
 
 	glfwSetCursorPos(window, 1024 / 2, 768 / 2);
+
+
+
+	// Initialize AntTweakBar
+	TwInit(TW_OPENGL_CORE, NULL);
+
+	auto bar = TwNewBar("TweakBar");
+	TwDefine(" GLOBAL help='This example shows how to integrate AntTweakBar with GLFW and OpenGL.' "); // Message added to the help bar.
+	// RW : ReadWrite
+	TwAddVarRW(bar, "drawConnections", TW_TYPE_BOOLCPP, &drawConnections, "label='drawConnections' key=C");
+	TwAddVarRW(bar, "simulateConnections", TW_TYPE_BOOLCPP, &simulateConnections, "label='simulateConnections' key=V");
+	// read-only (RO)
+	TwAddVarRO(bar, "dt", TW_TYPE_DOUBLE, &dt, "label='dt'"); // precision=1 
+	// TW_TYPE_COLOR3F (3 floats color)
+	TwAddVarRW(bar, "bgColor", TW_TYPE_COLOR3F, &bgColor, "label='Background color'");
+
+
+	// - Directly redirect GLFW events to AntTweakBar 
+	glfwSetMouseButtonCallback(window, (GLFWmousebuttonfun)TwEventMouseButtonGLFW);
+	glfwSetCursorPosCallback(window, (GLFWcursorposfun)TwEventMousePosGLFW);
+	glfwSetScrollCallback(window, (GLFWscrollfun)TwEventMouseWheelGLFW);
+	glfwSetKeyCallback(window, (GLFWkeyfun)TwEventKeyGLFW); // Wrong signature casting, Tw will not get the keyactions
+	glfwSetCharCallback(window, (GLFWcharfun)TwEventCharGLFW);
+
 
 	//////////////////////////////////////////////////////////////
 	particle_data particle_data_inst;
@@ -163,10 +194,21 @@ int main_windows_managment()
 	connection_force.initialize("rc/connection_force.glsl", bufferName::velocity);
 	connections_draw.initialize();
 	//////////////////////////////////////////////////////////////
+
+
+	double lastTime = glfwGetTime();
+
+
+
 	bool isFirstTime = true;
 
 	do
 	{
+		double currentTime = glfwGetTime();
+		dt = float(currentTime - lastTime);
+		lastTime = currentTime;
+
+		glClearColor(bgColor[0], bgColor[1], bgColor[2], 1);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		printOpenGLError();
 		glEnable(GL_BLEND);
@@ -204,11 +246,11 @@ int main_windows_managment()
 			data_inst.doAllTheInitisation(particle_data_inst);
 		}
 		particle_draw.process(particle_data_inst);
-		if (glfwGetKey(window, GLFW_KEY_C) != GLFW_PRESS){
+		if (glfwGetKey(window, GLFW_KEY_C) != GLFW_PRESS && drawConnections){
 			connections_draw.process(particle_data_inst);
 			printOpenGLError();
 		}
-		if (glfwGetKey(window, GLFW_KEY_V) == GLFW_PRESS){
+		if (glfwGetKey(window, GLFW_KEY_V) == GLFW_PRESS || simulateConnections){
 			transform_positions.process(particle_data_inst);
 			transform_velocities.process(particle_data_inst);
 			connection_force.process(particle_data_inst);
@@ -216,6 +258,7 @@ int main_windows_managment()
 		}
 		//////////////////////////////////////////////////////////////
 
+		TwDraw();
 
 		glfwSwapBuffers(window);
 		glfwPollEvents();
@@ -227,6 +270,7 @@ int main_windows_managment()
 
 	printOpenGLError();
 
+	TwTerminate();
 	//////////////////////////////////////////////////////////////
 	particle_data_inst.clean();
 	particle_draw.clean();

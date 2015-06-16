@@ -110,6 +110,7 @@ add_executable(mass_collide_test
 target_link_libraries(mass_collide_test
 	${ALL_LIBS}
 	assimp
+	ANTTWEAKBAR_116_OGLCORE_GLFW
 )
 
 # Xcode and Visual working directories
