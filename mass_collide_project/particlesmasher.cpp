@@ -152,10 +152,11 @@ int main_windows_managment()
 
 	glfwSetCursorPos(window, 1024 / 2, 768 / 2);
 
+    const bool useAntTweackBar = false;
 
-
+    if(useAntTweackBar){
 	// Initialize AntTweakBar
-	TwInit(TW_OPENGL_CORE, NULL);
+	TwInit(TW_OPENGL, NULL);
 
 	auto bar = TwNewBar("TweakBar");
 	TwDefine(" GLOBAL help='This example shows how to integrate AntTweakBar with GLFW and OpenGL.' "); // Message added to the help bar.
@@ -174,7 +175,7 @@ int main_windows_managment()
 	glfwSetScrollCallback(window, (GLFWscrollfun)TwEventMouseWheelGLFW);
 	glfwSetKeyCallback(window, (GLFWkeyfun)TwEventKeyGLFW); // Wrong signature casting, Tw will not get the keyactions
 	glfwSetCharCallback(window, (GLFWcharfun)TwEventCharGLFW);
-
+    }
 
 	//////////////////////////////////////////////////////////////
 	particle_data particle_data_inst;
@@ -257,8 +258,8 @@ int main_windows_managment()
 			printOpenGLError();
 		}
 		//////////////////////////////////////////////////////////////
-
-		TwDraw();
+        if(useAntTweackBar)
+            TwDraw();
 
 		glfwSwapBuffers(window);
 		glfwPollEvents();

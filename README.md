@@ -29,3 +29,6 @@ Build status:
 Download build
 ==============
 https://www.dropbox.com/s/q4jduqtwbdokbwj/mass_collide_release.zip
+
+screenshots and other stuff:
+https://www.dropbox.com/sh/w9f0jnomx3axq7c/AABH6t0lDP_rUzF7-O99dAH4a?dl=0

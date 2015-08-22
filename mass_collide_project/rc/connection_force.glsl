@@ -1,7 +1,7 @@
 #version 330 core
 
 in vec4 inVelocity;
-in int gl_VertexID; // current index
+//in int gl_VertexID; // current index
 
 out vec4 outValue;
 
@@ -9,7 +9,7 @@ uniform samplerBuffer samplerPosition;
 uniform usamplerBuffer samplerOtherIndex;
 uniform samplerBuffer samplerLengthToOther;
 
-#define MAX_CONNECTIONS 16
+#define MAX_CONNECTIONS 4
 #define EMPTY_VALUE 108108
 
 void main()
