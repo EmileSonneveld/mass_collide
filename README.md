@@ -1,7 +1,7 @@
 MASS COLLIDE
 ============
 
-git cone --recursive https://github.com/EmileSonneveld/mass_collide
+git clone --recursive https://github.com/EmileSonneveld/mass_collide
 
 Lets make a particle system completly on the GPU and hope my computer can handle it!
 
