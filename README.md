@@ -1,7 +1,7 @@
 MASS COLLIDE
 ============
 
-git cone --recursive https://github.com/EmileSonneveld/mass_collide
+git clone --recursive https://github.com/EmileSonneveld/mass_collide
 
 Let's make a conected particle system on the GPU!
 
@@ -16,9 +16,9 @@ Arrows | move view
 D&D    | rotate view
 S      | simulate (press continusely)
 V      | Connections transform feedback (press continusely)
-T      | Reload parameters and respawn particles
-R      | Reload shaders
-C      | Hide connections
+T      | Reload parameters and respawn particles (press shortly)
+R      | Reload shaders (press shortly)
+C      | Hide connections (press continusely)
 
 
 Travis
@@ -29,7 +29,6 @@ Build status:
 
 Download build
 ==============
-https://www.dropbox.com/s/q4jduqtwbdokbwj/mass_collide_release.zip
 
 screenshots and other stuff:
 https://www.dropbox.com/sh/euydir5xqffspfa/AACwjsmOpVpN7BreF5Y59BQKa?dl=0
