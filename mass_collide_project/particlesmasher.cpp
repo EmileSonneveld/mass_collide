@@ -17,7 +17,10 @@ GLFWwindow* window;
 #include <glm/gtx/norm.hpp>
 using namespace glm;
 
+#ifdef USE_ANT_TWEAKBAR // nowhere defined yet
 #include <AntTweakBar.h>
+#endif
+
 
 #include <common/shader.hpp>
 #include <common/texture.hpp>
@@ -102,7 +105,6 @@ int main_windows_managment()
 
 	auto iniWindowWidth = reader.GetInteger("window", "width", 1024);
 	auto iniWindowHeight = reader.GetInteger("window", "height", 768);
-	TwWindowSize(iniWindowWidth, iniWindowHeight);
 
 	// Open a window and create its OpenGL context
 	window = glfwCreateWindow(
@@ -152,9 +154,8 @@ int main_windows_managment()
 
 	glfwSetCursorPos(window, 1024 / 2, 768 / 2);
 
-    const bool useAntTweackBar = false;
-
-    if(useAntTweackBar){
+#ifdef USE_ANT_TWEAKBAR
+	TwWindowSize(iniWindowWidth, iniWindowHeight);
 	// Initialize AntTweakBar
 	TwInit(TW_OPENGL, NULL);
 
@@ -164,18 +165,19 @@ int main_windows_managment()
 	TwAddVarRW(bar, "drawConnections", TW_TYPE_BOOLCPP, &drawConnections, "label='drawConnections' key=C");
 	TwAddVarRW(bar, "simulateConnections", TW_TYPE_BOOLCPP, &simulateConnections, "label='simulateConnections' key=V");
 	// read-only (RO)
-	TwAddVarRO(bar, "dt", TW_TYPE_DOUBLE, &dt, "label='dt'"); // precision=1 
+	TwAddVarRO(bar, "dt", TW_TYPE_DOUBLE, &dt, "label='dt'"); // precision=1
 	// TW_TYPE_COLOR3F (3 floats color)
 	TwAddVarRW(bar, "bgColor", TW_TYPE_COLOR3F, &bgColor, "label='Background color'");
 
 
-	// - Directly redirect GLFW events to AntTweakBar 
+	// - Directly redirect GLFW events to AntTweakBar
 	glfwSetMouseButtonCallback(window, (GLFWmousebuttonfun)TwEventMouseButtonGLFW);
 	glfwSetCursorPosCallback(window, (GLFWcursorposfun)TwEventMousePosGLFW);
 	glfwSetScrollCallback(window, (GLFWscrollfun)TwEventMouseWheelGLFW);
 	glfwSetKeyCallback(window, (GLFWkeyfun)TwEventKeyGLFW); // Wrong signature casting, Tw will not get the keyactions
 	glfwSetCharCallback(window, (GLFWcharfun)TwEventCharGLFW);
-    }
+#endif
+
 
 	//////////////////////////////////////////////////////////////
 	particle_data particle_data_inst;
@@ -258,8 +260,9 @@ int main_windows_managment()
 			printOpenGLError();
 		}
 		//////////////////////////////////////////////////////////////
-        if(useAntTweackBar)
+#ifdef USE_ANT_TWEAKBAR
             TwDraw();
+#endif
 
 		glfwSwapBuffers(window);
 		glfwPollEvents();
@@ -271,7 +274,9 @@ int main_windows_managment()
 
 	printOpenGLError();
 
+#ifdef USE_ANT_TWEAKBAR
 	TwTerminate();
+#endif
 	//////////////////////////////////////////////////////////////
 	particle_data_inst.clean();
 	particle_draw.clean();

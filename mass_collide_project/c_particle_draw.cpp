@@ -2,16 +2,11 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-
 #include <vector>
 #include <algorithm>
 #include <string>
 #include <iostream>
 #include <fstream>
-
-#include <GL/glew.h>
-
-#include <glfw3.h>
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -21,7 +16,6 @@ using namespace glm;
 #include <common/shader.hpp>
 #include <common/texture.hpp>
 #include <common/controls.hpp>
-
 
 #include "globals.h"
 #include "particle_data.h"

@@ -17,7 +17,7 @@ endif()
 
 
 if( CMAKE_BINARY_DIR STREQUAL CMAKE_SOURCE_DIR )
-    message( FATAL_ERROR "Please select another Build Directory ! (and give it a clever name, like bin_Visual2012_64bits/)" )
+	message( FATAL_ERROR "Please select another Build Directory ! (and give it a clever name, like bin_Visual2012_64bits/)" )
 endif()
 if( CMAKE_SOURCE_DIR MATCHES " " )
 	message( "Your Source Directory contains spaces. If you experience problems when compiling, this can be the cause." )
@@ -28,7 +28,9 @@ endif()
 
 
 
-# Compile external dependencies
+
+
+# Compile external dependencies ###########
 add_subdirectory (external)
 
 # On Visual 2005 and above, this module can set the debug working directory
@@ -56,7 +58,6 @@ set(ALL_LIBS
 	${OPENGL_LIBRARY}
 	glfw #GLFW_303
 	GLEW_190
-	X11
 )
 
 add_definitions(
@@ -93,9 +94,9 @@ target_link_libraries(playground
 # mass_collide_test ####################################
 
 file(GLOB mass_collide_project_SRC
-    "mass_collide_project/*.h"
-    "mass_collide_project/*.cpp"
-    "mass_collide_project/*.c"
+	"mass_collide_project/*.h"
+	"mass_collide_project/*.cpp"
+	"mass_collide_project/*.c"
 )
 
 add_executable(mass_collide_test
@@ -111,7 +112,6 @@ add_executable(mass_collide_test
 target_link_libraries(mass_collide_test
 	${ALL_LIBS}
 	assimp
-	ANTTWEAKBAR_116_OGLCORE_GLFW
 )
 
 # Xcode and Visual working directories
@@ -121,6 +121,30 @@ target_link_libraries(mass_collide_test
 
 
 
+
+# SDL ################
+
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${mass_collide_build_system_SOURCE_DIR}/cmake")
+
+if(CMAKE_CXX_COMPILER MATCHES "/em\\+\\+(-[a-zA-Z0-9.])?$")
+	message(" * C++ compiler: Emscripten")
+	set(CMAKE_CXX_COMPILER_ID "Emscripten")
+else()
+	message(" * C++ cimpiler: ${CMAKE_CXX_COMPILER_ID}")
+#
+#	find_package(SDL2 REQUIRED)
+#	find_package(SDL2_Image REQUIRED)
+#	find_package(SDL2_ttf REQUIRED)
+#
+#	include_directories(${SDL2_INCLUDE_DIR}
+#						${SDL2_IMAGE_INCLUDE_DIR}
+#						${SDL2_TTF_INCLUDE_DIR})
+#	target_link_libraries(mass_collide_test ${SDL2_LIBRARY}
+#								 ${SDL2_IMAGE_LIBRARIES}
+#								 ${SDL2_TTF_LIBRARIES})
+
+
+endif()
 
 
 
