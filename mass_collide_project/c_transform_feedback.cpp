@@ -85,7 +85,7 @@ void c_transform_feedback::process(particle_data& particle_data_ref)
 	particle_data_ref.buffer[swap] = particle_data_ref.buffer[m_transform_feedback_out];
 	particle_data_ref.buffer[m_transform_feedback_out] = tmp_result;
 
-	printTransformFeedbackValues(min(5U, particle_data_ref.COUNT));
+	//printTransformFeedbackValues(min(5U, particle_data_ref.COUNT));
 }
 
 void c_transform_feedback::clean()

@@ -45,7 +45,7 @@ endif(INCLUDE_DISTRIB)
 
 
 include_directories(
-	external/AntTweakBar-1.16/include/
+	#external/AntTweakBar-1.16/include/
 	external/glfw-3.0.3/include/GLFW/
 	external/glm-0.9.4.0/
 	external/glew-1.9.0/include/
@@ -129,6 +129,7 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${mass_collide_build_system_SOURCE_D
 if(CMAKE_CXX_COMPILER MATCHES "/em\\+\\+(-[a-zA-Z0-9.])?$")
 	message(" * C++ compiler: Emscripten")
 	set(CMAKE_CXX_COMPILER_ID "Emscripten")
+	# no need to include SDL here, emskripten will do that for us
 else()
 	message(" * C++ cimpiler: ${CMAKE_CXX_COMPILER_ID}")
 #

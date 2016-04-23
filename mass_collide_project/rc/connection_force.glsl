@@ -36,12 +36,11 @@ void main()
 		float len = length(deltaVec);
 		if(len == 0) continue;
 		float difference = len - targetLen;
-		float k=-1.5;
-		float strength = k * difference;
+		float strength = -1.5 * difference;
 
 		summedForce += deltaVec/len * strength;
 
-		outValue.a = float(difference); // debug output
+		//outValue.a = float(difference); // debug output
 	}
 	if(total != 0){
 		outValue += vec4(summedForce / float(total), 0);
