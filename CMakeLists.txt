@@ -56,6 +56,7 @@ set(ALL_LIBS
 	${OPENGL_LIBRARY}
 	glfw #GLFW_303
 	GLEW_190
+	X11
 )
 
 add_definitions(
