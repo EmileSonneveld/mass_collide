@@ -37,7 +37,7 @@ void c_connections_draw::process(particle_data& particle_data_ref)
 	glUseProgram(m_program);
 	printOpenGLError();
 
-	glCullFace(GL_FRONT_AND_BACK);
+	//glCullFace(GL_FRONT_AND_BACK);
 
 	glm::mat4 ViewProjectionMatrix = getProjectionMatrix() * getViewMatrix();
 	glUniformMatrix4fv(m_uniform_matrix, 1, GL_FALSE, &ViewProjectionMatrix[0][0]);

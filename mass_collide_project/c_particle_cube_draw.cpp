@@ -1,4 +1,4 @@
-#include "c_particle_draw.h"
+#include "c_particle_cube_draw.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -21,38 +21,39 @@ using namespace glm;
 #include "particle_data.h"
 
 
-void c_particle_draw::initialize()
+void c_particle_cube_draw::initialize()
 {
 	// Create and compile our GLSL program from the shaders //
 	//////////////////////////////////////////////////////////
-	m_program = LoadShaders("rc/Particle.vertexshader", "rc/Particle.fragmentshader");
+	m_program = LoadShaders("rc/simple_vert.glsl", "rc/col_vert.glsl");
 	printOpenGLError();
 
-	// Vertex shader
-	m_uniform_CameraRight_worldspace = glGetUniformLocation(m_program, "CameraRight_worldspace");
-	printOpenGLError();
-	m_uniform_CameraUp_worldspace = glGetUniformLocation(m_program, "CameraUp_worldspace");
-	m_uniform_ViewProjMatrix = glGetUniformLocation(m_program, "ViewProjMatrix");
-	// fragment shader
-	m_uniform_TextureSampler = glGetUniformLocation(m_program, "TextureSampler");
+	m_uniform_ViewProjMatrix = glGetUniformLocation(m_program, "ViewProjectionMatrix");
 
 
 	m_in_attrib_square = glGetAttribLocation(m_program, "squareVertices");
 	m_in_attrib_position = glGetAttribLocation(m_program, "inPosition");
 	m_in_attrib_color = glGetAttribLocation(m_program, "inColor");
 
-
-	m_texture = loadDDS("rc/particle.DDS");
-
 	printOpenGLError();
 
 	// Create and fill in the graphical mesh //
 	///////////////////////////////////////////
 	static const GLfloat g_vertex_buffer_data[] = {
-		-0.5f, -0.5f,
-		0.5f, -0.5f,
-		-0.5f, 0.5f,
-		0.5f, 0.5f,
+		0.5f, 0.5f, 0.5f,
+		-0.5f, 0.5f, 0.5f,
+		0.5f, -0.5f, 0.5f,
+		-0.5f,-0.5f, 0.5f,
+		-0.5f,-0.5f,-0.5f,
+		-0.5f, 0.5f, 0.5f,
+		-0.5f, 0.5f,-0.5f,
+		0.5f, 0.5f, 0.5f,
+		0.5f, 0.5f,-0.5f,
+		0.5f,-0.5f, 0.5f,
+		0.5f,-0.5f,-0.5f,
+		-0.5f,-0.5f,-0.5f,
+		0.5f, 0.5f,-0.5f,
+		-0.5f, 0.5f,-0.5f,
 	};
 	glGenBuffers(1, &m_buffer_billboard_vertex);
 	glBindBuffer(GL_ARRAY_BUFFER, m_buffer_billboard_vertex);
@@ -63,23 +64,15 @@ void c_particle_draw::initialize()
 	printOpenGLError();
 }
 
-void c_particle_draw::process(particle_data& particle_data_ref)
+void c_particle_cube_draw::process(particle_data& particle_data_ref)
 {
 	// fill in the shader uniforms //
 	/////////////////////////////////
 	glUseProgram(m_program);
 
-
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, m_texture);
-	glUniform1i(m_uniform_TextureSampler, 0); // to user Texture Unit 0
-
 	glm::mat4 ProjectionMatrix = getProjectionMatrix();
 	glm::mat4 ViewMatrix = getViewMatrix();
 	glm::mat4 ViewProjectionMatrix = ProjectionMatrix * ViewMatrix;
-
-	glUniform3f(m_uniform_CameraRight_worldspace, ViewMatrix[0][0], ViewMatrix[1][0], ViewMatrix[2][0]);
-	glUniform3f(m_uniform_CameraUp_worldspace, ViewMatrix[0][1], ViewMatrix[1][1], ViewMatrix[2][1]);
 
 	glUniformMatrix4fv(m_uniform_ViewProjMatrix, 1, GL_FALSE, &ViewProjectionMatrix[0][0]);
 
@@ -148,7 +141,7 @@ void c_particle_draw::process(particle_data& particle_data_ref)
 
 }
 
-void c_particle_draw::clean()
+void c_particle_cube_draw::clean()
 {
 	if (m_buffer_billboard_vertex)
 		glDeleteBuffers(1, &m_buffer_billboard_vertex);
@@ -157,8 +150,4 @@ void c_particle_draw::clean()
 	if (m_program)
 		glDeleteProgram(m_program);
 	m_program = 0;
-
-	if (m_texture)
-		glDeleteTextures(1, &m_texture);
-	m_texture = 0;
 }

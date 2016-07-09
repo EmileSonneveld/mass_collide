@@ -30,7 +30,8 @@ using namespace glm;
 #include "particle_data.h"
 #include "c_connections_draw.h"
 #include "c_connections_transform_feedback.h"
-#include "c_particle_draw.h"
+#include "c_particle_billboard_draw.h"
+#include "c_particle_cube_draw.h"
 #include "c_transform_feedback.h"
 #include "INIReader.h"
 
@@ -185,13 +186,15 @@ int main_windows_managment()
 	data_inst.doAllTheInitisation(particle_data_inst);
 
 
-	c_particle_draw particle_draw;
+	c_particle_billboard_draw particle_draw;
+	c_particle_cube_draw particle_cube_draw;
 	c_transform_feedback transform_positions;
 	c_transform_feedback transform_velocities;
 	c_connections_transform_feedback connection_force;
 	c_connections_draw connections_draw;
 
 	particle_draw.initialize();
+	particle_cube_draw.initialize();
 	transform_positions.initialize("rc/compute.glsl", bufferName::position);
 	transform_velocities.initialize("rc/forces.glsl", bufferName::velocity);
 	connection_force.initialize("rc/connection_force.glsl", bufferName::velocity);
