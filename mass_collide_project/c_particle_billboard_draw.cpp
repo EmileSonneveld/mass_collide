@@ -26,7 +26,7 @@ void c_particle_billboard_draw::initialize()
 	clean();
 	// Create and compile our GLSL program from the shaders //
 	//////////////////////////////////////////////////////////
-	m_program = LoadShaders("rc/billboard_vert.glsl", "rc/col_tex_vert.glsl");
+	m_program = LoadShaders("rc/billboard_vert.glsl", "rc/col_tex_frag.glsl");
 	printOpenGLError();
 
 	// Vertex shader

@@ -23,22 +23,33 @@ using namespace glm;
 
 void c_particle_cube_draw::initialize()
 {
+	clean();
 	// Create and compile our GLSL program from the shaders //
 	//////////////////////////////////////////////////////////
-	m_program = LoadShaders("rc/simple_vert.glsl", "rc/col_vert.glsl");
+	m_program = LoadShaders("rc/billboard_vert.glsl", "rc/col_frag.glsl");
 	printOpenGLError();
 
-	m_uniform_ViewProjMatrix = glGetUniformLocation(m_program, "ViewProjectionMatrix");
+	// Vertex shader
+	//m_uniform_CameraRight_worldspace = glGetUniformLocation(m_program, "CameraRight_worldspace");
+	printOpenGLError();
+	//m_uniform_CameraUp_worldspace = glGetUniformLocation(m_program, "CameraUp_worldspace");
+	m_uniform_ViewProjMatrix = glGetUniformLocation(m_program, "ViewProjMatrix");
+	// fragment shader
+	//m_uniform_TextureSampler = glGetUniformLocation(m_program, "TextureSampler");
 
 
 	m_in_attrib_square = glGetAttribLocation(m_program, "squareVertices");
 	m_in_attrib_position = glGetAttribLocation(m_program, "inPosition");
 	m_in_attrib_color = glGetAttribLocation(m_program, "inColor");
 
+
+	//m_texture = loadDDS("rc/particle.DDS");
+
 	printOpenGLError();
 
 	// Create and fill in the graphical mesh //
 	///////////////////////////////////////////
+
 	static const GLfloat g_vertex_buffer_data[] = {
 		0.5f, 0.5f, 0.5f,
 		-0.5f, 0.5f, 0.5f,
@@ -70,9 +81,17 @@ void c_particle_cube_draw::process(particle_data& particle_data_ref)
 	/////////////////////////////////
 	glUseProgram(m_program);
 
+
+	glActiveTexture(GL_TEXTURE0);
+	//glBindTexture(GL_TEXTURE_2D, m_texture);
+	//glUniform1i(m_uniform_TextureSampler, 0); // to user Texture Unit 0
+
 	glm::mat4 ProjectionMatrix = getProjectionMatrix();
 	glm::mat4 ViewMatrix = getViewMatrix();
 	glm::mat4 ViewProjectionMatrix = ProjectionMatrix * ViewMatrix;
+
+	//glUniform3f(m_uniform_CameraRight_worldspace, ViewMatrix[0][0], ViewMatrix[1][0], ViewMatrix[2][0]);
+	//glUniform3f(m_uniform_CameraUp_worldspace, ViewMatrix[0][1], ViewMatrix[1][1], ViewMatrix[2][1]);
 
 	glUniformMatrix4fv(m_uniform_ViewProjMatrix, 1, GL_FALSE, &ViewProjectionMatrix[0][0]);
 
@@ -86,7 +105,7 @@ void c_particle_cube_draw::process(particle_data& particle_data_ref)
 	glBindBuffer(GL_ARRAY_BUFFER, m_buffer_billboard_vertex);
 	glVertexAttribPointer(
 		m_in_attrib_square,                  // attribute. Must match the layout in the shader.
-		2,                  // size
+		3,                  // size
 		GL_FLOAT,           // type
 		GL_FALSE,           // normalized?
 		0,                  // stride
@@ -125,7 +144,7 @@ void c_particle_cube_draw::process(particle_data& particle_data_ref)
 
 	printOpenGLError();
 
-	glDrawArraysInstanced(GL_TRIANGLE_STRIP, 0, 4, particle_data_ref.COUNT);
+	glDrawArraysInstanced(GL_TRIANGLE_STRIP, 0, 14, particle_data_ref.COUNT);
 
 	glVertexAttribDivisor(m_in_attrib_square, 0);
 	glVertexAttribDivisor(m_in_attrib_position, 0);
@@ -136,8 +155,8 @@ void c_particle_cube_draw::process(particle_data& particle_data_ref)
 	glDisableVertexAttribArray(m_in_attrib_color);
 
 	printOpenGLError(); // !
-	//glBindBuffer(GL_ARRAY_BUFFER, 0);
-	//glBindTexture(GL_TEXTURE_2D, 0);
+						//glBindBuffer(GL_ARRAY_BUFFER, 0);
+						//glBindTexture(GL_TEXTURE_2D, 0);
 
 }
 
