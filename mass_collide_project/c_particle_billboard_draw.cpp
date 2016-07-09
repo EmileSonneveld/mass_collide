@@ -98,7 +98,7 @@ void c_particle_billboard_draw::process(particle_data& particle_data_ref)
 		GL_FLOAT,           // type
 		GL_FALSE,           // normalized?
 		0,                  // stride
-		(void*)0             // array buffer offset
+		nullptr             // array buffer offset
 		);
 
 	glEnableVertexAttribArray(m_in_attrib_position);

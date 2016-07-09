@@ -186,7 +186,7 @@ inline int main_windows_managment()
 	data_inst.doAllTheInitisation(particle_data_inst);
 
 
-	c_particle_billboard_draw particle_draw;
+	c_particle_billboard_draw particle_billboard_draw;
 	c_particle_cube_draw particle_cube_draw;
 	c_transform_feedback transform_positions;
 	c_transform_feedback transform_velocities;
@@ -194,14 +194,16 @@ inline int main_windows_managment()
 	c_connections_draw connections_draw;
 
 	particle_cube_draw.initialize();
-	particle_draw.initialize();
+	particle_billboard_draw.initialize();
 	transform_positions.initialize("rc/compute.glsl", bufferName::position);
 	transform_velocities.initialize("rc/forces.glsl", bufferName::velocity);
 	connection_force.initialize("rc/connection_force.glsl", bufferName::velocity);
 	connections_draw.initialize();
-	//particle_draw.process(particle_data_inst);
+	//particle_billboard_draw.process(particle_data_inst);
 	//////////////////////////////////////////////////////////////
 
+	bool cubesNotBilboards = false;
+	bool wasDPressed = false;
 
 	double lastTime = glfwGetTime();
 
@@ -234,14 +236,12 @@ inline int main_windows_managment()
 			printOpenGLError();
 		}
 		if (glfwGetKey(window, GLFW_KEY_R) == GLFW_PRESS){
-			particle_draw.clean();
-			particle_cube_draw.clean();
 			transform_positions.clean();
 			transform_velocities.clean();
 			connection_force.clean();
 			connections_draw.clean();
 
-			particle_draw.initialize();
+			particle_billboard_draw.initialize();
 			particle_cube_draw.initialize();
 			transform_positions.initialize("rc/compute.glsl", bufferName::position);
 			transform_velocities.initialize("rc/forces.glsl", bufferName::velocity);
@@ -254,18 +254,26 @@ inline int main_windows_managment()
 			data_inst = data();
 			data_inst.doAllTheInitisation(particle_data_inst);
 		}
-		particle_draw.process(particle_data_inst);
-		//particle_cube_draw.process(particle_data_inst);
+		if(cubesNotBilboards)
+			particle_cube_draw.process(particle_data_inst);
+		else
+			particle_billboard_draw.process(particle_data_inst);
 		if (glfwGetKey(window, GLFW_KEY_C) != GLFW_PRESS && drawConnections){
 			connections_draw.process(particle_data_inst);
 			printOpenGLError();
 		}
+		bool isDPressed = glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS;
+		if (!wasDPressed && isDPressed)
+				cubesNotBilboards = !cubesNotBilboards;
+
 		if (glfwGetKey(window, GLFW_KEY_V) == GLFW_PRESS || simulateConnections){
 			transform_positions.process(particle_data_inst);
 			transform_velocities.process(particle_data_inst);
 			connection_force.process(particle_data_inst);
 			printOpenGLError();
 		}
+
+		wasDPressed = isDPressed;
 		//////////////////////////////////////////////////////////////
 #ifdef USE_ANT_TWEAKBAR
             TwDraw();
@@ -286,7 +294,7 @@ inline int main_windows_managment()
 #endif
 	//////////////////////////////////////////////////////////////
 	particle_data_inst.clean();
-	particle_draw.clean();
+	//particle_billboard_draw.clean();
 	particle_cube_draw.clean();
 	transform_positions.clean();
 	//////////////////////////////////////////////////////////////

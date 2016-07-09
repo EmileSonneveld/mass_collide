@@ -61,7 +61,7 @@ void c_connections_draw::process(particle_data& particle_data_ref)
 		GL_LINES,
 		particle_data_ref.CONNECTION_COUNT,
 		GL_UNSIGNED_INT,
-		(void*)0
+		nullptr
 		);
 	printOpenGLError();
 

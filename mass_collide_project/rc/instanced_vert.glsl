@@ -25,7 +25,6 @@ void main()
 	vec3 vertexPosition_worldspace =
 		particleCenter_wordspace + cubeVertices * particleSize;
 
-	// Output position of the vertex
 	gl_Position = ViewProjMatrix * vec4(vertexPosition_worldspace, 1.0f);
 	outColor = inColor;
 }

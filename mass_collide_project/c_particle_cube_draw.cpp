@@ -26,24 +26,18 @@ void c_particle_cube_draw::initialize()
 	clean();
 	// Create and compile our GLSL program from the shaders //
 	//////////////////////////////////////////////////////////
-	m_program = LoadShaders("rc/billboard_vert.glsl", "rc/col_frag.glsl");
+	m_program = LoadShaders("rc/instanced_vert.glsl", "rc/col_frag.glsl");
 	printOpenGLError();
 
 	// Vertex shader
-	//m_uniform_CameraRight_worldspace = glGetUniformLocation(m_program, "CameraRight_worldspace");
-	printOpenGLError();
-	//m_uniform_CameraUp_worldspace = glGetUniformLocation(m_program, "CameraUp_worldspace");
 	m_uniform_ViewProjMatrix = glGetUniformLocation(m_program, "ViewProjMatrix");
-	// fragment shader
-	//m_uniform_TextureSampler = glGetUniformLocation(m_program, "TextureSampler");
+	// fragment shader (nothing)
 
 
-	m_in_attrib_square = glGetAttribLocation(m_program, "squareVertices");
+	m_in_attrib_square = glGetAttribLocation(m_program, "cubeVertices");
 	m_in_attrib_position = glGetAttribLocation(m_program, "inPosition");
 	m_in_attrib_color = glGetAttribLocation(m_program, "inColor");
 
-
-	//m_texture = loadDDS("rc/particle.DDS");
 
 	printOpenGLError();
 
@@ -105,11 +99,12 @@ void c_particle_cube_draw::process(particle_data& particle_data_ref)
 	glBindBuffer(GL_ARRAY_BUFFER, m_buffer_billboard_vertex);
 	glVertexAttribPointer(
 		m_in_attrib_square,                  // attribute. Must match the layout in the shader.
-		3,                  // size
+		3,                  // Specifies the number of components per generic vertex attribute. Must be 1, 2, 3, 4. 
+							//     Additionally, the symbolic constant GL_BGRA is accepted by glVertexAttribPointer. The initial value is 4.
 		GL_FLOAT,           // type
 		GL_FALSE,           // normalized?
 		0,                  // stride
-		(void*)0             // array buffer offset
+		nullptr             // array buffer offset
 		);
 
 	glEnableVertexAttribArray(m_in_attrib_position);
