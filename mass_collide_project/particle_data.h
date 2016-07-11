@@ -3,6 +3,7 @@
 #include <vector>
 #include <glm/glm.hpp>
 using namespace glm;
+#include <GL/glew.h>
 
 // add an element to this enum to use a shared
 enum bufferName
@@ -31,17 +32,17 @@ struct particle_data
 	GLuint buffer[size_element];
 
 	unsigned int CONNECTION_COUNT;
-	unsigned int MAX_CONNECTIONS;
+	//static const unsigned int MAX_CONNECTIONS = particle_data_init::m_max_connections;
 	unsigned int COUNT = 100000;
 };
 
 //class vec4;
 // for initialisation work (pretty dirt struct)
 // Each array has it's own type and therefore are difficult to keep structured
-class data
+class particle_data_init
 {
 public:
-	data() :
+	particle_data_init() :
 		m_pos(nullptr),
 		m_col(nullptr),
 		m_vel(nullptr),
@@ -49,7 +50,7 @@ public:
 		m_connection_count(0)
 	{
 	}
-	~data(){
+	~particle_data_init(){
 		clean();
 	}
 
@@ -62,6 +63,8 @@ public:
 		m_indices_alt.clear();
 		m_length_alt.clear();
 	}
+	static const unsigned int EMPTY_VALUE = 108108U;
+	static const unsigned int m_max_connections = 30;
 
 private:
 	vec4* m_pos;
@@ -73,7 +76,6 @@ private:
 	std::vector<unsigned int> m_indices_alt;
 	std::vector<float> m_length_alt;
 	unsigned int m_connection_count;
-	unsigned int m_max_connections;
 
 	void generate_colors_random();
 	void generate_colors_sinus();

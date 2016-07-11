@@ -26,7 +26,7 @@ void c_particle_cube_draw::initialize()
 	clean();
 	// Create and compile our GLSL program from the shaders //
 	//////////////////////////////////////////////////////////
-	m_program = LoadShaders("rc/instanced_vert.glsl", "rc/col_frag.glsl");
+	m_program = LoadShaderFromPath("rc/instanced_vert.glsl", "rc/col_frag.glsl");
 	printOpenGLError();
 
 	// Vertex shader

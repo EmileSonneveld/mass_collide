@@ -5,6 +5,9 @@ in vec4 inVelocity;
 
 out vec4 outValue;
 
+// move position with velocity
+
+const int groundHeight = -2;
 
 void main() {
     outValue.x = inPosition.x + inVelocity.x;
@@ -13,7 +16,7 @@ void main() {
 	outValue.a = inPosition.a;
 
 
-	if(inPosition.y<-10 && outValue.y < 0){
-		outValue.y = -10;
+	if(inPosition.y<groundHeight && outValue.y < 0){
+		outValue.y = groundHeight;
 	}
 }

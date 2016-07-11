@@ -17,8 +17,7 @@ public:
 	{}
 	virtual ~c_connections_draw(){}
 
-	void initialize_buffers(particle_data& particle_data_ref);
-	void initialize();
+	void initialize(const particle_data& particle_data_ref);
 	void process(particle_data& particle_data_ref);
 	void clean();
 

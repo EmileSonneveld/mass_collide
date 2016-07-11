@@ -1,4 +1,3 @@
-
 #include <vector>
 #include <algorithm>
 #include <string>
@@ -24,7 +23,7 @@ using namespace glm;
 
 
 
-void data::generate_colors_random()
+void particle_data_init::generate_colors_random()
 {
 	if (m_col == nullptr)
 		m_col = new vec4[m_count];
@@ -36,7 +35,7 @@ void data::generate_colors_random()
 	}
 }
 
-void data::generate_colors_sinus()
+void particle_data_init::generate_colors_sinus()
 {
 	if (m_col == nullptr)
 		m_col = new vec4[m_count];
@@ -48,7 +47,7 @@ void data::generate_colors_sinus()
 	}
 }
 
-void data::generate_colors_gradient()
+void particle_data_init::generate_colors_gradient()
 {
 	if (m_col == nullptr)
 		m_col = new vec4[m_count];
@@ -60,7 +59,7 @@ void data::generate_colors_gradient()
 	}
 }
 
-void data::generate_positions_random()
+void particle_data_init::generate_positions_random()
 {
 	if (m_pos == nullptr)
 		m_pos = new vec4[m_count];
@@ -73,7 +72,7 @@ void data::generate_positions_random()
 	}
 }
 
-void data::generate_positions_structured()
+void particle_data_init::generate_positions_structured()
 {
 	if (m_pos == nullptr)
 		m_pos = new vec4[m_count];
@@ -88,7 +87,7 @@ void data::generate_positions_structured()
 	}
 }
 
-void data::load_positions_from_model(const char* file_name)
+void particle_data_init::load_positions_from_model(const char* file_name)
 {
 	auto assimpScene = aiImportFile(file_name, aiProcess_JoinIdenticalVertices);
 	//auto nd = assimpScene->mRootNode;  aiProcessPreset_TargetRealtime_MaxQuality |
@@ -114,12 +113,16 @@ void data::load_positions_from_model(const char* file_name)
 }
 
 
-void data::generate_velocities_random()
+void particle_data_init::generate_velocities_random()
 {
 	if (m_vel == nullptr)
 		m_vel = new vec4[m_count];
+	auto rand = GetPsSetting_Float("init_random_velocity", 0.0f);
+	if (rand == 0)
+		return;
+
 	std::default_random_engine generator;
-	std::normal_distribution<float> distribution(0, GetPsSetting_Float("init_random_velocity", 0.05f));
+	std::normal_distribution<float> distribution(0, rand);
 
 	for (unsigned int i = 0; i < m_count; ++i){
 		vec4 tmp;
@@ -131,18 +134,24 @@ void data::generate_velocities_random()
 	}
 }
 
+// class generator:
+struct c_unique {
+	int current;
+	c_unique() { current = 0; }
+	int operator()() { return current++; }
+} UniqueNumber;
 
-void data::generate_indexes()
+
+void particle_data_init::generate_indexes()
 {
-	const unsigned int EMPTY_VALUE = 108108U;
 	const unsigned int NOTFOUND_VALUE = 999999;
 
 	m_indices.reserve(444000);
 	float distance = GetPsSetting_Float("connection_max_distance", 0.35f);
 	if (distance == 0) return;
-	float distanseSqr = distance * distance;
+	const float distanseSqr = distance * distance;
 
-	m_max_connections = 4;
+	//m_max_connections = 4;
 
 	m_indices_alt.reserve(m_count * m_max_connections);
 	m_length_alt.reserve(m_count * m_max_connections);
@@ -153,10 +162,17 @@ void data::generate_indexes()
 		m_length_alt.push_back(123456.0f); // don't care
 	}
 
+	auto randomIndexes = std::vector<unsigned int>(m_count);
+	std::generate(randomIndexes.begin(), randomIndexes.end(), UniqueNumber);
+	std::random_device rd;
+	std::mt19937 g(rd());
+	std::shuffle(randomIndexes.begin(), randomIndexes.end(), g);
+
 	unsigned int overflowedConnections = 0;
 	unsigned int overflowedConnectionsA = 0;
-	for (unsigned int ia = 0; ia < m_count; ++ia)
+	for (unsigned int ir = 0; ir < m_count; ++ir)
 	{
+		unsigned int ia = randomIndexes[ir];
 		// find empty spot in a
 		unsigned int relativePosMoverA = NOTFOUND_VALUE;
 		for (unsigned int mini_it = 0; mini_it < m_max_connections; ++mini_it)
@@ -227,10 +243,9 @@ void data::generate_indexes()
 
 
 
-void data::initialize_buffers_from_data(particle_data& particle_data_ref)
+void particle_data_init::initialize_buffers_from_data(particle_data& particle_data_ref)
 {
 	particle_data_ref.COUNT = m_count;
-	particle_data_ref.MAX_CONNECTIONS = m_max_connections;
 	particle_data_ref.CONNECTION_COUNT = m_connection_count;
 
 	glBindBuffer(GL_TEXTURE_BUFFER, particle_data_ref.buffer[position]);
@@ -259,7 +274,7 @@ void data::initialize_buffers_from_data(particle_data& particle_data_ref)
 }
 
 
-void data::doAllTheInitisation(particle_data& particle_data_ref)
+void particle_data_init::doAllTheInitisation(particle_data& particle_data_ref)
 {
 	auto loadFile = GetPsSetting_String("load_this_file_instead", "");
 	if (loadFile != "")

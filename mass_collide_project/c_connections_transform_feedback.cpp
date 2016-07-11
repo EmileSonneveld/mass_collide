@@ -22,10 +22,10 @@ using namespace glm;
 
 #include "particle_data.h"
 #include "globals.h"
+#include "Util.h"
 
 
-
-void c_connections_transform_feedback::initialize(std::string file_name, bufferName output_buffer_name)
+void c_connections_transform_feedback::initialize(const std::string& file_name, const bufferName output_buffer_name, const particle_data& particle_data_ref)
 {
 	m_transform_feedback_out = output_buffer_name;
 
@@ -33,7 +33,10 @@ void c_connections_transform_feedback::initialize(std::string file_name, bufferN
 	glGenTextures(1, &m_texture_buffer_OtherIndex);
 	glGenTextures(1, &m_texture_buffer_LengthToOther);
 
-	m_program = LoadShaderWithTransformFeedback(file_name.c_str());
+	auto shader_text = getCodeFromFile(file_name.c_str());
+	shader_text = Util::ReplaceTokensWith_particleData(shader_text, particle_data_ref);
+	m_program = LoadShaderWithTransformFeedbackFromString(shader_text);
+
 	m_uniform_samplerPosition = glGetUniformLocation(m_program, "samplerPosition");
 	m_uniform_samplerOtherIndex = glGetUniformLocation(m_program, "samplerOtherIndex");
 	m_uniform_samplerLengthToOther = glGetUniformLocation(m_program, "samplerLengthToOther");

@@ -25,3 +25,5 @@ std::string GetPsSetting_String(const char* var_name, std::string default_value)
 int GetPsSetting_Int(const char* var_name, int default_value);
 bool GetPsSetting_Bool(const char* var_name, bool default_value);
 float GetPsSetting_Float(const char* var_name, float default_value);
+
+std::string ReplaceAll(std::string str, const std::string& from, const std::string& to);

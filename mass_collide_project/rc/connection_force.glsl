@@ -9,8 +9,8 @@ uniform samplerBuffer samplerPosition;
 uniform usamplerBuffer samplerOtherIndex;
 uniform samplerBuffer samplerLengthToOther;
 
-#define MAX_CONNECTIONS 4
-#define EMPTY_VALUE 108108
+#define MAX_CONNECTIONS %data.MAX_CONNECTIONS%
+#define EMPTY_VALUE %data.EMPTY_VALUE%
 
 void main()
 {
@@ -36,14 +36,20 @@ void main()
 		float len = length(deltaVec);
 		if(len == 0) continue;
 		float difference = len - targetLen;
-		float strength = -1.5 * difference;
+		float strength = (-2.9 * difference);
+		//strength = min(strength, 0.5);
 
 		summedForce += deltaVec/len * strength;
 
 		//outValue.a = float(difference); // debug output
 	}
-	if(total != 0){
+	if(total > 0){
+		/*vec3 extraSpeed = summedForce / float(total);
+		float len = length(extraSpeed);
+		float ratioToMax = len / 20.0;
+		if (ratioToMax>1.0)
+			ratioToMax=1.0
+		outValue += vec4(extraSpeed*ratioToMax, 0);*/
 		outValue += vec4(summedForce / float(total), 0);
-		//outValue += inVelocity*0.0000001; // inVelocity must be used
 	}
 }

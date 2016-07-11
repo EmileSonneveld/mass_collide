@@ -22,7 +22,7 @@ public:
 	{}
 	virtual ~c_connections_transform_feedback(){}
 
-	void initialize(std::string file_name, bufferName output_buffer_name);
+	void initialize(const std::string& file_name, const bufferName output_buffer_name, const particle_data& particle_data_ref);
 	void process(particle_data& particle_data_ref);
 	void clean();
 

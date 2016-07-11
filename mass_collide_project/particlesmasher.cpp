@@ -182,7 +182,7 @@ inline int main_windows_managment()
 
 	//////////////////////////////////////////////////////////////
 	particle_data particle_data_inst;
-	data data_inst;
+	particle_data_init data_inst;
 	data_inst.doAllTheInitisation(particle_data_inst);
 
 
@@ -195,10 +195,10 @@ inline int main_windows_managment()
 
 	particle_cube_draw.initialize();
 	particle_billboard_draw.initialize();
-	transform_positions.initialize("rc/compute.glsl", bufferName::position);
-	transform_velocities.initialize("rc/forces.glsl", bufferName::velocity);
-	connection_force.initialize("rc/connection_force.glsl", bufferName::velocity);
-	connections_draw.initialize();
+	transform_positions.initialize("rc/compute.glsl", bufferName::position, particle_data_inst);
+	transform_velocities.initialize("rc/forces.glsl", bufferName::velocity, particle_data_inst);
+	connection_force.initialize("rc/connection_force.glsl", bufferName::velocity, particle_data_inst);
+	connections_draw.initialize(particle_data_inst);
 	//particle_billboard_draw.process(particle_data_inst);
 	//////////////////////////////////////////////////////////////
 
@@ -243,15 +243,15 @@ inline int main_windows_managment()
 
 			particle_billboard_draw.initialize();
 			particle_cube_draw.initialize();
-			transform_positions.initialize("rc/compute.glsl", bufferName::position);
-			transform_velocities.initialize("rc/forces.glsl", bufferName::velocity);
-			connection_force.initialize("rc/connection_force.glsl", bufferName::velocity);
-			connections_draw.initialize();
+			transform_positions.initialize("rc/compute.glsl", bufferName::position, particle_data_inst);
+			transform_velocities.initialize("rc/forces.glsl", bufferName::velocity, particle_data_inst);
+			connection_force.initialize("rc/connection_force.glsl", bufferName::velocity, particle_data_inst);
+			connections_draw.initialize(particle_data_inst);
 		}
 		if (glfwGetKey(window, GLFW_KEY_T) == GLFW_PRESS){
 			reader = INIReader("rc/settings.ini");
 			data_inst.clean();
-			data_inst = data();
+			data_inst = particle_data_init();
 			data_inst.doAllTheInitisation(particle_data_inst);
 		}
 		if(cubesNotBilboards)
@@ -265,7 +265,7 @@ inline int main_windows_managment()
 		bool isDPressed = glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS;
 		if (!wasDPressed && isDPressed)
 				cubesNotBilboards = !cubesNotBilboards;
-
+		
 		if (glfwGetKey(window, GLFW_KEY_V) == GLFW_PRESS || simulateConnections){
 			transform_positions.process(particle_data_inst);
 			transform_velocities.process(particle_data_inst);

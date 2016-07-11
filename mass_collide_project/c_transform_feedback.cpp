@@ -25,11 +25,11 @@ using namespace glm;
 
 
 
-void c_transform_feedback::initialize(std::string file_name, bufferName output_buffer_name)
+void c_transform_feedback::initialize(const std::string& file_name, const bufferName output_buffer_name, const particle_data& particle_data_ref)
 {
 	m_transform_feedback_out = output_buffer_name;
 
-	m_program = LoadShaderWithTransformFeedback(file_name.c_str());
+	m_program = LoadShaderWithTransformFeedbackFromPath(file_name.c_str());
 	m_uniform_point = glGetUniformLocation(m_program, "point");
 	m_in_attrib_position = glGetAttribLocation(m_program, "inPosition");
 	m_in_attrib_velocity = glGetAttribLocation(m_program, "inVelocity");
