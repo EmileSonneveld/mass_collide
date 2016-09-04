@@ -16,15 +16,6 @@ using namespace glm;
 
 
 
-voxel_data::voxel_data()
-{
-}
-
-
-voxel_data::~voxel_data()
-{
-}
-
 void voxel_data::init()
 {
 	const unsigned int vertCount = 4;
