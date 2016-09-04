@@ -48,7 +48,7 @@ void computeMatricesFromInputs(){
 	double xpos, ypos;
 	glfwGetCursorPos(window, &xpos, &ypos);
 
-	if (glfwGetMouseButton(window, 0)){
+	if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_1)){
 		if (lastMouseX != -108108 && lastMouseY != -108108){
 			horizontalAngle += mouseSpeed * float(lastMouseX - xpos);
 			verticalAngle += mouseSpeed * float(lastMouseY - ypos);

@@ -51,7 +51,7 @@ void c_transform_feedback::process(particle_data& particle_data_ref)
 			glUniform3f(m_uniform_point, pos.x, pos.y, pos.z);
 		}
 		else {
-			glUniform3f(m_uniform_point, 9999, 9999, 9999);
+			glUniform3f(m_uniform_point, particle_data_init::EMPTY_VALUE, particle_data_init::EMPTY_VALUE, particle_data_init::EMPTY_VALUE);
 		}
 	}
 

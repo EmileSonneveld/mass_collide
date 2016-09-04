@@ -8,7 +8,7 @@ out vec4 outValue; // new Velocity
 
 uniform vec3 point; // contains padding
 
-const int groundHeight = -1;
+const int groundHeight = -4;
 
 void main() {
 	outValue = inVelocity;
@@ -16,7 +16,7 @@ void main() {
 	outValue += vec4(0, -0.0025, 0, 0); // Gravity
 	//outValue.a = 4310217; // velocity debug value
 	if(inPosition.y < groundHeight && outValue.y < 0){
-		outValue.y *= -0.99999999;
+		outValue.y *= -0.9999;
 		//outValue.y -= 0.005;
 	}
 

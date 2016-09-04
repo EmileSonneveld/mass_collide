@@ -16,7 +16,6 @@ void main() {
 	outValue.a = 0.1 + length(inVelocity); //inPosition.a;
 
 
-	if(inPosition.y<groundHeight && inVelocity.y < 0){
+	if(inPosition.y<groundHeight) // && inVelocity.y < 0)
 		outValue.y = groundHeight;
-	}
 }

@@ -33,6 +33,7 @@ using namespace glm;
 #include "c_particle_billboard_draw.h"
 #include "c_particle_cube_draw.h"
 #include "c_transform_feedback.h"
+#include "c_cpu_side.h"
 #include "INIReader.h"
 
 
@@ -192,6 +193,7 @@ inline int main_windows_managment()
 	c_transform_feedback transform_velocities;
 	c_connections_transform_feedback connection_force;
 	c_connections_draw connections_draw;
+	c_cpu_side cpu_side;
 
 	particle_cube_draw.initialize();
 	particle_billboard_draw.initialize();
@@ -200,6 +202,7 @@ inline int main_windows_managment()
 	connection_force.initialize("rc/connection_force.glsl", bufferName::velocity, particle_data_inst);
 	connections_draw.initialize(particle_data_inst);
 	//particle_billboard_draw.process(particle_data_inst);
+	cpu_side.init();
 	//////////////////////////////////////////////////////////////
 
 	bool cubesNotBilboards = false;
@@ -266,6 +269,13 @@ inline int main_windows_managment()
 		if (!wasDPressed && isDPressed)
 				cubesNotBilboards = !cubesNotBilboards;
 		
+
+		if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_2)) {
+			cpu_side.pick_point(particle_data_inst);
+			cpu_side.update_point(particle_data_inst);
+			printOpenGLError();
+		}
+
 		if (glfwGetKey(window, GLFW_KEY_V) == GLFW_PRESS || simulateConnections){
 			auto count = GetPsSetting_Int("connection_force_itterations", 1);
 			for (int i = 0; i < count; ++i) {

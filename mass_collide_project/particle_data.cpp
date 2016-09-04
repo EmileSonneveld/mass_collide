@@ -151,8 +151,6 @@ void particle_data_init::generate_indexes()
 	if (distance == 0) return;
 	const float distanseSqr = distance * distance;
 
-	//m_max_connections = 4;
-
 	m_indices_alt.reserve(m_count * m_max_connections);
 	m_length_alt.reserve(m_count * m_max_connections);
 
