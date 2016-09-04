@@ -13,10 +13,10 @@ void main() {
     outValue.x = inPosition.x + inVelocity.x;
 	outValue.y = inPosition.y + inVelocity.y;
 	outValue.z = inPosition.z + inVelocity.z;
-	outValue.a = 0.01 + length(inVelocity); //inPosition.a;
+	outValue.a = 0.1 + length(inVelocity); //inPosition.a;
 
 
-	if(inPosition.y<groundHeight && outValue.y < 0){
+	if(inPosition.y<groundHeight && inVelocity.y < 0){
 		outValue.y = groundHeight;
 	}
 }

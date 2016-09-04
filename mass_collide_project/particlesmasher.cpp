@@ -267,13 +267,12 @@ inline int main_windows_managment()
 				cubesNotBilboards = !cubesNotBilboards;
 		
 		if (glfwGetKey(window, GLFW_KEY_V) == GLFW_PRESS || simulateConnections){
-			transform_positions.process(particle_data_inst);
-			transform_velocities.process(particle_data_inst);
-			connection_force.process(particle_data_inst);
-			connection_force.process(particle_data_inst);
-			connection_force.process(particle_data_inst);
-			connection_force.process(particle_data_inst);
-
+			auto count = GetPsSetting_Int("connection_force_itterations", 1);
+			for (int i = 0; i < count; ++i) {
+				transform_positions.process(particle_data_inst);
+				transform_velocities.process(particle_data_inst);
+				connection_force.process(particle_data_inst);
+			}
 			printOpenGLError();
 		}
 

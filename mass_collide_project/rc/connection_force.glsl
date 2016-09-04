@@ -37,10 +37,10 @@ void main()
 		if(len == 0)
 			continue;
 		float difference = len - targetLen;
-		if(len<0.5 || abs(difference)<0.9)
+		if(len<0.001 || abs(difference)<0.01)
 			continue;
 		
-		float strength = -0.1 * difference;
+		float strength = -1.1 * difference;
 		//strength = min(strength, 0.9);
 
 		summedForce += normalize (deltaVec) * strength;
@@ -59,7 +59,7 @@ void main()
 		float amplitude = length(summedForce);
 		//if(amplitude<9 && amplitude > 0.00001)
 		{
-			summedForce = summedForce / amplitude * min(amplitude, 0.1);
+			summedForce = summedForce / amplitude * min(amplitude, 9.9);
 			outValue += vec4(summedForce, 0);
 		}
 	}

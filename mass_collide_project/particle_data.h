@@ -64,7 +64,7 @@ public:
 		m_length_alt.clear();
 	}
 	static const unsigned int EMPTY_VALUE = 108108U;
-	static const unsigned int m_max_connections = 1;
+	static const unsigned int m_max_connections = 20;
 
 private:
 	vec4* m_pos;
