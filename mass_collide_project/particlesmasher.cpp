@@ -270,6 +270,10 @@ inline int main_windows_managment()
 			transform_positions.process(particle_data_inst);
 			transform_velocities.process(particle_data_inst);
 			connection_force.process(particle_data_inst);
+			connection_force.process(particle_data_inst);
+			connection_force.process(particle_data_inst);
+			connection_force.process(particle_data_inst);
+
 			printOpenGLError();
 		}
 

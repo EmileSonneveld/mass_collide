@@ -49,20 +49,25 @@ void c_transform_feedback::process(particle_data& particle_data_ref)
 		{
 			glm::vec4 pos = CursorToWorldspace(0.5);
 			glUniform3f(m_uniform_point, pos.x, pos.y, pos.z);
-		}else{
+		}
+		else {
 			glUniform3f(m_uniform_point, 9999, 9999, 9999);
 		}
 	}
 
 	printOpenGLError();
 
-	glEnableVertexAttribArray(m_in_attrib_position);
-	glBindBuffer(GL_ARRAY_BUFFER, particle_data_ref.buffer[position]);
-	glVertexAttribPointer(m_in_attrib_position, 4, GL_FLOAT, GL_FALSE, 0, nullptr);
+	if (m_in_attrib_position != -1) {
+		glEnableVertexAttribArray(m_in_attrib_position);
+		glBindBuffer(GL_ARRAY_BUFFER, particle_data_ref.buffer[position]);
+		glVertexAttribPointer(m_in_attrib_position, 4, GL_FLOAT, GL_FALSE, 0, nullptr);
+	}
+	if (m_in_attrib_velocity != -1) {
+		glEnableVertexAttribArray(m_in_attrib_velocity);
+		glBindBuffer(GL_ARRAY_BUFFER, particle_data_ref.buffer[velocity]);
+		glVertexAttribPointer(m_in_attrib_velocity, 4, GL_FLOAT, GL_FALSE, 0, nullptr);
+	}
 
-	glEnableVertexAttribArray(m_in_attrib_velocity);
-	glBindBuffer(GL_ARRAY_BUFFER, particle_data_ref.buffer[velocity]);
-	glVertexAttribPointer(m_in_attrib_velocity, 4, GL_FLOAT, GL_FALSE, 0, nullptr);
 	printOpenGLError();
 
 	// GL_POINTS
@@ -74,8 +79,10 @@ void c_transform_feedback::process(particle_data& particle_data_ref)
 
 	glDisable(GL_RASTERIZER_DISCARD);
 
-	glDisableVertexAttribArray(m_in_attrib_position);
-	glDisableVertexAttribArray(m_in_attrib_velocity);
+	if (m_in_attrib_position != -1)
+		glDisableVertexAttribArray(m_in_attrib_position);
+	if (m_in_attrib_velocity != -1)
+		glDisableVertexAttribArray(m_in_attrib_velocity);
 
 	printOpenGLError();
 	glFlush();

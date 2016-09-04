@@ -17,7 +17,7 @@ void main()
 	outValue = inVelocity;
 
 	vec3 summedForce = vec3(0,0,0);
-	int total = 0;
+	float total = 0;
 	for(int i=0; i<MAX_CONNECTIONS; ++i){
 
 		int otherIndex = int( texelFetch(samplerOtherIndex, gl_VertexID*MAX_CONNECTIONS + i).x );
@@ -26,22 +26,27 @@ void main()
 			//outValue.a = 898;
 			continue;
 		}
-		++total;
 
 		float targetLen = texelFetch(samplerLengthToOther, gl_VertexID*MAX_CONNECTIONS + i).x;
+		//float targetLen = texelFetch(samplerLengthToOther, otherIndex).x;
 		vec3 pos1 = texelFetch(samplerPosition, gl_VertexID).xyz;
 		vec3 pos2 = texelFetch(samplerPosition, otherIndex).xyz;
 
 		vec3 deltaVec = pos1 - pos2;
 		float len = length(deltaVec);
-		if(len == 0) continue;
+		if(len == 0)
+			continue;
 		float difference = len - targetLen;
-		float strength = (-2.9 * difference);
-		//strength = min(strength, 0.5);
+		if(len<0.5 || abs(difference)<0.9)
+			continue;
+		
+		float strength = -0.1 * difference;
+		//strength = min(strength, 0.9);
 
-		summedForce += deltaVec/len * strength;
+		summedForce += normalize (deltaVec) * strength;
 
 		//outValue.a = float(difference); // debug output
+		++total;
 	}
 	if(total > 0){
 		/*vec3 extraSpeed = summedForce / float(total);
@@ -50,6 +55,14 @@ void main()
 		if (ratioToMax>1.0)
 			ratioToMax=1.0
 		outValue += vec4(extraSpeed*ratioToMax, 0);*/
-		outValue += vec4(summedForce / float(total), 0);
+		summedForce = summedForce/total;
+		float amplitude = length(summedForce);
+		//if(amplitude<9 && amplitude > 0.00001)
+		{
+			summedForce = summedForce / amplitude * min(amplitude, 0.1);
+			outValue += vec4(summedForce, 0);
+		}
 	}
+	//float amplitude = length(outValue);
+	//outValue = outValue / amplitude * min(amplitude, 50000000000000);
 }

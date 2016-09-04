@@ -29,3 +29,4 @@ mass_collide.sublime-workspace
 *.suo
 Debug
 Release
+*.db

@@ -64,7 +64,7 @@ public:
 		m_length_alt.clear();
 	}
 	static const unsigned int EMPTY_VALUE = 108108U;
-	static const unsigned int m_max_connections = 30;
+	static const unsigned int m_max_connections = 1;
 
 private:
 	vec4* m_pos;
@@ -72,7 +72,7 @@ private:
 	vec4* m_vel;
 	unsigned int m_count;
 
-	std::vector<unsigned int> m_indices;
+	std::vector<unsigned int> m_indices; // to draw connections
 	std::vector<unsigned int> m_indices_alt;
 	std::vector<float> m_length_alt;
 	unsigned int m_connection_count;

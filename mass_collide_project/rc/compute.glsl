@@ -3,7 +3,7 @@
 in vec4 inPosition;
 in vec4 inVelocity;
 
-out vec4 outValue;
+out vec4 outValue; // new position
 
 // move position with velocity
 
@@ -13,7 +13,7 @@ void main() {
     outValue.x = inPosition.x + inVelocity.x;
 	outValue.y = inPosition.y + inVelocity.y;
 	outValue.z = inPosition.z + inVelocity.z;
-	outValue.a = inPosition.a;
+	outValue.a = 0.01 + length(inVelocity); //inPosition.a;
 
 
 	if(inPosition.y<groundHeight && outValue.y < 0){

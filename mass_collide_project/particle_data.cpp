@@ -186,9 +186,8 @@ void particle_data_init::generate_indexes()
 			overflowedConnectionsA += 1;
 			continue;
 		}
-
-		// we don't need to seek in the past, because those connections will be already made
-		for (unsigned int ib = ia + 1; ib < m_count; ++ib)
+		// Found an empty spot on A here, lets find something in B
+		for (unsigned int ib = 0; ib < m_count; ++ib)
 		{
 			if (ia == ib) continue;
 			auto len2 = glm::length2(m_pos[ia] - m_pos[ib]);
@@ -208,12 +207,13 @@ void particle_data_init::generate_indexes()
 				overflowedConnections += 1;
 				continue;
 			}
-
+			// Found an empty B here
+			auto len = sqrt(len2);
 			m_indices_alt[ia*m_max_connections + relativePosMoverA] = ib;
-			m_length_alt[ia*m_max_connections + relativePosMoverA] = sqrt(len2);
+			m_length_alt[ia*m_max_connections + relativePosMoverA] = len;
 
 			m_indices_alt[absoluteEmptySpotB] = ia;
-			m_length_alt[absoluteEmptySpotB] = sqrt(len2);
+			m_length_alt[absoluteEmptySpotB] = len;
 
 			m_indices.push_back(ia);
 			m_indices.push_back(ib);
