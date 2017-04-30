@@ -82,6 +82,7 @@ private:
 	void generate_colors_gradient();
 	void generate_positions_random();
 	void generate_positions_structured();
+	void load_positions_from_csv();
 	void load_positions_from_model(const char* file_name);
 	void generate_velocities_random();
 	void generate_indexes();

@@ -20,6 +20,7 @@ using namespace glm;
 
 #include "globals.h"
 #include "particle_data.h"
+#include "csv.h"
 
 
 
@@ -85,6 +86,68 @@ void particle_data_init::generate_positions_structured()
 		m_pos[i].y = (i / sizecount / sizecount) * size;
 		m_pos[i].a = particle_size;
 	}
+}
+
+void particle_data_init::load_positions_from_csv()
+{
+	float particle_size = GetPsSetting_Float("particle_size", 0.04f);
+	const float scale = 20;
+	std::vector<vec4> pos;
+	pos.reserve(100000);
+	/*{
+		auto file_name = "C:/Users/emilesonneveld/Documents/GitHub/2017_04_28_MetroMaps/dataFromOpenData/shapes.txt";
+
+		//shape_id,shape_pt_lat,shape_pt_lon,shape_pt_sequence
+		//001m0006, 50.839382, 4.398154, 10001
+		io::CSVReader<2> in(file_name);
+		in.read_header(io::ignore_extra_column, "shape_pt_lat", "shape_pt_lon");
+		float shape_pt_lat; float shape_pt_lon;
+		while (in.read_row(shape_pt_lat, shape_pt_lon)) {
+			pos.push_back(vec4((shape_pt_lat - 50)*scale, 0, (shape_pt_lon - 3)*scale, particle_size));
+		}
+	}
+
+	{
+		auto file_name = "C:/Users/emilesonneveld/Documents/GitHub/2017_04_28_MetroMaps/dataFromOpenData/routes.txt";
+		
+		//route_id, route_short_name, route_long_name, route_desc, route_type, route_url, route_color, route_text_color
+		//001m - "GARE DE L'OUEST - STOCKEL", 1, "GARE DE L'OUEST - STOCKEL", , 1, , C4008F, FFFFFF
+		io::CSVReader<2> in(file_name);
+		in.read_header(io::ignore_extra_column, "shape_pt_lat", "shape_pt_lon");
+		float shape_pt_lat; float shape_pt_lon;
+		while (in.read_row(shape_pt_lat, shape_pt_lon)) {
+			pos.push_back(vec4((shape_pt_lat - 50)*scale, 0, (shape_pt_lon - 3)*scale, particle_size));
+		}
+	}*/
+
+	{
+		auto file_name = "C:/Users/emilesonneveld/Documents/GitHub/2017_04_28_MetroMaps/dataFromOpenData/stops.txt";
+		//stop_id, stop_code, stop_name, stop_desc, stop_lat, stop_lon, zone_id, stop_url, location_type
+		//0089, , "MONTGOMERY", , 50.838120, 4.409113, , , 0
+		io::CSVReader<2> in(file_name);
+		in.read_header(io::ignore_extra_column, "stop_lat", "stop_lon");
+		float stop_lat; float stop_lon;
+		while (in.read_row(stop_lat, stop_lon)) {
+			pos.push_back(vec4((stop_lat - 50)*scale, 0, (stop_lon - 3)*scale, particle_size));
+		}
+	}
+
+	{
+		auto file_name = "C:/Users/emilesonneveld/Documents/GitHub/2017_04_28_MetroMaps/dataFromOpenData/stop_times.txt";
+		//trip_id, arrival_time, departure_time, stop_id, stop_sequence, pickup_type, drop_off_type
+		//95466486 - B20170306 - BRESIM01 - Semaine - 03, 20:48 : 00, 20 : 48 : 00, 1142, 1, 0, 0
+		io::CSVReader<2> in(file_name);
+		in.read_header(io::ignore_extra_column, "trip_id", "stop_lon");
+		float stop_lat; float stop_lon;
+		while (in.read_row(stop_lat, stop_lon)) {
+			pos.push_back(vec4((stop_lat - 50)*scale, 0, (stop_lon - 3)*scale, particle_size));
+		}
+	}
+
+	m_count = pos.size();
+	if (m_pos == nullptr)
+		m_pos = new vec4[m_count];
+	std::copy(pos.begin(), pos.end(), m_pos);
 }
 
 void particle_data_init::load_positions_from_model(const char* file_name)
@@ -274,6 +337,7 @@ void particle_data_init::initialize_buffers_from_data(particle_data& particle_da
 
 void particle_data_init::doAllTheInitisation(particle_data& particle_data_ref)
 {
+	//load_positions_from_csv();
 	auto loadFile = GetPsSetting_String("load_this_file_instead", "");
 	if (loadFile != "")
 		load_positions_from_model(loadFile.c_str());
