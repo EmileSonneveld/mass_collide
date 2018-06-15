@@ -2,16 +2,17 @@ MASS COLLIDE
 ============
 Use the GPU to simulate linked particles
 
-git clone --recursive https://github.com/EmileSonneveld/mass_collide
+> git clone --recursive https://github.com/EmileSonneveld/mass_collide
 
-I made a build on Windows,Linux and Mac. But I will only continue in Windows becouse the better tools for c++ and graphics card debugging.
+You can download a build from 'release' tab.
+Play with "/mass_collide_project/rc/settings.ini" to see what it can do.
 
-On wWndows you may need to install visual studio c++ libraries and DirectX https://www.microsoft.com/en-us/download/details.aspx?id=6812
+On Windows you may need to install visual studio c++ libraries and DirectX https://www.microsoft.com/en-us/download/details.aspx?id=6812
 
 <img src="https://github.com/EmileSonneveld/mass_collide/blob/master/cover_photo.png"/>
 
-More screenshots and other stuff:
-https://www.dropbox.com/sh/euydir5xqffspfa/AACwjsmOpVpN7BreF5Y59BQKa?dl=0
+Find more screenshots and resources here:
+https://www.dropbox.com/sh/x8efrvngbk7ff5w/AAC1SFAnG-DrbGjlPad62n_Sa?dl=0
 
 
 Controls
@@ -26,10 +27,3 @@ V      | Connections transform feedback (press continusely)
 T      | Reload parameters and respawn particles (press shortly)
 R      | Reload shaders (press shortly)
 C      | Hide connections (press continusely)
-
-
-Travis
-======
-(doesn't build on Linux for the moment)
-Build status:
-[![Build Status](https://travis-ci.org/EmileSonneveld/mass_collide.png)](https://travis-ci.org/EmileSonneveld/mass_collide)
