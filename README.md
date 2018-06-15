@@ -9,7 +9,7 @@ Play with "/mass_collide_project/rc/settings.ini" to see what it can do.
 
 On Windows you may need to install visual studio c++ libraries and DirectX https://www.microsoft.com/en-us/download/details.aspx?id=6812
 
-<img src="https://github.com/EmileSonneveld/mass_collide/blob/master/cover_photo.png"/>
+[![cover_photo](https://github.com/EmileSonneveld/mass_collide/blob/master/cover_photo.png)](https://www.youtube.com/watch?v=zjyPBzLIbAY)
 
 Find more screenshots and resources here:
 https://www.dropbox.com/sh/x8efrvngbk7ff5w/AAC1SFAnG-DrbGjlPad62n_Sa?dl=0
