@@ -4,6 +4,9 @@ Use the GPU to simulate linked particles
 
 > git clone --recursive https://github.com/EmileSonneveld/mass_collide
 
+If you fergot to download submodules:
+> git submodule update --init --recursive
+
 You can download a build from 'release' tab.
 Play with "/mass_collide_project/rc/settings.ini" to see what it can do.
 
