@@ -219,7 +219,7 @@ void particle_data_init::generate_indexes()
 
 	for (unsigned int i = 0; i < m_count * m_max_connections; ++i)
 	{
-		m_indices_alt.push_back(EMPTY_VALUE);
+		m_indices_alt.push_back(particle_data_init::EMPTY_VALUE);
 		m_length_alt.push_back(123456.0f); // don't care
 	}
 
@@ -238,7 +238,7 @@ void particle_data_init::generate_indexes()
 		unsigned int relativePosMoverA = NOTFOUND_VALUE;
 		for (unsigned int mini_it = 0; mini_it < m_max_connections; ++mini_it)
 		{
-			if (m_indices_alt[ia*m_max_connections + mini_it] == EMPTY_VALUE){
+			if (m_indices_alt[ia*m_max_connections + mini_it] == particle_data_init::EMPTY_VALUE){
 				relativePosMoverA = mini_it;
 				break;
 			}
@@ -259,7 +259,7 @@ void particle_data_init::generate_indexes()
 			unsigned int absoluteEmptySpotB = NOTFOUND_VALUE;
 			for (unsigned int mini_it = 0; mini_it < m_max_connections; ++mini_it)
 			{
-				if (m_indices_alt[ib*m_max_connections + mini_it] == EMPTY_VALUE){
+				if (m_indices_alt[ib*m_max_connections + mini_it] == particle_data_init::EMPTY_VALUE){
 					absoluteEmptySpotB = ib*m_max_connections + mini_it;
 					break;
 				}
