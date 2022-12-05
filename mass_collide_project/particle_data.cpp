@@ -205,6 +205,11 @@ struct c_unique {
 } UniqueNumber;
 
 
+// Following line to avoid error:
+// particle_data.cpp:(.text+0x1303): undefined reference to `particle_data_init::EMPTY_VALUE'
+const unsigned int particle_data_init::EMPTY_VALUE;
+
+
 void particle_data_init::generate_indexes()
 {
 	const unsigned int NOTFOUND_VALUE = 999999;
