@@ -1,5 +1,5 @@
 # CMake entry point
-cmake_minimum_required (VERSION 2.8)
+cmake_minimum_required (VERSION 3.10)
 project (mass_collide_build_system)
 
 find_package(OpenGL REQUIRED)
@@ -31,6 +31,9 @@ endif()
 
 
 # Compile external dependencies ###########
+SET(ASSIMP_BUILD_ASSIMP_TOOLS OFF CACHE BOOL "If the supplementary tools for Assimp are built in addition to the library.")
+SET(ASSIMP_BUILD_ZLIB ON CACHE BOOL "Build your own zlib")
+
 add_subdirectory (external)
 
 # On Visual 2005 and above, this module can set the debug working directory

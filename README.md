@@ -10,7 +10,7 @@ If you fergot to download submodules:
 You can download a build from 'release' tab.
 Play with "/mass_collide_project/rc/settings.ini" to see what it can do.
 
-On Windows you may need to install visual studio c++ libraries and DirectX https://www.microsoft.com/en-us/download/details.aspx?id=6812
+On Windows you may need to install visual studio c++ libraries and DirectX (DXSDK_Jun10.exe) https://www.microsoft.com/en-us/download/details.aspx?id=6812
 
 [![cover_photo](https://github.com/EmileSonneveld/mass_collide/blob/master/cover_photo.png)](https://www.youtube.com/watch?v=zjyPBzLIbAY)
 
