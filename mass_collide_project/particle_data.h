@@ -2,8 +2,10 @@
 
 #include <vector>
 #include <glm/glm.hpp>
-using namespace glm;
+
 #include <GL/glew.h>
+
+using namespace glm;
 
 // add an element to this enum to use a shared
 enum bufferName
@@ -31,31 +33,22 @@ struct particle_data
 
 	GLuint buffer[size_element];
 
-	unsigned int CONNECTION_COUNT;
-	//static const unsigned int MAX_CONNECTIONS = particle_data_init::m_max_connections;
+	unsigned int CONNECTION_COUNT = -1;
 	unsigned int COUNT = 100000;
 };
 
-//class vec4;
+
 // for initialisation work (pretty dirt struct)
 // Each array has it's own type and therefore are difficult to keep structured
 class particle_data_init
 {
 public:
-	particle_data_init() :
-		m_pos(nullptr),
-		m_col(nullptr),
-		m_vel(nullptr),
-		m_count(0),
-		m_connection_count(0)
-	{
-	}
-	~particle_data_init(){
+	virtual ~particle_data_init() {
 		clean();
 	}
 
 	void doAllTheInitisation(particle_data& particle_data_ref);
-	void clean(){
+	void clean() {
 		delete m_pos;
 		delete m_col;
 		delete m_vel;
@@ -67,15 +60,15 @@ public:
 	static const unsigned int m_max_connections = 20;
 
 private:
-	vec4* m_pos;
-	vec4* m_col;
-	vec4* m_vel;
-	unsigned int m_count;
+	vec4* m_pos = nullptr;
+	vec4* m_col = nullptr;
+	vec4* m_vel = nullptr;
+	unsigned int m_count = 0;
 
 	std::vector<unsigned int> m_indices; // to draw connections
 	std::vector<unsigned int> m_indices_alt;
 	std::vector<float> m_length_alt;
-	unsigned int m_connection_count;
+	unsigned int m_connection_count = 0;
 
 	void generate_colors_random();
 	void generate_colors_sinus();
@@ -89,6 +82,3 @@ private:
 
 	void initialize_buffers_from_data(particle_data& particle_data_ref);
 };
-
-
-

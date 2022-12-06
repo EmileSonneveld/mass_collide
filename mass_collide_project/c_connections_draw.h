@@ -8,23 +8,17 @@
 
 struct particle_data;
 
-class c_connections_draw : calculate
+class c_connections_draw : private calculate
 {
 public:
-	c_connections_draw() :
-		m_program(0),
-		m_uniform_matrix(0)
-	{}
-	virtual ~c_connections_draw(){}
-
 	void initialize(const particle_data& particle_data_ref);
-	void process(particle_data& particle_data_ref);
-	void clean();
+	void process(particle_data& particle_data_ref) override;
+	void clean() override;
 
 private:
-	GLuint m_program;
+	GLuint m_program = 0;
 	GLint m_in_attrib_position = 0;
 	GLint m_in_attrib_color = 1;
 
-	GLint m_uniform_matrix;
+	GLint m_uniform_matrix = 0;
 };

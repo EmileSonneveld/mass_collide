@@ -10,7 +10,6 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/norm.hpp>
-using namespace glm;
 
 #include <GL/glew.h>
 
@@ -22,16 +21,20 @@ using namespace glm;
 #include "particle_data.h"
 #include "csv.h"
 
+using namespace glm;
 
 
 void particle_data_init::generate_colors_random()
 {
 	if (m_col == nullptr)
 		m_col = new vec4[m_count];
-	for (unsigned int i = 0; i < m_count; ++i){
-		m_col[i].x = float(rand() % 256) / 256.0f;
-		m_col[i].y = float(rand() % 256) / 256.0f;
-		m_col[i].z = float(rand() % 256) / 256.0f;
+	std::random_device rd;
+	std::mt19937 e2(rd());
+	std::uniform_real_distribution<float> dist(0, 1);
+	for (unsigned int i = 0; i < m_count; ++i) {
+		m_col[i].x = dist(e2);
+		m_col[i].y = dist(e2);
+		m_col[i].z = dist(e2);
 		m_col[i].a = 1;
 	}
 }
@@ -40,10 +43,10 @@ void particle_data_init::generate_colors_sinus()
 {
 	if (m_col == nullptr)
 		m_col = new vec4[m_count];
-	for (unsigned int i = 0; i < m_count; ++i){
-		m_col[i].x = std::sin(m_pos[i].x*2.1f) / 2.f + 0.5f;
-		m_col[i].y = std::sin(m_pos[i].y*2.2f) / 2.f + 0.5f;
-		m_col[i].z = std::sin(m_pos[i].z*2.3f) / 2.f + 0.25f;
+	for (unsigned int i = 0; i < m_count; ++i) {
+		m_col[i].x = std::sin(m_pos[i].x * 2.1f) / 2.f + 0.5f;
+		m_col[i].y = std::sin(m_pos[i].y * 2.2f) / 2.f + 0.5f;
+		m_col[i].z = std::sin(m_pos[i].z * 2.3f) / 2.f + 0.25f;
 		m_col[i].a = 1;
 	}
 }
@@ -52,7 +55,7 @@ void particle_data_init::generate_colors_gradient()
 {
 	if (m_col == nullptr)
 		m_col = new vec4[m_count];
-	for (unsigned int i = 0; i < m_count; ++i){
+	for (unsigned int i = 0; i < m_count; ++i) {
 		m_col[i].x = float(i) / float(m_count);
 		m_col[i].y = float(i) / float(m_count);
 		m_col[i].z = float(i) / float(m_count);
@@ -64,11 +67,14 @@ void particle_data_init::generate_positions_random()
 {
 	if (m_pos == nullptr)
 		m_pos = new vec4[m_count];
-	for (unsigned int i = 0; i < m_count; ++i){
-		float size = GetPsSetting_Float("random_box_size", 10);
-		m_pos[i].x = (0.5f - (float)(rand() % 100) * 0.01f) * size;
-		m_pos[i].y = (0.5f - (float)(rand() % 100) * 0.01f) * size;
-		m_pos[i].z = (0.5f - (float)(rand() % 100) * 0.01f) * size;
+	std::random_device rd;
+	std::mt19937 e2(rd());
+	float size = GetPsSetting_Float("random_box_size", 10);
+	std::uniform_real_distribution<float> dist(-size/2, size/2);
+	for (unsigned int i = 0; i < m_count; ++i) {
+		m_pos[i].x = dist(e2);
+		m_pos[i].y = dist(e2);
+		m_pos[i].z = dist(e2);
 		m_pos[i].a = GetPsSetting_Float("particle_size", 0.04f);
 	}
 }
@@ -78,9 +84,9 @@ void particle_data_init::generate_positions_structured()
 	if (m_pos == nullptr)
 		m_pos = new vec4[m_count];
 	float particle_size = GetPsSetting_Float("particle_size", 0.04f);
-	unsigned int sizecount = (unsigned int)GetPsSetting_Int("structured_box_sizecount", 50);
+	auto sizecount = (unsigned int)GetPsSetting_Int("structured_box_sizecount", 50);
 	float size = GetPsSetting_Float("structured_box_distance", 0.2f);
-	for (unsigned int i = 0; i < m_count; ++i){
+	for (unsigned int i = 0; i < m_count; ++i) {
 		m_pos[i].x = (i / 1 % sizecount) * size;
 		m_pos[i].z = (i / sizecount % sizecount) * size;
 		m_pos[i].y = (i / sizecount / sizecount) * size;
@@ -109,7 +115,7 @@ void particle_data_init::load_positions_from_csv()
 
 	{
 		auto file_name = "C:/Users/emilesonneveld/Documents/GitHub/2017_04_28_MetroMaps/dataFromOpenData/routes.txt";
-		
+
 		//route_id, route_short_name, route_long_name, route_desc, route_type, route_url, route_color, route_text_color
 		//001m - "GARE DE L'OUEST - STOCKEL", 1, "GARE DE L'OUEST - STOCKEL", , 1, , C4008F, FFFFFF
 		io::CSVReader<2> in(file_name);
@@ -128,7 +134,7 @@ void particle_data_init::load_positions_from_csv()
 		in.read_header(io::ignore_extra_column, "stop_lat", "stop_lon");
 		float stop_lat; float stop_lon;
 		while (in.read_row(stop_lat, stop_lon)) {
-			pos.push_back(vec4((stop_lat - 50)*scale, 0, (stop_lon - 3)*scale, particle_size));
+			pos.push_back(vec4((stop_lat - 50) * scale, 0, (stop_lon - 3) * scale, particle_size));
 		}
 	}
 
@@ -140,7 +146,7 @@ void particle_data_init::load_positions_from_csv()
 		in.read_header(io::ignore_extra_column, "trip_id", "stop_lon");
 		float stop_lat; float stop_lon;
 		while (in.read_row(stop_lat, stop_lon)) {
-			pos.push_back(vec4((stop_lat - 50)*scale, 0, (stop_lon - 3)*scale, particle_size));
+			pos.push_back(vec4((stop_lat - 50) * scale, 0, (stop_lon - 3) * scale, particle_size));
 		}
 	}
 
@@ -187,7 +193,7 @@ void particle_data_init::generate_velocities_random()
 	std::default_random_engine generator;
 	std::normal_distribution<float> distribution(0, rand);
 
-	for (unsigned int i = 0; i < m_count; ++i){
+	for (unsigned int i = 0; i < m_count; ++i) {
 		vec4 tmp;
 		tmp.x = distribution(generator);
 		tmp.y = distribution(generator);
@@ -243,12 +249,12 @@ void particle_data_init::generate_indexes()
 		unsigned int relativePosMoverA = NOTFOUND_VALUE;
 		for (unsigned int mini_it = 0; mini_it < m_max_connections; ++mini_it)
 		{
-			if (m_indices_alt[ia*m_max_connections + mini_it] == particle_data_init::EMPTY_VALUE){
+			if (m_indices_alt[ia * m_max_connections + mini_it] == particle_data_init::EMPTY_VALUE) {
 				relativePosMoverA = mini_it;
 				break;
 			}
 		}
-		if (relativePosMoverA == NOTFOUND_VALUE){
+		if (relativePosMoverA == NOTFOUND_VALUE) {
 			overflowedConnectionsA += 1;
 			continue;
 		}
@@ -264,19 +270,19 @@ void particle_data_init::generate_indexes()
 			unsigned int absoluteEmptySpotB = NOTFOUND_VALUE;
 			for (unsigned int mini_it = 0; mini_it < m_max_connections; ++mini_it)
 			{
-				if (m_indices_alt[ib*m_max_connections + mini_it] == particle_data_init::EMPTY_VALUE){
-					absoluteEmptySpotB = ib*m_max_connections + mini_it;
+				if (m_indices_alt[ib * m_max_connections + mini_it] == particle_data_init::EMPTY_VALUE) {
+					absoluteEmptySpotB = ib * m_max_connections + mini_it;
 					break;
 				}
 			}
-			if (absoluteEmptySpotB == NOTFOUND_VALUE){
+			if (absoluteEmptySpotB == NOTFOUND_VALUE) {
 				overflowedConnections += 1;
 				continue;
 			}
 			// Found an empty B here
 			auto len = sqrt(len2);
-			m_indices_alt[ia*m_max_connections + relativePosMoverA] = ib;
-			m_length_alt[ia*m_max_connections + relativePosMoverA] = len;
+			m_indices_alt[ia * m_max_connections + relativePosMoverA] = ib;
+			m_length_alt[ia * m_max_connections + relativePosMoverA] = len;
 
 			m_indices_alt[absoluteEmptySpotB] = ia;
 			m_length_alt[absoluteEmptySpotB] = len;
@@ -294,10 +300,10 @@ void particle_data_init::generate_indexes()
 	m_connection_count = m_indices.size();
 
 	std::cout << "m_indices_alt [";
-	for (unsigned int i = 0; i < m_indices_alt.size(); i += 1){
-		if (i%m_max_connections == 0){
+	for (unsigned int i = 0; i < m_indices_alt.size(); i += 1) {
+		if (i % m_max_connections == 0) {
 			std::cout << "\n   ";
-			if (i > 20){
+			if (i > 20) {
 				std::cout << "...";
 				break;
 			}
@@ -326,7 +332,7 @@ void particle_data_init::initialize_buffers_from_data(particle_data& particle_da
 	glBindBuffer(GL_ARRAY_BUFFER, particle_data_ref.buffer[swap]);
 	glBufferData(GL_ARRAY_BUFFER, particle_data_ref.COUNT * sizeof(vec4), nullptr, GL_DYNAMIC_DRAW);
 
-	if (particle_data_ref.CONNECTION_COUNT > 0){
+	if (particle_data_ref.CONNECTION_COUNT > 0) {
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, particle_data_ref.buffer[connection_index]);
 		glBufferData(GL_ELEMENT_ARRAY_BUFFER, m_indices.size() * sizeof(unsigned int), &m_indices[0], GL_STATIC_DRAW);
 
@@ -355,6 +361,7 @@ void particle_data_init::doAllTheInitisation(particle_data& particle_data_ref)
 			this->generate_positions_random();
 	}
 	generate_colors_sinus();
+	//generate_colors_random();
 	//generate_colors_gradient();
 	generate_velocities_random();
 	generate_indexes();

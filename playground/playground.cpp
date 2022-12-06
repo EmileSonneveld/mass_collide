@@ -7,16 +7,17 @@
 
 // Include GLFW
 #include <glfw3.h>
-GLFWwindow* window;
 
 // Include GLM
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
-using namespace glm;
 
-#include <common/shader.hpp>
-#include <common/texture.hpp>
-#include <common/controls.hpp>
+#include "common/shader.hpp"
+#include "common/texture.hpp"
+#include "common/controls.hpp"
+
+GLFWwindow* window;
+using namespace glm;
 
 int main( void )
 {
@@ -69,7 +70,7 @@ int main( void )
 	glBindVertexArray(VertexArrayID);
 
 	// Create and compile our GLSL program from the shaders
-	GLuint programID = LoadShaders( "TransformVertexShader.vertexshader", "TextureFragmentShader.fragmentshader" );
+	GLuint programID = LoadShaderFromPath( "TransformVertexShader.vertexshader", "TextureFragmentShader.fragmentshader" );
 
 	// Get a handle for our "MVP" uniform
 	GLuint MatrixID = glGetUniformLocation(programID, "MVP");
@@ -243,7 +244,7 @@ int main( void )
 
 	// Close OpenGL window and terminate GLFW
 	glfwTerminate();
-*/
+//*/
 	return 0;
 }
 

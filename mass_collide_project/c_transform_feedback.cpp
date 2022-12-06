@@ -14,16 +14,15 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/norm.hpp>
-using namespace glm;
 
-#include <common/shader.hpp>
-#include <common/texture.hpp>
-#include <common/controls.hpp>
-
+#include "common/shader.hpp"
+#include "common/texture.hpp"
+#include "common/controls.hpp"
 #include "particle_data.h"
 #include "globals.h"
 
 
+using namespace glm;
 
 void c_transform_feedback::initialize(const std::string& file_name, const bufferName output_buffer_name, const particle_data& particle_data_ref)
 {

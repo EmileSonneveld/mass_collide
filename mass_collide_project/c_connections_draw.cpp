@@ -15,9 +15,9 @@
 #include <glm/gtx/norm.hpp>
 using namespace glm;
 
-#include <common/shader.hpp>
-#include <common/texture.hpp>
-#include <common/controls.hpp>
+#include "common/shader.hpp"
+#include "common/texture.hpp"
+#include "common/controls.hpp"
 
 #include "c_connections_draw.h"
 #include "particle_data.h"
@@ -31,7 +31,6 @@ void c_connections_draw::initialize(const particle_data& particle_data_ref)
 	auto shader_frag_text = getCodeFromFile("rc/simple_frag.glsl");
 	m_program = LoadShaderFromString(shader_vert_text, shader_frag_text);
 
-	//m_program = LoadShaders("rc/simple_vert.glsl", "rc/simple_frag.glsl");
 	printOpenGLError();
 	m_uniform_matrix = glGetUniformLocation(m_program, "ViewProjectionMatrix");
 	m_in_attrib_position = glGetAttribLocation(m_program, "inPosition");

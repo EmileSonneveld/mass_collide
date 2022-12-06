@@ -11,14 +11,15 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/norm.hpp>
-using namespace glm;
 
-#include <common/shader.hpp>
-#include <common/texture.hpp>
-#include <common/controls.hpp>
+#include "common/shader.hpp"
+#include "common/texture.hpp"
+#include "common/controls.hpp"
 
 #include "globals.h"
 #include "particle_data.h"
+
+using namespace glm;
 
 
 void c_particle_billboard_draw::initialize()
@@ -101,7 +102,7 @@ void c_particle_billboard_draw::process(particle_data& particle_data_ref)
 		GL_FALSE,           // normalized?
 		0,                  // stride
 		nullptr             // array buffer offset
-		);
+	);
 
 	glEnableVertexAttribArray(m_in_attrib_position);
 	glBindBuffer(GL_ARRAY_BUFFER, particle_data_ref.buffer[position]);
@@ -112,7 +113,7 @@ void c_particle_billboard_draw::process(particle_data& particle_data_ref)
 		GL_FALSE,
 		0,
 		nullptr
-		);
+	);
 
 	glEnableVertexAttribArray(m_in_attrib_color);
 	glBindBuffer(GL_ARRAY_BUFFER, particle_data_ref.buffer[color]);
@@ -123,7 +124,7 @@ void c_particle_billboard_draw::process(particle_data& particle_data_ref)
 		GL_FALSE,             // YES, this means that the unsigned char[4] will be accessible with a vec4 (floats) in the shader
 		0,
 		nullptr
-		);
+	);
 
 	// These functions are specific to glDrawArrays*Instanced*.
 	// The first parameter is the attribute buffer we're talking about.
@@ -148,7 +149,6 @@ void c_particle_billboard_draw::process(particle_data& particle_data_ref)
 	printOpenGLError(); // !
 	//glBindBuffer(GL_ARRAY_BUFFER, 0);
 	//glBindTexture(GL_TEXTURE_2D, 0);
-
 }
 
 void c_particle_billboard_draw::clean()

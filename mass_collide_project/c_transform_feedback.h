@@ -8,25 +8,18 @@
 
 struct particle_data;
 
-class c_transform_feedback : calculate
+class c_transform_feedback : private calculate
 {
 public:
-	c_transform_feedback() :
-		m_program(0),
-		m_uniform_point()
-	{}
-	virtual ~c_transform_feedback(){}
-
 	void initialize(const std::string& file_name, const bufferName output_buffer_name, const particle_data& particle_data_ref);
-	void process(particle_data& particle_data_ref);
-	void clean();
+	void process(particle_data& particle_data_ref) override;
+	void clean() override;
 
 private:
-	GLuint m_program;
+	GLuint m_program = 0;
 	GLint m_in_attrib_position = 0; //defined in shader
 	GLint m_in_attrib_velocity = 1; //defined in shader
 
 	bufferName m_transform_feedback_out = bufferName::position;
-	GLint m_uniform_point;
+	GLint m_uniform_point = 0;
 };
-

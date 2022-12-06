@@ -15,9 +15,8 @@
 
 #include <GL/glew.h>
 #include <glm/glm.hpp>
-using namespace glm;
 #include <glfw3.h>
-#include <common/controls.hpp>
+#include "common/controls.hpp"
 #include "globals.h"
 #include "INIReader.h"
 
@@ -30,6 +29,7 @@ using namespace glm;
 void OutputDebugStringA(const char *file){}
 #endif
 
+using namespace glm;
 
 int printOglError(const char *file, const int line)
 {
@@ -61,7 +61,7 @@ void printTransformFeedbackValues(int nr_catch_particles)
 	for (int i = 0; i < nr_catch_particles; ++i){
 		printf("feedback: %f %f %f %f\n", feedback[i].x, feedback[i].y, feedback[i].z, feedback[i].a);
 	}
-	delete feedback;
+	delete[] feedback;
 }
 
 double g_cursor_x, g_cursor_y; // get set by particle smasher
@@ -109,19 +109,20 @@ bool DirExists(const char* pathname){
 
 void ChangeDir(const char* dir)
 {
-    chdir(dir);
+    auto ret = _chdir(dir);
+	assert(ret == 0);
 }
 
 void LogCurrentDir()
 {
-    char * dir = getcwd(NULL, 0);
+    char * dir = _getcwd(nullptr, 0);
     printf("Current dir: %s\n", dir);
 	delete dir;
 }
 
 INIReader* g_settings;
 
-std::string GetPsSetting_String(const char* var_name, std::string default_value)
+std::string GetPsSetting_String(const char* var_name, const std::string& default_value)
 {
 	return g_settings->Get("ps_system", var_name, default_value);
 }

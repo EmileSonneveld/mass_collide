@@ -10,22 +10,19 @@
 #include <GL/glew.h>
 
 #include <glfw3.h>
-GLFWwindow* window;
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/norm.hpp>
-using namespace glm;
 
 #ifdef USE_ANT_TWEAKBAR // nowhere defined yet
 #include <AntTweakBar.h>
 #endif
 
 
-#include <common/shader.hpp>
-#include <common/texture.hpp>
-#include <common/controls.hpp>
-
+#include "common/shader.hpp"
+#include "common/texture.hpp"
+#include "common/controls.hpp"
 #include "globals.h"
 #include "particle_data.h"
 #include "c_connections_draw.h"
@@ -41,6 +38,9 @@ using namespace glm;
 #	include <signal.h>
 #	define _CRT_SECURE_NO_WARNINGS
 #endif
+
+GLFWwindow* window;
+using namespace glm;
 
 void glfw_error_callback(int error, const char* description)
 {
