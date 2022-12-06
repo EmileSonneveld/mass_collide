@@ -98,7 +98,6 @@ bool DirExists(const char* pathname){
     struct stat info;
 
     if( stat( pathname, &info ) != 0 ){
-        printf( "cannot access %s\n", pathname );
         return false;
     }
     else if( info.st_mode & S_IFDIR )  // S_ISDIR() doesn't exist on my windows

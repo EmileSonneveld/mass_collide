@@ -71,29 +71,6 @@ add_definitions(
 	-D_CRT_SECURE_NO_WARNINGS
 )
 
-
-# playground ####################################
-add_executable(playground
-	playground/playground.cpp
-	common/shader.cpp
-	common/shader.hpp
-	common/texture.cpp
-	common/texture.hpp
-	common/controls.cpp
-	common/controls.hpp
-)
-
-target_link_libraries(playground
-	${ALL_LIBS}
-)
-
-# Xcode and Visual working directories
-#set_target_properties(playground PROPERTIES XCODE_ATTRIBUTE_CONFIGURATION_BUILD_DIR "${CMAKE_CURRENT_SOURCE_DIR}/mass_collide_project/")
-#create_target_launcher(playground WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/mass_collide_project/")
-
-
-
-
 # mass_collide_test ####################################
 
 file(GLOB mass_collide_project_SRC
@@ -163,10 +140,6 @@ SOURCE_GROUP(shaders REGULAR_EXPRESSION "(.*/.*shader$)|(*.glsl$)" )
 
 if (NOT ${CMAKE_GENERATOR} MATCHES "Xcode" )
 
-add_custom_command(
-   TARGET playground POST_BUILD
-   COMMAND ${CMAKE_COMMAND} -E copy "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_CFG_INTDIR}/playground${CMAKE_EXECUTABLE_SUFFIX}" "${CMAKE_CURRENT_SOURCE_DIR}/playground/"
-)
 add_custom_command(
    TARGET mass_collide_test POST_BUILD
    COMMAND ${CMAKE_COMMAND} -E copy "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_CFG_INTDIR}/mass_collide_test${CMAKE_EXECUTABLE_SUFFIX}" "${CMAKE_CURRENT_SOURCE_DIR}/mass_collide_project/"
