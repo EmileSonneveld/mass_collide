@@ -19,6 +19,11 @@ jobs:
         uses: SonarSource/sonarcloud-github-c-cpp@v1
       - name: Run build-wrapper
         run: |
+          sudo apt-get update
+          sudo apt install cmake -y
+          sudo apt-get install build-essential -y
+          sudo apt-get install libgl1-mesa-dev -y
+          sudo apt-get install xorg-dev libglu1-mesa-dev -y
           build-wrapper-linux-x86-64 --out-dir ${{ env.BUILD_WRAPPER_OUT_DIR }} ./build.bat
       - name: Run sonar-scanner
         env:
