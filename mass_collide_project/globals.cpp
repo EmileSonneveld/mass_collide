@@ -109,13 +109,13 @@ bool DirExists(const char* pathname){
 
 void ChangeDir(const char* dir)
 {
-    auto ret = _chdir(dir);
+    auto ret = chdir(dir);
 	assert(ret == 0);
 }
 
 void LogCurrentDir()
 {
-    char * dir = _getcwd(nullptr, 0);
+    char * dir = getcwd(nullptr, 0);
     printf("Current dir: %s\n", dir);
 	delete dir;
 }
