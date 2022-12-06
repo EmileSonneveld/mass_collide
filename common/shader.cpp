@@ -13,6 +13,7 @@ using namespace std;
 #include <GL/glew.h>
 
 #include "shader.hpp"
+#include "../mass_collide_project/Util.h"
 
 
 std::string getCodeFromFile(const char * file_path)
@@ -100,6 +101,7 @@ GLuint LoadShaderFromString(const string& vertex_string, const string& fragment_
 GLuint LoadShaderWithTransformFeedbackFromPath(const char* filename)
 {
 	auto shader_text = getCodeFromFile(filename);
+	shader_text = Util::ReplaceTokensWith_particleData(shader_text);
 	return LoadShaderWithTransformFeedbackFromString(shader_text);
 }
 

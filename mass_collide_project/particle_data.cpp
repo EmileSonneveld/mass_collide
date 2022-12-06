@@ -1,5 +1,6 @@
 #include <vector>
 #include <algorithm>
+#include <array>
 #include <string>
 #include <iostream>
 #include <fstream>
@@ -10,6 +11,7 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/norm.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
 #include <GL/glew.h>
 
@@ -70,7 +72,7 @@ void particle_data_init::generate_positions_random()
 	std::random_device rd;
 	std::mt19937 e2(rd());
 	float size = GetPsSetting_Float("random_box_size", 10);
-	std::uniform_real_distribution<float> dist(-size/2, size/2);
+	std::uniform_real_distribution<float> dist(-size / 2, size / 2);
 	for (unsigned int i = 0; i < m_count; ++i) {
 		m_pos[i].x = dist(e2);
 		m_pos[i].y = dist(e2);
@@ -91,6 +93,13 @@ void particle_data_init::generate_positions_structured()
 		m_pos[i].z = (i / sizecount % sizecount) * size;
 		m_pos[i].y = (i / sizecount / sizecount) * size;
 		m_pos[i].a = particle_size;
+	}
+}
+
+void particle_data_init::transform_positions(const mat4x4& mat, long count)
+{
+	for (unsigned int i = 0; i < count; ++i) {
+		m_pos[i] = m_pos[i] * mat;
 	}
 }
 
@@ -359,6 +368,16 @@ void particle_data_init::doAllTheInitisation(particle_data& particle_data_ref)
 			this->generate_positions_structured();
 		else
 			this->generate_positions_random();
+
+
+		auto angle = (float)std::_Pi / 180 * GetPsSetting_Float("rotate_initialised_positions_angle", 0);
+		std::array<float, 16> arr = {
+		   std::cos(angle), -std::sin(angle), 0, 0,
+		   std::sin(angle), std::cos(angle), 0, 0,
+		   0, 0, 1, 0,
+		   0, 0, 0, 1
+		};
+		this->transform_positions(glm::make_mat4(arr.data()), m_count / 2);
 	}
 	generate_colors_sinus();
 	//generate_colors_random();
