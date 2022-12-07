@@ -6,6 +6,7 @@
 #include <fstream>
 #include <assert.h>
 #include <random>
+#define _USE_MATH_DEFINES
 #include <math.h>
 
 #include <glm/glm.hpp>
@@ -370,7 +371,7 @@ void particle_data_init::doAllTheInitisation(particle_data& particle_data_ref)
 			this->generate_positions_random();
 
 
-		auto angle = (float)std::_Pi / 180 * GetPsSetting_Float("rotate_initialised_positions_angle", 0);
+		auto angle = (float)M_PI / 180 * GetPsSetting_Float("rotate_initialised_positions_angle", 0);
 		std::array<float, 16> arr = {
 		   std::cos(angle), -std::sin(angle), 0, 0,
 		   std::sin(angle), std::cos(angle), 0, 0,
