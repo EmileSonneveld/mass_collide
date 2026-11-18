@@ -18,6 +18,8 @@ repos:
       - id: check-xml
       - id: check-illegal-windows-names
       - id: check-shebang-scripts-are-executable
+      - id: detect-aws-credentials
+        args: [ --allow-missing-credentials ]
   - repo: https://github.com/koalaman/shellcheck-precommit
     rev: v0.11.0
     hooks:
