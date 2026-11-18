@@ -100,7 +100,7 @@ void c_particle_cube_draw::process(particle_data& particle_data_ref)
 	glBindBuffer(GL_ARRAY_BUFFER, m_buffer_billboard_vertex);
 	glVertexAttribPointer(
 		m_in_attrib_square,                  // attribute. Must match the layout in the shader.
-		3,                  // Specifies the number of components per generic vertex attribute. Must be 1, 2, 3, 4. 
+		3,                  // Specifies the number of components per generic vertex attribute. Must be 1, 2, 3, 4.
 							//     Additionally, the symbolic constant GL_BGRA is accepted by glVertexAttribPointer. The initial value is 4.
 		GL_FLOAT,           // type
 		GL_FALSE,           // normalized?

@@ -33,4 +33,3 @@ void main()
 	outUV = squareVertices.xy + vec2(0.5, 0.5);
 	outColor = inColor;
 }
-

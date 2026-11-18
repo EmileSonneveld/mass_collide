@@ -268,7 +268,7 @@ inline int main_windows_managment()
 		bool isDPressed = glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS;
 		if (!wasDPressed && isDPressed)
 				cubesNotBilboards = !cubesNotBilboards;
-		
+
 
 		if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_2)) {
 			cpu_side.pick_point(particle_data_inst);

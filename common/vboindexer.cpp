@@ -16,10 +16,10 @@ bool is_near(float v1, float v2){
 // Searches through all already-exported vertices
 // for a similar one.
 // Similar = same position + same UVs + same normal
-bool getSimilarVertexIndex( 
-	glm::vec3 & in_vertex, 
-	glm::vec2 & in_uv, 
-	glm::vec3 & in_normal, 
+bool getSimilarVertexIndex(
+	glm::vec3 & in_vertex,
+	glm::vec2 & in_uv,
+	glm::vec3 & in_normal,
 	std::vector<glm::vec3> & out_vertices,
 	std::vector<glm::vec2> & out_uvs,
 	std::vector<glm::vec3> & out_normals,
@@ -83,8 +83,8 @@ struct PackedVertex{
 	};
 };
 
-bool getSimilarVertexIndex_fast( 
-	PackedVertex & packed, 
+bool getSimilarVertexIndex_fast(
+	PackedVertex & packed,
 	std::map<PackedVertex,unsigned short> & VertexToOutIndex,
 	unsigned short & result
 ){
@@ -113,7 +113,7 @@ void indexVBO(
 	for ( unsigned int i=0; i<in_vertices.size(); i++ ){
 
 		PackedVertex packed = {in_vertices[i], in_uvs[i], in_normals[i]};
-		
+
 
 		// Try to find a similar vertex in out_XXXX
 		unsigned short index;

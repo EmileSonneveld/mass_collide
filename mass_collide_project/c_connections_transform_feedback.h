@@ -30,4 +30,3 @@ private:
 
 	bufferName m_transform_feedback_out;
 };
-

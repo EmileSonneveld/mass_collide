@@ -35,10 +35,10 @@ void main()
 		if(len == 0)
 			continue;
 		float difference = len - targetLen;
-		
+
 		if(len<0.001 || abs(difference)<0.01)
 			continue;
-		
+
 		float strength = -1.4 * difference;
 
 		summedForce += normalize (deltaVec) * strength;
