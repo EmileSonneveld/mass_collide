@@ -9,5 +9,5 @@ done
 
 mkdir -p cmake_build
 cd cmake_build
-cmake .. -DCMAKE_CONFIGURATION_TYPES="Debug;RelWithDebInfo"
+cmake .. -DCMAKE_CONFIGURATION_TYPES="Debug;RelWithDebInfo" -DCMAKE_POLICY_VERSION_MINIMUM=3.5
 cmake --build . --config Debug

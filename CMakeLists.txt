@@ -33,8 +33,17 @@ endif()
 # Compile external dependencies ###########
 SET(ASSIMP_BUILD_ASSIMP_TOOLS OFF CACHE BOOL "If the supplementary tools for Assimp are built in addition to the library.")
 SET(ASSIMP_BUILD_ZLIB ON CACHE BOOL "Build your own zlib")
+SET(ASSIMP_WARNINGS_AS_ERRORS OFF CACHE BOOL "")
+SET(ASSIMP_BUILD_TESTS OFF CACHE BOOL "")
+SET(GLFW_BUILD_WAYLAND OFF CACHE BOOL "")
+SET(GLFW_BUILD_EXAMPLES OFF CACHE BOOL "")
+SET(GLFW_BUILD_TESTS OFF CACHE BOOL "")
+SET(GLFW_BUILD_DOCS OFF CACHE BOOL "")
 
 add_subdirectory (external)
+
+# The pinned assimp version misses <cstdint> includes required by newer GCC
+target_compile_options(assimp PRIVATE $<$<COMPILE_LANGUAGE:CXX>:-include cstdint>)
 
 # On Visual 2005 and above, this module can set the debug working directory
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/external/rpavlik-cmake-modules-1c73e35")
@@ -135,7 +144,7 @@ endif()
 
 
 SOURCE_GROUP(common REGULAR_EXPRESSION ".*/common/.*" )
-SOURCE_GROUP(shaders REGULAR_EXPRESSION "(.*/.*shader$)|(*.glsl$)" )
+SOURCE_GROUP(shaders REGULAR_EXPRESSION "(.*/.*shader$)|(.*\\.glsl$)" )
 
 
 if (NOT ${CMAKE_GENERATOR} MATCHES "Xcode" )
